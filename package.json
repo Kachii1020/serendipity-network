@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@11.19.0",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.13.0"
   },
   "scripts": {
     "audit:sources": "node scripts/audit-v2-sources.mjs",

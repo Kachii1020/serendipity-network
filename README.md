@@ -104,7 +104,8 @@ were not deleted or relabeled as the new consumer product.
 
 ## Run locally
 
-Requirements: Node.js 20.9 or newer and pnpm 11.19.0.
+Requirements: Node.js 22.13 or newer and pnpm 11.19.0. CI and production use
+Node.js 24.
 
 ```bash
 pnpm install --frozen-lockfile
