@@ -105,7 +105,7 @@ test("STL-002/003 exposes five top-level tools and a Site Tool search updates th
     }),
   );
 
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await waitForProductTools(page);
   await expect(page.locator(".network-pill")).toContainText("WebMCP");
   await expect(page.locator("main")).toHaveAttribute(
@@ -233,7 +233,7 @@ test("STL-006 a human click is labeled Manual fallback with safe provenance", as
     }),
   );
 
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await waitForProductTools(page);
   await page.getByRole("button", { name: "Plan my night" }).click();
   await expect(
@@ -270,7 +270,7 @@ test("IMP-003 human presets and Site Tool input share the same Intent endpoint",
     });
   });
 
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await waitForProductTools(page);
   await page.locator(".constraint-adjuster summary").click();
   await page.getByRole("radio", { name: "18:30" }).check();
@@ -331,7 +331,7 @@ test("IMP-003 rejects a Site Tool end time outside the fixed v1 22:30 boundary",
     requestCount += 1;
     return route.abort();
   });
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await waitForProductTools(page);
 
   const serialized = await page.evaluate(
@@ -379,7 +379,7 @@ test("STL-003 permits only one in-flight search and commits the accepted request
       json: searchEnvelope(data, "single-in-flight-search"),
     });
   });
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await waitForProductTools(page);
 
   await page.evaluate((input) => {
@@ -452,7 +452,7 @@ test("STL-003 invalidates old show_bundle inputs after a no-result search", asyn
       },
     });
   });
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await waitForProductTools(page);
 
   const results = await page.evaluate(

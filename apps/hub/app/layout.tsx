@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import "./globals.css";
 import "./marketing.css";
+import "./planner-v2.css";
 import "@serendipity/ui/tokens.css";
 import "@serendipity/ui/primitives.css";
 
@@ -26,23 +27,23 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_HUB_ORIGIN ?? "http://localhost:3100",
   ),
   description:
-    "Compose a spontaneous city night across independent live Provider sites. Launch network: Shibuya.",
+    "Build a feasible Shibuya route from real places with published hours, reference prices, walking estimates, and visible sources.",
   openGraph: {
     description:
-      "One spontaneous Shibuya night, composed across three independent demo Providers.",
+      "Two or three real Shibuya places, one feasible plan, and the source behind every important fact.",
     siteName: "Serendipity",
-    title: "Serendipity · Three places, one unexpectedly good night",
+    title: "Serendipity · A Shibuya plan you can verify",
     type: "website",
   },
   title: {
-    default: "Serendipity · Three places, one unexpectedly good night",
+    default: "Serendipity · A Shibuya plan you can verify",
     template: "%s · Serendipity",
   },
   twitter: {
     card: "summary_large_image",
     description:
-      "One spontaneous Shibuya night, composed across three independent demo Providers.",
-    title: "Serendipity · Three places, one unexpectedly good night",
+      "Two or three real Shibuya places, one feasible plan, and the source behind every important fact.",
+    title: "Serendipity · A Shibuya plan you can verify",
   },
 };
 

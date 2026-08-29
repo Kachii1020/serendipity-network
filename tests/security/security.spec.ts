@@ -81,7 +81,7 @@ test("SEC-001/002 each Provider permits only itself and the exact Hub", async ({
 test("SEC-004/005/010 rendered Hub, frames, URLs, and storage expose no server secrets", async ({
   page,
 }) => {
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect(page.locator("iframe[title$='live Provider page']")).toHaveCount(
     0,
   );
@@ -152,7 +152,7 @@ test("SEC-013 public Site Tool schemas and search result expose no token or cred
     }),
   );
 
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect
     .poll(() =>
       page.evaluate(async () => {
@@ -199,4 +199,75 @@ test("SEC-013 public Site Tool schemas and search result expose no token or cred
     data: { bundleSessionId: "security-site-tool-session" },
     ok: true,
   });
+});
+
+test("PV2-SEC-001 source-backed planner exposes only safe IDs, evidence, and HTTPS handoffs", async ({
+  page,
+}) => {
+  const date = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+  }).format(new Date());
+  const intent = {
+    area: "shibuya",
+    endAt: `${date}T22:00:00+09:00`,
+    excludedTags: ["alcohol", "smoking"],
+    maxWalkMinutesPerLeg: 20,
+    partySize: 1,
+    preferredTags: ["art", "books", "quiet"],
+    schemaVersion: "2",
+    startAt: `${date}T17:00:00+09:00`,
+    stopCount: "AUTO",
+    totalBudgetYen: 5000,
+  };
+
+  await page.goto("/plan");
+  await expect(page.locator("iframe")).toHaveCount(0);
+  const evidence = await page.evaluate(async (input) => {
+    const context = (
+      document as Document & { readonly modelContext?: SecurityPageContext }
+    ).modelContext;
+    if (!context) throw new Error("WebMCP unavailable");
+    const tools = await context.getTools();
+    const find = tools.find(({ name }) => name === "find_evening_plan");
+    if (!find) throw new Error("planner search tool unavailable");
+    return {
+      inventory: tools.map(({ inputSchema, name }) => ({ inputSchema, name })),
+      result: JSON.parse(
+        (await context.executeTool(find, JSON.stringify(input))) ?? "null",
+      ) as unknown,
+    };
+  }, intent);
+
+  expect(evidence.inventory.map(({ name }) => name).sort()).toEqual(
+    [
+      "delete_saved_plan",
+      "find_evening_plan",
+      "save_plan",
+      "show_place_evidence",
+      "swap_plan_stop",
+    ].sort(),
+  );
+  expect(evidence.result).toMatchObject({ ok: true, schemaVersion: "2" });
+  const serialized = JSON.stringify(evidence);
+  for (const marker of secretMarkers) expect(serialized).not.toContain(marker);
+  expect(serialized).not.toMatch(
+    /"(?:holdToken|idempotencyKey|authorization|serviceRoleKey|secret|token)"\s*:/i,
+  );
+  for (const link of await page.locator("a[target='_blank']").all()) {
+    const href = await link.getAttribute("href");
+    const rel = await link.getAttribute("rel");
+    expect(href).toMatch(/^https:\/\//);
+    expect(rel).toContain("noopener");
+    expect(rel).toContain("noreferrer");
+  }
+  const storage = await page.evaluate(() => ({
+    local: Object.entries(localStorage),
+    session: Object.entries(sessionStorage),
+  }));
+  expect(JSON.stringify(storage)).not.toMatch(
+    /holdToken|idempotencyKey|authorization|serviceRoleKey|secret|token/i,
+  );
 });

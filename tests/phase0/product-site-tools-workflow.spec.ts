@@ -123,7 +123,7 @@ const prepareSearch = async (page: Page) => {
       json: envelope(data, "find"),
     }),
   );
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect(page.locator(".network-pill")).toContainText("WebMCP");
   await execute(page, "find_serendipity_options", canonicalIntent);
   await expect(

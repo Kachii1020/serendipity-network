@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 async function loadProduct(page: Page) {
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect(
     page.getByRole("heading", { name: "What kind of tonight?" }),
   ).toBeVisible();

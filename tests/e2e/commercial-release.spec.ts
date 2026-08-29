@@ -80,7 +80,7 @@ test("UI-039/043 landing is consumer-first, static, and one action from the plan
     }
   });
   await page.setViewportSize({ height: 844, width: 390 });
-  await page.goto("/");
+  await page.goto("/legacy/network-demo/home");
   await expect(
     page.getByRole("heading", {
       level: 1,
@@ -101,7 +101,7 @@ test("UI-039/043 landing is consumer-first, static, and one action from the plan
   );
   expect(overflow).toBe(0);
   await page.getByRole("link", { name: /Plan a Shibuya night/ }).click();
-  await expect(page).toHaveURL(/\/plan$/);
+  await expect(page).toHaveURL(/\/legacy\/network-demo$/);
   await expect(
     page.getByRole("heading", { name: "What kind of tonight?" }),
   ).toBeVisible();
@@ -110,13 +110,13 @@ test("UI-039/043 landing is consumer-first, static, and one action from the plan
 test("UI-044 tool lifecycle is exactly 5 → 0 → 5 across planner navigation", async ({
   page,
 }) => {
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect
     .poll(() => availableTools(page))
     .toEqual([...productTools].sort());
-  await page.goto("/");
+  await page.goto("/legacy/network-demo/home");
   await expect.poll(() => availableTools(page)).toEqual([]);
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect
     .poll(() => availableTools(page))
     .toEqual([...productTools].sort());
@@ -131,7 +131,7 @@ test("UI-045 safe deep links seed controls without work and strip poisoned keys"
       workflowRequests += 1;
     }
   });
-  await page.goto("/plan?mood=cozy&start=18:30&budget=6000");
+  await page.goto("/legacy/network-demo?mood=cozy&start=18:30&budget=6000");
   await expect(
     page.getByRole("button", { name: /Cozy.*Selected/ }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -140,8 +140,8 @@ test("UI-045 safe deep links seed controls without work and strip poisoned keys"
   await expect(page.getByRole("radio", { name: "¥6,000" })).toBeChecked();
   expect(workflowRequests).toBe(0);
 
-  await page.goto("/plan?mood=cozy&holdToken=secret-value");
-  await expect(page).toHaveURL(/\/plan\?mood=cozy$/);
+  await page.goto("/legacy/network-demo?mood=cozy&holdToken=secret-value");
+  await expect(page).toHaveURL(/\/legacy\/network-demo\?mood=cozy$/);
   expect(page.url()).not.toContain("holdToken");
   expect(page.url()).not.toContain("secret-value");
 });
@@ -155,7 +155,7 @@ test("UI-047 proof makes zero Provider requests until opened", async ({
       providerRequests.push(request.url());
     }
   });
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect(page.locator("iframe[title$='live Provider page']")).toHaveCount(
     0,
   );
@@ -201,7 +201,7 @@ test("UI-040/043 landing and planner survive 400% text enlargement", async ({
   page,
 }) => {
   await page.setViewportSize({ height: 900, width: 1280 });
-  for (const path of ["/", "/plan"]) {
+  for (const path of ["/legacy/network-demo/home", "/legacy/network-demo"]) {
     await page.goto(path);
     await page.locator("html").evaluate((element) => {
       element.style.fontSize = "400%";
@@ -277,7 +277,7 @@ test("UI-046 active-hold navigation releases safely before leaving", async ({
     return route.abort();
   });
 
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await page.getByRole("button", { name: "Plan my night" }).click();
   await page.getByRole("button", { name: "Hold for 90 seconds" }).click();
   await expect(

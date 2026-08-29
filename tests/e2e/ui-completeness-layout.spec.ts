@@ -8,7 +8,7 @@ async function loadProductAt320(page: Page) {
       value: undefined,
     });
   });
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect(
     page.getByRole("heading", { name: "What kind of tonight?" }),
   ).toBeVisible();

@@ -86,7 +86,7 @@ const routeSuccessfulSearch = async (page: Page) => {
 };
 
 const plan = async (page: Page) => {
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await page
     .getByRole("button", { name: "Plan my night", exact: true })
     .click();
@@ -120,7 +120,7 @@ test("UI-033 keeps the result heading visible at 200% text enlargement", async (
 }) => {
   await page.setViewportSize({ height: 900, width: 640 });
   await routeSuccessfulSearch(page);
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await page.locator("html").evaluate((element) => {
     element.style.fontSize = "200%";
   });
@@ -150,7 +150,7 @@ test("UI-034 Adjust search returns focus and scroll to the invitation", async ({
       json: failureEnvelope("NO_VALID_BUNDLE", true),
     }),
   );
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await page
     .getByRole("button", { name: "Plan my night", exact: true })
     .click();

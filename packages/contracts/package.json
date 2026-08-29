@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./hash": "./src/hash.ts"
+    "./hash": "./src/hash.ts",
+    "./planner-v2": "./src/planner-v2.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

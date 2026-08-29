@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Serendipity — three places, one unexpectedly good night";
+export const alt = "Serendipity — a Shibuya plan you can verify";
 export const size = { height: 630, width: 1200 };
 export const contentType = "image/png";
 
@@ -44,13 +44,13 @@ export default function OpenGraphImage() {
           textTransform: "uppercase",
         }}
       >
-        Three places. One unexpectedly good night.
+        A Shibuya plan you can actually verify.
       </div>
       <div style={{ display: "flex", gap: 16 }}>
         {[
-          ["Kiln", "#55db9c"],
-          ["Nori", "#ffd731"],
-          ["Loop", "#fb8050"],
+          ["Real places", "#55db9c"],
+          ["Published hours", "#ffd731"],
+          ["Official sources", "#fb8050"],
         ].map(([name, color]) => (
           <div
             key={name}

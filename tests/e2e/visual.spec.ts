@@ -41,7 +41,7 @@ const envelope = (data: unknown) => ({
 
 async function stabilize(page: Page) {
   await page.clock.install({ time: fixedTime });
-  await page.goto("/plan");
+  await page.goto("/legacy/network-demo");
   await expect(page.locator(".provider-sticker")).toHaveCount(3);
   await expect(page.locator(".network-pill")).toContainText("WebMCP");
   await expect(
@@ -78,7 +78,7 @@ for (const viewport of [
     page,
   }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/legacy/network-demo/home");
     await page.addStyleTag({
       content:
         "nextjs-portal,[data-next-badge-root]{display:none!important}*{caret-color:transparent!important}",

@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./planner-v2": "./src/planner-v2.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

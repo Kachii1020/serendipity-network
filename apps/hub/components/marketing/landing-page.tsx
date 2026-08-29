@@ -40,7 +40,11 @@ const steps = [
   },
 ] as const;
 
-export function LandingPage() {
+export function LandingPage({
+  plannerHref = "/plan",
+}: {
+  readonly plannerHref?: string;
+}) {
   return (
     <div className="marketing-shell">
       <a className="skip-link" href="#landing-main">
@@ -60,7 +64,7 @@ export function LandingPage() {
           <a href="#network">Network</a>
           <a href="#safety">Safety</a>
         </nav>
-        <Link className="marketing-nav__plan" href="/plan">
+        <Link className="marketing-nav__plan" href={plannerHref}>
           Open Planner
         </Link>
       </header>
@@ -75,7 +79,7 @@ export function LandingPage() {
               sites into one route that actually fits your time and budget.
             </p>
             <div className="marketing-hero__actions">
-              <Link className="marketing-primary" href="/plan">
+              <Link className="marketing-primary" href={plannerHref}>
                 Plan a Shibuya night <span aria-hidden="true">→</span>
               </Link>
               <a className="marketing-secondary" href="#how-it-works">
@@ -210,7 +214,7 @@ export function LandingPage() {
           SERENDIPITY<span aria-hidden="true">✦</span>
         </Link>
         <p>One tiny plan for a bigger night.</p>
-        <Link href="/plan">Open the planner</Link>
+        <Link href={plannerHref}>Open the planner</Link>
       </footer>
     </div>
   );

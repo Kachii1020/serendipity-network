@@ -1,108 +1,66 @@
-import { randomUUID } from "node:crypto";
-
-import type { Provider } from "@serendipity/contracts";
+import {
+  PLANNER_SCHEMA_VERSION,
+  type PlannerIntentV2,
+  type PlannerTag,
+} from "@serendipity/contracts/planner-v2";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 
-import { HubClient } from "../../components/product/hub-client";
+import { PlannerClient } from "../../components/planner-v2/planner-client";
 import {
-  BUDGET_PRESETS_YEN,
-  DEFAULT_PLAN_CONSTRAINTS,
-  MOOD_PRESETS,
-  START_TIME_PRESETS,
-  type Mood,
-  type PlanConstraints,
-} from "../../components/product/types";
+  normalizePlannerQuery,
+  toTokyoTimestamp,
+  type PlannerQuery,
+} from "../../components/planner-v2/planner-query";
+import { SHIBUYA_ACTIVE_PACK_V2 } from "../../data/shibuya-v2";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/plan" },
   description:
-    "Plan a three-stop Shibuya demo route across Kiln, Nori, and Loop.",
+    "Plan 2–3 real Shibuya stops with published evidence and official links.",
   robots: { follow: true, index: false },
-  title: "Plan a Shibuya night",
-};
-
-const providerOrigins = (): Record<Provider, string> => {
-  const values = (
-    process.env.NEXT_PUBLIC_PROVIDER_ORIGINS ??
-    "http://localhost:3101,http://localhost:3102,http://localhost:3103"
-  )
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-  if (values.length !== 3) {
-    throw new Error("Kiln, Nori, and Loop origins are required");
-  }
-  return { kiln: values[0]!, nori: values[1]!, loop: values[2]! };
-};
-
-const scalar = (value: string | string[] | undefined): string | undefined =>
-  typeof value === "string" ? value : undefined;
-
-const validMood = (value: string | undefined): Mood | undefined =>
-  MOOD_PRESETS.find((mood) => mood.toLowerCase() === value?.toLowerCase());
-
-const initialMood = (value: string | undefined): Mood =>
-  validMood(value) ?? "Surprising";
-
-const initialConstraints = (
-  start: string | undefined,
-  budget: string | undefined,
-): PlanConstraints => {
-  const startTime = START_TIME_PRESETS.find((preset) => preset === start);
-  const numericBudget = Number(budget);
-  const totalBudgetYen = BUDGET_PRESETS_YEN.find(
-    (preset) => preset === numericBudget,
-  );
-  return {
-    startTime: startTime ?? DEFAULT_PLAN_CONSTRAINTS.startTime,
-    totalBudgetYen: totalBudgetYen ?? DEFAULT_PLAN_CONSTRAINTS.totalBudgetYen,
-  };
+  title: "Build a source-backed Shibuya plan",
 };
 
 export default async function PlanPage({
   searchParams,
 }: {
-  readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
+  readonly searchParams: Promise<PlannerQuery>;
 }) {
-  const query = await searchParams;
-  const mood = scalar(query.mood);
-  const start = scalar(query.start);
-  const budget = scalar(query.budget);
-  const numericBudget = Number(budget);
-  const safe = new URLSearchParams();
-  const selectedMood = validMood(mood);
-  const selectedStart = START_TIME_PRESETS.find((preset) => preset === start);
-  const selectedBudget = BUDGET_PRESETS_YEN.find(
-    (preset) => preset === numericBudget,
-  );
-  if (selectedMood) safe.set("mood", selectedMood.toLowerCase());
-  if (selectedStart) safe.set("start", selectedStart);
-  if (selectedBudget) safe.set("budget", String(selectedBudget));
-  const unsafeQuery =
-    Object.keys(query).some(
-      (key) => !["budget", "mood", "start"].includes(key),
-    ) ||
-    Object.values(query).some(Array.isArray) ||
-    (mood !== undefined && !selectedMood) ||
-    (start !== undefined && !selectedStart) ||
-    (budget !== undefined && !selectedBudget) ||
-    (selectedMood !== undefined && mood !== selectedMood.toLowerCase());
-  if (unsafeQuery) {
-    const normalized = safe.toString();
-    redirect(normalized ? `/plan?${normalized}` : "/plan");
-  }
   await connection();
+  const query = await searchParams;
+  const normalized = normalizePlannerQuery(query, new Date());
+  if (normalized.invalid) {
+    const target = normalized.normalized.toString();
+    redirect(target ? `/plan?${target}` : "/plan");
+  }
+
+  const intent: PlannerIntentV2 = {
+    area: "shibuya",
+    endAt: toTokyoTimestamp(normalized.defaults.date, normalized.defaults.end),
+    excludedTags: normalized.defaults.excludedTags as PlannerTag[],
+    maxWalkMinutesPerLeg: normalized.defaults.walk,
+    partySize: 1,
+    preferredTags: normalized.defaults.interests as PlannerTag[],
+    schemaVersion: PLANNER_SCHEMA_VERSION,
+    startAt: toTokyoTimestamp(
+      normalized.defaults.date,
+      normalized.defaults.start,
+    ),
+    stopCount: "AUTO",
+    totalBudgetYen: normalized.defaults.budget,
+  };
+
   return (
-    <HubClient
-      browserSessionId={randomUUID()}
-      initialConstraints={initialConstraints(
-        scalar(query.start),
-        scalar(query.budget),
-      )}
-      initialMood={initialMood(mood)}
-      providerOrigins={providerOrigins()}
+    <PlannerClient
+      autoSearch={normalized.autoSearch}
+      defaults={normalized.defaults}
+      hubOrigin={process.env.NEXT_PUBLIC_HUB_ORIGIN ?? "http://localhost:3100"}
+      initialIntent={intent}
+      maxDate={normalized.maxDate}
+      minDate={normalized.minDate}
+      packVersion={SHIBUYA_ACTIVE_PACK_V2.packVersion}
     />
   );
 }
