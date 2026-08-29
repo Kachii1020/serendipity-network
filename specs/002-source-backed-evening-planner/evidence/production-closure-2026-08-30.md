@@ -85,7 +85,8 @@ not human usability evidence.
 
 ## Remaining submission actions
 
-- Create/push the public repository and confirm GitHub detects the MIT license.
+- Public repository: <https://github.com/Kachii1020/serendipity-network> —
+  public, default branch `main`, GitHub License API detects `MIT`.
 - Record and publish the public YouTube demo under three minutes.
 - Run the official in-app Site Tools client when the account exposes it; Chrome
   WebMCP is already an allowed and production-verified path.

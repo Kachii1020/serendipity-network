@@ -14,6 +14,8 @@ Every result says so before the user saves or leaves the site.
 **Planner and judged Site Tools:**
 <https://serendipity-phase0-hub.vercel.app/plan>
 
+**Public source:** <https://github.com/Kachii1020/serendipity-network>
+
 ## 30-second judge path
 
 1. Open the [planner](https://serendipity-phase0-hub.vercel.app/plan).
@@ -170,7 +172,7 @@ third-party venue photos or logos.
 
 ## Submission status
 
-The product, local Git history, MIT license, source-rights audit, and live Vercel
-project are present. A public repository remote and public YouTube demo under
-three minutes remain account-owner submission actions until their final URLs
-are recorded.
+The product, public GitHub repository, dated Git history, GitHub-detected MIT
+license, source-rights audit, and live Vercel deployment are present. A public
+YouTube demo under three minutes remains the final account-owner submission
+action until its URL is recorded.
