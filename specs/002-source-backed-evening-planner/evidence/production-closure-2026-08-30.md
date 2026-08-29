@@ -1,5 +1,41 @@
 # V2 production closure — 2026-08-30 JST
 
+## Current pack 1.3.0 release candidate
+
+**Evidence class:** production runtime and deterministic browser automation. No
+human-study or official ChatGPT Site Tools-client claim is made.
+
+- Preview: `dpl_6nozjvuwkaftDEUoeu9GGdZ1uEqQ`, READY. Vercel protection returned
+  401 to public fetch; authenticated `vercel curl` verified `/`, search, and
+  evidence as HTTP 200 before promotion.
+- Production: `dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6`, READY in `hnd1`, aliased to
+  <https://serendipity-phase0-hub.vercel.app>.
+- Provider deployments and Supabase schema changed: **no**.
+
+| Current-candidate gate                | Result                                              |
+| ------------------------------------- | --------------------------------------------------- |
+| `pnpm check`                          | PASS — 342/342 units, 8/8 typechecks, audit 11/11   |
+| `pnpm build`                          | PASS — 8/8                                          |
+| Focused v2                            | PASS — 135/135                                      |
+| Production v2 browser                 | PASS — 12/12                                        |
+| Exact five WebMCP path                | PASS — 3/3 fresh Chrome contexts                    |
+| Production read-only reliability      | PASS — 20/20, p95 246ms, max 848ms, 20 correlations |
+| Public asset/runtime security         | PASS — 56 assets and 5/5 browser cases              |
+| Source audit                          | PASS — 9 routable places, 18 sources, pack 1.3.0    |
+| Independent blocking-only code review | PASS — no P0/P1 release blockers                    |
+
+The 320×568 recovery case also verifies that a failed or empty re-search keeps
+the previous verified plan and places its explanation inside the viewport.
+
+## Previous deployment record
+
+> **Historical deployment evidence.** This record describes
+> `dpl_4LBiYvg2NP1KEq4WLT1Pry1u4C2b` and the product state observed at that
+> deployment. It predates the current pack 1.3.0 reviewed-source/data-license,
+> strict-date, schedule-calendar visibility, warning-replacement, registration
+> rollback, evidence-race, exact-output, and storage-repair closure batch. It is
+> retained as regression evidence and does not close current tasks T208 or T209.
+
 **Evidence class:** production runtime, deterministic automation, and non-human
 synthetic QA. No human-study claim is made.
 

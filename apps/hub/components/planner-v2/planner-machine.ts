@@ -23,11 +23,13 @@ export type PlannerState = {
   readonly inlineError: PlannerUiError | null;
   readonly intent: PlannerIntentV2 | null;
   readonly operationEpoch: number;
+  readonly pendingIntent: PlannerIntentV2 | null;
   readonly phase: PlannerPhase;
   readonly plan: EveningPlanV2 | null;
   readonly savedPlans: readonly SavedPlanRecordV2[];
   readonly storageCorrupt: boolean;
   readonly storagePending: boolean;
+  readonly warnings: readonly string[];
 };
 
 export const initialPlannerState: PlannerState = {
@@ -37,11 +39,13 @@ export const initialPlannerState: PlannerState = {
   inlineError: null,
   intent: null,
   operationEpoch: 0,
+  pendingIntent: null,
   phase: "idle",
   plan: null,
   savedPlans: [],
   storageCorrupt: false,
   storagePending: false,
+  warnings: [],
 };
 
 export type PlannerEvent =
@@ -54,20 +58,34 @@ export type PlannerEvent =
   | {
       readonly candidateSetId: string;
       readonly plan: EveningPlanV2;
+      readonly warnings: readonly string[];
       readonly type: "SEARCH_SUCCEEDED";
     }
   | { readonly error: PlannerUiError; readonly type: "SEARCH_EMPTY" }
   | { readonly error: PlannerUiError; readonly type: "SEARCH_FAILED" }
   | { readonly type: "SWAP_STARTED" }
-  | { readonly plan: EveningPlanV2; readonly type: "SWAP_SUCCEEDED" }
+  | {
+      readonly plan: EveningPlanV2;
+      readonly type: "SWAP_SUCCEEDED";
+      readonly warnings: readonly string[];
+    }
   | { readonly error: PlannerUiError; readonly type: "SWAP_FAILED" }
-  | { readonly placeId: string; readonly type: "EVIDENCE_STARTED" }
+  | {
+      readonly placeId: string;
+      readonly planId: string;
+      readonly type: "EVIDENCE_STARTED";
+    }
   | {
       readonly evidence: PlaceEvidenceV2;
       readonly placeId: string;
+      readonly planId: string;
       readonly type: "EVIDENCE_SUCCEEDED";
     }
-  | { readonly error: PlannerUiError; readonly type: "EVIDENCE_FAILED" }
+  | {
+      readonly error: PlannerUiError;
+      readonly planId: string;
+      readonly type: "EVIDENCE_FAILED";
+    }
   | { readonly type: "SAVE_STARTED" }
   | {
       readonly records: readonly SavedPlanRecordV2[];
@@ -95,33 +113,65 @@ export const plannerReducer = (
     case "SEARCH_STARTED":
       return {
         ...state,
-        candidateSetId: null,
-        evidenceByPlace: {},
+        candidateSetId: state.plan ? state.candidateSetId : null,
+        evidenceByPlace: state.plan ? state.evidenceByPlace : {},
         evidenceLoadingPlaceId: null,
         inlineError: null,
-        intent: event.intent,
         operationEpoch: state.operationEpoch + 1,
+        pendingIntent: event.intent,
         phase: "searching",
-        plan: null,
+        warnings: state.plan ? state.warnings : [],
       };
     case "SEARCH_SUCCEEDED":
       if (state.phase !== "searching") return state;
       return {
         ...state,
         candidateSetId: event.candidateSetId,
+        evidenceByPlace: {},
+        evidenceLoadingPlaceId: null,
+        intent: state.pendingIntent ?? state.intent,
+        pendingIntent: null,
         phase: "planned",
         plan: event.plan,
+        warnings: event.warnings,
       };
     case "SEARCH_EMPTY":
       if (state.phase !== "searching") return state;
-      return { ...state, inlineError: event.error, phase: "no_results" };
+      return state.plan
+        ? {
+            ...state,
+            inlineError: event.error,
+            pendingIntent: null,
+            phase: "planned",
+          }
+        : {
+            ...state,
+            inlineError: event.error,
+            intent: state.pendingIntent ?? state.intent,
+            pendingIntent: null,
+            phase: "no_results",
+          };
     case "SEARCH_FAILED":
       if (state.phase !== "searching") return state;
-      return { ...state, inlineError: event.error, phase: "error" };
+      return state.plan
+        ? {
+            ...state,
+            inlineError: event.error,
+            pendingIntent: null,
+            phase: "planned",
+          }
+        : {
+            ...state,
+            inlineError: event.error,
+            intent: state.pendingIntent ?? state.intent,
+            pendingIntent: null,
+            phase: "error",
+          };
     case "SWAP_STARTED":
       return state.phase === "planned"
         ? {
             ...state,
+            evidenceLoadingPlaceId: null,
             inlineError: null,
             operationEpoch: state.operationEpoch + 1,
             phase: "swapping",
@@ -134,6 +184,7 @@ export const plannerReducer = (
             evidenceByPlace: {},
             phase: "planned",
             plan: event.plan,
+            warnings: event.warnings,
           }
         : state;
     case "SWAP_FAILED":
@@ -141,7 +192,7 @@ export const plannerReducer = (
         ? { ...state, inlineError: event.error, phase: "planned" }
         : state;
     case "EVIDENCE_STARTED":
-      return state.phase === "planned"
+      return state.phase === "planned" && state.plan?.planId === event.planId
         ? {
             ...state,
             evidenceLoadingPlaceId: event.placeId,
@@ -149,6 +200,13 @@ export const plannerReducer = (
           }
         : state;
     case "EVIDENCE_SUCCEEDED":
+      if (
+        state.phase !== "planned" ||
+        state.plan?.planId !== event.planId ||
+        !state.plan.stops.some(({ place }) => place.placeId === event.placeId)
+      ) {
+        return state;
+      }
       return {
         ...state,
         evidenceByPlace: {
@@ -158,6 +216,9 @@ export const plannerReducer = (
         evidenceLoadingPlaceId: null,
       };
     case "EVIDENCE_FAILED":
+      if (state.phase !== "planned" || state.plan?.planId !== event.planId) {
+        return state;
+      }
       return {
         ...state,
         evidenceLoadingPlaceId: null,
@@ -171,6 +232,7 @@ export const plannerReducer = (
       return {
         ...state,
         savedPlans: event.records,
+        storageCorrupt: false,
         storagePending: false,
       };
     case "SAVE_FAILED":
@@ -180,7 +242,7 @@ export const plannerReducer = (
         storagePending: false,
       };
     case "DELETE_SUCCEEDED":
-      return { ...state, savedPlans: event.records };
+      return { ...state, savedPlans: event.records, storageCorrupt: false };
     case "DELETE_FAILED":
       return { ...state, inlineError: event.error };
     case "CLEAR_INLINE_ERROR":

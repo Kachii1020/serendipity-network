@@ -1,6 +1,8 @@
 import type {
+  EvidenceClaimV2,
   EveningPlanV2,
   PlaceEvidenceV2,
+  PriceProvenanceV2,
   SwapPreferenceV2,
 } from "@serendipity/contracts/planner-v2";
 
@@ -15,10 +17,15 @@ const time = (value: string): string =>
   }).format(new Date(value));
 
 const price = (minYen: number, maxYen: number): string => {
-  if (maxYen === 0) return "Free";
+  if (maxYen === 0) return "¥0";
   if (minYen === maxYen) return `¥${maxYen.toLocaleString("en-US")}`;
   return `¥${minYen.toLocaleString("en-US")}–¥${maxYen.toLocaleString("en-US")}`;
 };
+
+const priceBasis = (provenance: PriceProvenanceV2): string =>
+  provenance.kind === "PUBLISHED_AMOUNT"
+    ? "Published amount verified in the cited source."
+    : `${provenance.sourceSummary} ¥0 is a planner reference, not a price guarantee.`;
 
 const duration = (minutes: number): string => {
   const hours = Math.floor(minutes / 60);
@@ -50,6 +57,7 @@ export function PlannerPlan({
   storageCorrupt,
   storagePending,
   swapping,
+  warnings,
 }: {
   readonly changeSummary: string | null;
   readonly evidenceByPlace: Readonly<Record<string, PlaceEvidenceV2>>;
@@ -68,6 +76,7 @@ export function PlannerPlan({
   readonly storageCorrupt: boolean;
   readonly storagePending: boolean;
   readonly swapping: boolean;
+  readonly warnings: readonly string[];
 }) {
   const isSaved = savedPlans.some(
     ({ savedPlanId }) => savedPlanId === plan.planId,
@@ -84,12 +93,18 @@ export function PlannerPlan({
       <article className="v2-plan-card">
         <header className="v2-plan-summary" tabIndex={-1}>
           <p className="v2-eyebrow">Your source-backed Shibuya plan</p>
+          {inlineError ? (
+            <div className="v2-inline-error v2-plan-retained" role="alert">
+              <strong>Previous verified plan kept.</strong>
+              <span>{inlineError.message}</span>
+            </div>
+          ) : null}
           <h1>{plan.stops.length} sourced stops. One schedule-fit route.</h1>
           <ul className="v2-plan-summary__meta" aria-label="Plan totals">
             <li>
+              Reference total{" "}
               {price(plan.totals.minPriceYen, plan.totals.maxPriceYen)} of ¥
-              {plan.intent.totalBudgetYen.toLocaleString("en-US")} reference
-              budget
+              {plan.intent.totalBudgetYen.toLocaleString("en-US")} budget
             </li>
             <li>
               {time(plan.totals.startsAt)}–{time(plan.totals.endsAt)} JST
@@ -102,6 +117,16 @@ export function PlannerPlan({
             Transport, food, and optional purchases are not included.
           </p>
           <p className="v2-plan-disclaimer">{plan.disclaimer}</p>
+          {warnings.length > 0 ? (
+            <div className="v2-source-warning" role="status">
+              <strong>Recheck recommended</strong>
+              <ul>
+                {warnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           {deadlineHeadroom > 0 ? (
             <p className="v2-plan-headroom">
               Finishes {duration(deadlineHeadroom)} before your deadline; no
@@ -119,6 +144,18 @@ export function PlannerPlan({
           {plan.stops.map((stop, index) => {
             const evidence = evidenceByPlace[stop.place.placeId];
             const evidenceOpen = openEvidencePlaceId === stop.place.placeId;
+            const claims = evidence
+              ? Object.values(evidence.claims).filter(
+                  (claim): claim is EvidenceClaimV2 => claim !== null,
+                )
+              : [];
+            const claimedSourceUrls = new Set(
+              claims.map(({ sourceUrl }) => sourceUrl),
+            );
+            const supplementalScheduleSources =
+              evidence?.sources.filter(
+                ({ url }) => !claimedSourceUrls.has(url),
+              ) ?? [];
             return (
               <li key={stop.place.placeId}>
                 <p className="v2-travel-leg">
@@ -143,7 +180,7 @@ export function PlannerPlan({
                     <span>{stop.place.address}</span>
                     <span>
                       {price(stop.price.minYen, stop.price.maxYen)} ·{" "}
-                      {stop.price.label}
+                      {stop.price.label}. {priceBasis(stop.priceProvenance)}
                     </span>
                     <span>{stop.openingFit}</span>
                   </div>
@@ -194,13 +231,14 @@ export function PlannerPlan({
                     open={evidenceOpen}
                   >
                     <summary>
-                      Sources · compared {stop.sourceCheckedAt.slice(0, 10)}
+                      Schedule evidence · compared{" "}
+                      {stop.sourceCheckedAt.slice(0, 10)}
                     </summary>
                     {evidenceLoadingPlaceId === stop.place.placeId ? (
                       <p role="status">Loading source evidence…</p>
                     ) : evidence ? (
                       <ul>
-                        {Object.values(evidence.claims).map((claim) => (
+                        {claims.map((claim) => (
                           <li key={claim.kind}>
                             <strong>{category(claim.kind)}</strong>
                             <span>{claim.value}</span>
@@ -217,11 +255,29 @@ export function PlannerPlan({
                             </a>
                           </li>
                         ))}
+                        {supplementalScheduleSources.map((source) => (
+                          <li key={`calendar-${source.sourceId}`}>
+                            <strong>Schedule calendar</strong>
+                            <span>{source.title}</span>
+                            <span>
+                              {source.publisher} · compared{" "}
+                              {source.checkedAt.slice(0, 10)}
+                            </span>
+                            <a
+                              href={source.url}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
+                              Open calendar source ↗
+                            </a>
+                          </li>
+                        ))}
                       </ul>
                     ) : (
                       <p>
-                        Publisher: {stop.sourcePublisher}. Open to inspect the
-                        address, hours, and price sources.
+                        Identity source: {stop.sourcePublisher}. Open to inspect
+                        the separate address, coordinate, hours, and price
+                        sources.
                       </p>
                     )}
                   </details>
@@ -249,11 +305,6 @@ export function PlannerPlan({
               ? "Saved in this browser with its source snapshot."
               : "Saving never opens or books an external site."}
           </p>
-          {inlineError ? (
-            <p className="v2-inline-error" role="alert">
-              {inlineError.message}
-            </p>
-          ) : null}
         </div>
       </article>
 

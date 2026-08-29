@@ -83,11 +83,11 @@ const intent = {
   excludedTags: ["alcohol", "smoking"],
   maxWalkMinutesPerLeg: 20,
   partySize: 1,
-  preferredTags: ["art", "books", "quiet", "lively"],
+  preferredTags: ["art", "hands-on", "lively", "quiet"],
   schemaVersion: "2",
-  startAt: `${date}T17:00:00+09:00`,
+  startAt: `${date}T13:00:00+09:00`,
   stopCount: "AUTO",
-  totalBudgetYen: 5000,
+  totalBudgetYen: 8000,
 };
 
 try {
@@ -109,7 +109,7 @@ try {
   await firstStop.locator(".v2-source-details summary").click();
   await firstStop.getByText("Price", { exact: true }).waitFor();
   await caption(
-    "Every address, opening window, and reference price opens to its evidence.",
+    "Every address, coordinate, opening window, and price opens to its evidence.",
   );
   await pause(7500);
 
@@ -163,7 +163,7 @@ try {
   await pause(6500);
 
   await page
-    .getByText("How an AI assistant can help here", { exact: true })
+    .getByText("What an AI can change in one request", { exact: true })
     .click();
   await page.locator(".v2-agent-proof").scrollIntoViewIfNeeded();
   await caption(

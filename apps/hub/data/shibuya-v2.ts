@@ -1,12 +1,16 @@
 import {
   type PlaceDataPackV2,
   type PlaceEvidenceV2,
-  validatePlaceDataPackV2,
+  validateReviewedPlaceDataPackV2,
 } from "@serendipity/contracts/planner-v2";
 
 import rawPack from "./shibuya.places.v2.json";
+import reviewedClaimLedger from "./shibuya-v2.reviewed-claims.json";
 
-const validation = validatePlaceDataPackV2(rawPack);
+const validation = validateReviewedPlaceDataPackV2(
+  rawPack,
+  reviewedClaimLedger,
+);
 
 if (!validation.ok) {
   throw new Error(
@@ -15,13 +19,14 @@ if (!validation.ok) {
 }
 
 export const SHIBUYA_ACTIVE_PACK_V2: PlaceDataPackV2 = validation.value;
+export const SHIBUYA_REVIEWED_CLAIMS_V2: unknown = reviewedClaimLedger;
 export const SHIBUYA_DATA_PACK_V2 = SHIBUYA_ACTIVE_PACK_V2;
 export const SHIBUYA_PLACE_DATA_PACK_V2 = SHIBUYA_ACTIVE_PACK_V2;
 
 const FEATURED_PLACE_IDS = [
   "kawamoto-puppet-gallery",
-  "komorebi-owada-library",
-  "miyashita-park",
+  "shibuya-botanical-center",
+  "yoyogi-library",
 ] as const;
 const FEATURED_PLACE_ID_SET = new Set<string>(FEATURED_PLACE_IDS);
 
@@ -30,7 +35,9 @@ export const getShibuyaPlaceSamplesV2 = (count = 3) => {
     SHIBUYA_ACTIVE_PACK_V2.places.find((place) => place.placeId === placeId),
   ).filter((place) => place !== undefined);
   const remaining = SHIBUYA_ACTIVE_PACK_V2.places.filter(
-    ({ placeId }) => !FEATURED_PLACE_ID_SET.has(placeId),
+    ({ placeId, routeEligibility }) =>
+      routeEligibility.kind === "ROUTABLE" &&
+      !FEATURED_PLACE_ID_SET.has(placeId),
   );
   return [...featured, ...remaining]
     .slice(0, Math.max(0, count))
@@ -51,17 +58,29 @@ export const getPlaceEvidenceV2 = (placeId: string): PlaceEvidenceV2 | null => {
   if (!place) return null;
 
   const sourceIds = new Set([
+    ...place.calendarSourceIds,
     place.evidence.identity.sourceId,
-    place.evidence.location.sourceId,
+    place.evidence.address.sourceId,
+    ...(place.evidence.coordinates
+      ? [place.evidence.coordinates.sourceId]
+      : []),
     place.evidence.hours.sourceId,
     place.evidence.price.sourceId,
+    place.evidence.publicAccess.sourceId,
     place.evidence.officialLink.sourceId,
   ]);
   const sourceById = new Map(
     SHIBUYA_ACTIVE_PACK_V2.sources.map((source) => [source.sourceId, source]),
   );
   const makeClaim = (
-    kind: "IDENTITY" | "ADDRESS" | "HOURS" | "PRICE" | "OFFICIAL_LINK",
+    kind:
+      | "IDENTITY"
+      | "ADDRESS"
+      | "COORDINATES"
+      | "HOURS"
+      | "PRICE"
+      | "PUBLIC_ACCESS"
+      | "OFFICIAL_LINK",
     value: string,
     sourceId: string,
     checkedAt: string,
@@ -80,17 +99,24 @@ export const getPlaceEvidenceV2 = (placeId: string): PlaceEvidenceV2 | null => {
     } as const;
   };
   const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const hoursValue = place.weeklyHours
+  const normalizedHours = place.weeklyHours
     .map(
       ({ days, opens, closes }) =>
         `${days.map((day) => weekdayNames[day]).join(", ")} ${opens}-${closes}`,
     )
     .join("; ");
-  const priceValue = `${place.price.label}: ¥${place.price.minYen.toLocaleString("en-US")}${
-    place.price.maxYen === place.price.minYen
-      ? ""
-      : `-¥${place.price.maxYen.toLocaleString("en-US")}`
-  }`;
+  const hoursValue =
+    place.hoursProvenance.kind === "NO_SET_HOURS"
+      ? `${place.hoursProvenance.sourceSummary} It is excluded from route planning.`
+      : `${place.hoursProvenance.sourceSummary} Normalized windows: ${normalizedHours}`;
+  const priceValue =
+    place.priceProvenance.kind === "PLANNER_ZERO_NO_MANDATORY_PRICE_PUBLISHED"
+      ? "¥0 planner reference; the cited source publishes no mandatory admission amount; verify before going."
+      : `${place.price.label}: ¥${place.price.minYen.toLocaleString("en-US")}${
+          place.price.maxYen === place.price.minYen
+            ? ""
+            : `-¥${place.price.maxYen.toLocaleString("en-US")}`
+        }`;
 
   return {
     schemaVersion: "2",
@@ -109,9 +135,19 @@ export const getPlaceEvidenceV2 = (placeId: string): PlaceEvidenceV2 | null => {
       address: makeClaim(
         "ADDRESS",
         place.address,
-        place.evidence.location.sourceId,
-        place.evidence.location.checkedAt,
+        place.evidence.address.sourceId,
+        place.evidence.address.checkedAt,
       ),
+      coordinates: place.evidence.coordinates
+        ? makeClaim(
+            "COORDINATES",
+            place.coordinates
+              ? `${place.coordinates.latitude}, ${place.coordinates.longitude}`
+              : "No route coordinates",
+            place.evidence.coordinates.sourceId,
+            place.evidence.coordinates.checkedAt,
+          )
+        : null,
       hours: makeClaim(
         "HOURS",
         hoursValue,
@@ -123,6 +159,14 @@ export const getPlaceEvidenceV2 = (placeId: string): PlaceEvidenceV2 | null => {
         priceValue,
         place.evidence.price.sourceId,
         place.evidence.price.checkedAt,
+      ),
+      publicAccess: makeClaim(
+        "PUBLIC_ACCESS",
+        place.routeEligibility.kind === "ROUTABLE"
+          ? "The cited official visitor information supports public access during the published schedule; this is not live availability."
+          : place.routeEligibility.note,
+        place.evidence.publicAccess.sourceId,
+        place.evidence.publicAccess.checkedAt,
       ),
       officialLink: makeClaim(
         "OFFICIAL_LINK",

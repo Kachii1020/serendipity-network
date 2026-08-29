@@ -24,6 +24,7 @@ export const PLACE_CATEGORIES_V2 = [
   "public-space",
   "gallery",
   "botanical",
+  "science-center",
 ] as const;
 export const SWAP_PREFERENCES = [
   "CHEAPER",
@@ -97,10 +98,31 @@ const exactKeys = (
   Object.keys(value).length === required.length &&
   required.every((key) => key in value);
 
+export const isStrictCalendarDateV2 = (value: unknown): value is string => {
+  if (typeof value !== "string") return false;
+  const parsed = Date.parse(`${value}T00:00:00Z`);
+  return (
+    /^\d{4}-\d{2}-\d{2}$/.test(value) &&
+    Number.isFinite(parsed) &&
+    new Date(parsed).toISOString().slice(0, 10) === value
+  );
+};
+
+export const isStrictTimestampV2 = (value: unknown): value is string => {
+  if (typeof value !== "string") return false;
+  const match =
+    /^(\d{4}-\d{2}-\d{2})T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.exec(
+      value,
+    );
+  return Boolean(
+    match &&
+    isStrictCalendarDateV2(match[1]) &&
+    Number.isFinite(Date.parse(value)),
+  );
+};
+
 const validTimestamp = (value: unknown): value is string =>
-  typeof value === "string" &&
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?\+09:00$/.test(value) &&
-  Number.isFinite(Date.parse(value));
+  isStrictTimestampV2(value) && value.endsWith("+09:00");
 
 const validTags = (value: unknown): value is string[] =>
   Array.isArray(value) &&
@@ -186,6 +208,7 @@ export const validatePlannerIntentV2Client = (
     endMinutes <= 23 * 60 + 30 &&
     days >= 0 &&
     days <= 7 &&
+    start >= now.getTime() - 5 * 60_000 &&
     !overlap
     ? { ok: true }
     : { ok: false };
@@ -205,7 +228,7 @@ export const validatePlannerEnvelopeV2Client = (value: unknown): boolean => {
     !isRecord(value.meta) ||
     !validId(value.meta.correlationId) ||
     typeof value.meta.origin !== "string" ||
-    !Number.isFinite(Date.parse(String(value.meta.completedAt))) ||
+    !isStrictTimestampV2(value.meta.completedAt) ||
     typeof value.meta.packVersion !== "string"
   ) {
     return false;

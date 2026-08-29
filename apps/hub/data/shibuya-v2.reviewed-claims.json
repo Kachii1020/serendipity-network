@@ -1,0 +1,2238 @@
+{
+  "1.3.0": {
+    "schemaVersion": "2",
+    "packVersion": "1.3.0",
+    "status": "ACTIVE",
+    "generatedAt": "2026-08-30T01:20:00+09:00",
+    "validThrough": "2026-10-28T23:59:59+09:00",
+    "dataLicense": {
+      "licenseId": "MIXED-SEE-SOURCES",
+      "licenseUrl": "https://github.com/Kachii1020/serendipity-network/blob/main/DATA-LICENSE.md",
+      "attribution": "Reusable coordinates retain their source CC0 or CC BY 4.0 terms. Ordinary official pages are cited only as factual references; no source prose, image, logo, or page content is redistributed. See each source record and DATA-LICENSE.md."
+    },
+    "station": {
+      "name": "Shibuya Station",
+      "coordinates": {
+        "latitude": 35.65861111111111,
+        "longitude": 139.70138888888889
+      },
+      "sources": [
+        {
+          "sourceId": "wikidata-shibuya-station",
+          "sourceUrl": "https://www.wikidata.org/wiki/Q428811",
+          "checkedAt": "2026-08-30T00:30:00+09:00",
+          "title": "Shibuya Station (Q428811)",
+          "publisher": "Wikidata",
+          "sourceKind": "OPEN_DATASET",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC0-1.0",
+            "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "attribution": "Wikidata contributors (CC0)"
+          },
+          "notes": "Coordinate anchor for the route origin. This replaces the incorrect historical Q200633 citation."
+        }
+      ]
+    },
+    "calendarSources": [
+      {
+        "sourceId": "shibuya-library-opening-calendar",
+        "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/open-schedule/open_schedule.json",
+        "checkedAt": "2026-08-30T00:46:00+09:00",
+        "title": "Shibuya City Libraries opening calendar",
+        "publisher": "Shibuya City Library",
+        "sourceKind": "OFFICIAL_SITE",
+        "usage": {
+          "mode": "OFFICIAL_FACT_REFERENCE",
+          "factScope": ["HOURS"],
+          "attribution": "Shibuya City Library official daily opening calendar; factual reference only"
+        },
+        "notes": "Publishes daily open/closed status and opening windows through March 2027. Only 2026-08-30 through 2026-10-28 is materialized in this pack."
+      },
+      {
+        "sourceId": "cabinet-office-holidays-2026",
+        "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+        "checkedAt": "2026-08-30T00:47:00+09:00",
+        "title": "National holidays in 2026",
+        "publisher": "Cabinet Office, Government of Japan",
+        "sourceKind": "OFFICIAL_SITE",
+        "usage": {
+          "mode": "OFFICIAL_FACT_REFERENCE",
+          "factScope": ["HOURS"],
+          "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+        },
+        "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+      }
+    ],
+    "places": [
+      {
+        "placeId": "kyu-asakura-house",
+        "calendarSources": [
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Former Asakura Residence",
+          "source": {
+            "sourceId": "shibuya-city-asakura",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+            "checkedAt": "2026-08-30T00:31:00+09:00",
+            "title": "Important Cultural Property: Former Asakura Residence",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes address, seasonal hours, Monday and holiday-shift closure rule, last admission, and general adult admission. The pack horizon remains in the 10:00-18:00 season; the Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "address": {
+          "value": "29-20 Sarugakucho, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-city-asakura",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+            "checkedAt": "2026-08-30T00:31:00+09:00",
+            "title": "Important Cultural Property: Former Asakura Residence",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes address, seasonal hours, Monday and holiday-shift closure rule, last admission, and general adult admission. The pack horizon remains in the 10:00-18:00 season; the Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.64748889,
+            "longitude": 139.700925
+          },
+          "source": {
+            "sourceId": "wikidata-asakura",
+            "sourceUrl": "https://www.wikidata.org/wiki/Q16944532",
+            "checkedAt": "2026-08-30T00:32:00+09:00",
+            "title": "Kyu Asakura House (Q16944532)",
+            "publisher": "Wikidata",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC0-1.0",
+              "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+              "attribution": "Wikidata contributors (CC0)"
+            },
+            "notes": "Coordinate evidence only; current visitor facts come from Shibuya City."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes 10:00-18:00, Monday closure, and holiday-Monday shift; all 2026 holiday exceptions through October 28 are materialized below.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [0, 2, 3, 4, 5, 6],
+                "opens": "10:00",
+                "closes": "18:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-08-31",
+                "closed": true,
+                "note": "Published Monday closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "10:00",
+                "closes": "18:00",
+                "note": "Holiday Monday: open under the published shift rule"
+              },
+              {
+                "date": "2026-09-24",
+                "closed": true,
+                "note": "First weekday after the September 21-23 holiday sequence"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "10:00",
+                "closes": "18:00",
+                "note": "Holiday Monday: open under the published shift rule"
+              },
+              {
+                "date": "2026-10-13",
+                "closed": true,
+                "note": "First weekday after the October 12 holiday"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-city-asakura",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+            "checkedAt": "2026-08-30T00:31:00+09:00",
+            "title": "Important Cultural Property: Former Asakura Residence",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes address, seasonal hours, Monday and holiday-shift closure rule, last admission, and general adult admission. The pack horizon remains in the 10:00-18:00 season; the Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "EXACT",
+              "minYen": 500,
+              "maxYen": 500,
+              "label": "General adult admission"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "The official page publishes a ¥500 general adult admission."
+            }
+          },
+          "source": {
+            "sourceId": "shibuya-city-asakura",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+            "checkedAt": "2026-08-30T00:31:00+09:00",
+            "title": "Important Cultural Property: Former Asakura Residence",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes address, seasonal hours, Monday and holiday-shift closure rule, last admission, and general adult admission. The pack horizon remains in the 10:00-18:00 season; the Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-city-asakura",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+            "checkedAt": "2026-08-30T00:31:00+09:00",
+            "title": "Important Cultural Property: Former Asakura Residence",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes address, seasonal hours, Monday and holiday-shift closure rule, last admission, and general adult admission. The pack horizon remains in the 10:00-18:00 season; the Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+          "source": {
+            "sourceId": "shibuya-city-asakura",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+            "checkedAt": "2026-08-30T00:31:00+09:00",
+            "title": "Important Cultural Property: Former Asakura Residence",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes address, seasonal hours, Monday and holiday-shift closure rule, last admission, and general adult admission. The pack horizon remains in the 10:00-18:00 season; the Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        }
+      },
+      {
+        "placeId": "kawamoto-puppet-gallery",
+        "calendarSources": [],
+        "identity": {
+          "value": "Kihachiro Kawamoto Puppet Gallery",
+          "source": {
+            "sourceId": "shibuya-city-puppet-gallery",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+            "checkedAt": "2026-08-30T00:33:00+09:00",
+            "title": "Kihachiro Kawamoto Puppet Gallery",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Hikarie 8F address, 11:00-19:00 hours, free admission, and 2026 exhibit-change closures. No listed closure falls inside this pack horizon."
+          }
+        },
+        "address": {
+          "value": "Shibuya Hikarie 8F, 2-21-1 Shibuya, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-city-puppet-gallery",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+            "checkedAt": "2026-08-30T00:33:00+09:00",
+            "title": "Kihachiro Kawamoto Puppet Gallery",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Hikarie 8F address, 11:00-19:00 hours, free admission, and 2026 exhibit-change closures. No listed closure falls inside this pack horizon."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.6589,
+            "longitude": 139.703
+          },
+          "source": {
+            "sourceId": "wikidata-shibuya-hikarie",
+            "sourceUrl": "https://www.wikidata.org/wiki/Q11561670",
+            "checkedAt": "2026-08-30T00:34:00+09:00",
+            "title": "Shibuya Hikarie (Q11561670)",
+            "publisher": "Wikidata",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC0-1.0",
+              "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+              "attribution": "Wikidata contributors (CC0)"
+            },
+            "notes": "Building coordinate evidence for the municipal gallery. The address claim is separately tied to the official gallery page."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes 11:00-19:00 daily; its next listed exhibit-change closure is outside this pack horizon.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [0, 1, 2, 3, 4, 5, 6],
+                "opens": "11:00",
+                "closes": "19:00"
+              }
+            ],
+            "dateExceptions": []
+          },
+          "source": {
+            "sourceId": "shibuya-city-puppet-gallery",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+            "checkedAt": "2026-08-30T00:33:00+09:00",
+            "title": "Kihachiro Kawamoto Puppet Gallery",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Hikarie 8F address, 11:00-19:00 hours, free admission, and 2026 exhibit-change closures. No listed closure falls inside this pack horizon."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "FREE",
+              "minYen": 0,
+              "maxYen": 0,
+              "label": "Free gallery admission"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "The official page explicitly publishes free gallery admission."
+            }
+          },
+          "source": {
+            "sourceId": "shibuya-city-puppet-gallery",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+            "checkedAt": "2026-08-30T00:33:00+09:00",
+            "title": "Kihachiro Kawamoto Puppet Gallery",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Hikarie 8F address, 11:00-19:00 hours, free admission, and 2026 exhibit-change closures. No listed closure falls inside this pack horizon."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-city-puppet-gallery",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+            "checkedAt": "2026-08-30T00:33:00+09:00",
+            "title": "Kihachiro Kawamoto Puppet Gallery",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Hikarie 8F address, 11:00-19:00 hours, free admission, and 2026 exhibit-change closures. No listed closure falls inside this pack horizon."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+          "source": {
+            "sourceId": "shibuya-city-puppet-gallery",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+            "checkedAt": "2026-08-30T00:33:00+09:00",
+            "title": "Kihachiro Kawamoto Puppet Gallery",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Hikarie 8F address, 11:00-19:00 hours, free admission, and 2026 exhibit-change closures. No listed closure falls inside this pack horizon."
+          }
+        }
+      },
+      {
+        "placeId": "shibuya-botanical-center",
+        "calendarSources": [
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Shibuya City Botanical Garden Fureai",
+          "source": {
+            "sourceId": "shibuya-city-botanical-center",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+            "checkedAt": "2026-08-30T00:35:00+09:00",
+            "title": "Shibuya City Botanical Garden Fureai",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes 10:00-21:00 hours, 20:30 last admission, Monday and holiday-shift closure rule, and general admission of 100 yen. The Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "address": {
+          "value": "2-25-37 Higashi, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-city-botanical-center",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+            "checkedAt": "2026-08-30T00:35:00+09:00",
+            "title": "Shibuya City Botanical Garden Fureai",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes 10:00-21:00 hours, 20:30 last admission, Monday and holiday-shift closure rule, and general admission of 100 yen. The Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.653333333333336,
+            "longitude": 139.70777777777778
+          },
+          "source": {
+            "sourceId": "wikidata-botanical-center",
+            "sourceUrl": "https://www.wikidata.org/wiki/Q110215017",
+            "checkedAt": "2026-08-30T00:36:00+09:00",
+            "title": "Shibuya City Botanical Garden Fureai (Q110215017)",
+            "publisher": "Wikidata",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC0-1.0",
+              "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+              "attribution": "Wikidata contributors (CC0)"
+            },
+            "notes": "Coordinate evidence only; current visitor facts come from Shibuya City."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes 10:00-21:00, Monday closure, and holiday-Monday shift; all 2026 holiday exceptions through October 28 are materialized below.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [0, 2, 3, 4, 5, 6],
+                "opens": "10:00",
+                "closes": "21:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-08-31",
+                "closed": true,
+                "note": "Published Monday closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "10:00",
+                "closes": "21:00",
+                "note": "Holiday Monday: open under the published shift rule"
+              },
+              {
+                "date": "2026-09-24",
+                "closed": true,
+                "note": "First weekday after the September 21-23 holiday sequence"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "10:00",
+                "closes": "21:00",
+                "note": "Holiday Monday: open under the published shift rule"
+              },
+              {
+                "date": "2026-10-13",
+                "closed": true,
+                "note": "First weekday after the October 12 holiday"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-city-botanical-center",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+            "checkedAt": "2026-08-30T00:35:00+09:00",
+            "title": "Shibuya City Botanical Garden Fureai",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes 10:00-21:00 hours, 20:30 last admission, Monday and holiday-shift closure rule, and general admission of 100 yen. The Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "EXACT",
+              "minYen": 100,
+              "maxYen": 100,
+              "label": "General admission; café purchases excluded"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "The official page publishes a ¥100 general admission."
+            }
+          },
+          "source": {
+            "sourceId": "shibuya-city-botanical-center",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+            "checkedAt": "2026-08-30T00:35:00+09:00",
+            "title": "Shibuya City Botanical Garden Fureai",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes 10:00-21:00 hours, 20:30 last admission, Monday and holiday-shift closure rule, and general admission of 100 yen. The Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-city-botanical-center",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+            "checkedAt": "2026-08-30T00:35:00+09:00",
+            "title": "Shibuya City Botanical Garden Fureai",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes 10:00-21:00 hours, 20:30 last admission, Monday and holiday-shift closure rule, and general admission of 100 yen. The Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+          "source": {
+            "sourceId": "shibuya-city-botanical-center",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+            "checkedAt": "2026-08-30T00:35:00+09:00",
+            "title": "Shibuya City Botanical Garden Fureai",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes 10:00-21:00 hours, 20:30 last admission, Monday and holiday-shift closure rule, and general admission of 100 yen. The Cabinet Office calendar supplies the 2026 holiday dates."
+          }
+        }
+      },
+      {
+        "placeId": "hachilabo-science-center",
+        "calendarSources": [
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Children's Science Center Hachilabo",
+          "source": {
+            "sourceId": "shibuya-city-hachilabo",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/hachirabo.html",
+            "checkedAt": "2026-08-30T00:37:00+09:00",
+            "title": "Children's Science Center Hachilabo",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Owada 3F address, 10:00-17:00 hours, Monday and holiday-shift closure rule, free admission, and no general entry condition. Events may have separate eligibility or material costs and are excluded."
+          }
+        },
+        "address": {
+          "value": "Cultural Center Owada 3F, 23-21 Sakuragaokacho, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-city-hachilabo",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/hachirabo.html",
+            "checkedAt": "2026-08-30T00:37:00+09:00",
+            "title": "Children's Science Center Hachilabo",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Owada 3F address, 10:00-17:00 hours, Monday and holiday-shift closure rule, free admission, and no general entry condition. Events may have separate eligibility or material costs and are excluded."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.65547222,
+            "longitude": 139.69991667
+          },
+          "source": {
+            "sourceId": "wikidata-cultural-center-owada",
+            "sourceUrl": "https://www.wikidata.org/wiki/Q20044812",
+            "checkedAt": "2026-08-30T00:38:00+09:00",
+            "title": "Shibuya Cultural Center Owada (Q20044812)",
+            "publisher": "Wikidata",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC0-1.0",
+              "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+              "attribution": "Wikidata contributors (CC0)"
+            },
+            "notes": "Building coordinate evidence for Hachilabo. The facility address is separately tied to Shibuya City's page."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes 10:00-17:00, Monday closure, and holiday-Monday shift; all 2026 holiday exceptions through October 28 are materialized below.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [0, 2, 3, 4, 5, 6],
+                "opens": "10:00",
+                "closes": "17:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-08-31",
+                "closed": true,
+                "note": "Published Monday closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "10:00",
+                "closes": "17:00",
+                "note": "Holiday Monday: open under the published shift rule"
+              },
+              {
+                "date": "2026-09-24",
+                "closed": true,
+                "note": "First weekday after the September 21-23 holiday sequence"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "10:00",
+                "closes": "17:00",
+                "note": "Holiday Monday: open under the published shift rule"
+              },
+              {
+                "date": "2026-10-13",
+                "closed": true,
+                "note": "First weekday after the October 12 holiday"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-city-hachilabo",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/hachirabo.html",
+            "checkedAt": "2026-08-30T00:37:00+09:00",
+            "title": "Children's Science Center Hachilabo",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Owada 3F address, 10:00-17:00 hours, Monday and holiday-shift closure rule, free admission, and no general entry condition. Events may have separate eligibility or material costs and are excluded."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "FREE",
+              "minYen": 0,
+              "maxYen": 0,
+              "label": "Free general admission; event materials excluded"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "The official page explicitly publishes free general admission."
+            }
+          },
+          "source": {
+            "sourceId": "shibuya-city-hachilabo",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/hachirabo.html",
+            "checkedAt": "2026-08-30T00:37:00+09:00",
+            "title": "Children's Science Center Hachilabo",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Owada 3F address, 10:00-17:00 hours, Monday and holiday-shift closure rule, free admission, and no general entry condition. Events may have separate eligibility or material costs and are excluded."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-city-hachilabo",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/hachirabo.html",
+            "checkedAt": "2026-08-30T00:37:00+09:00",
+            "title": "Children's Science Center Hachilabo",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Owada 3F address, 10:00-17:00 hours, Monday and holiday-shift closure rule, free admission, and no general entry condition. Events may have separate eligibility or material costs and are excluded."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/hachirabo.html",
+          "source": {
+            "sourceId": "shibuya-city-hachilabo",
+            "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/hachirabo.html",
+            "checkedAt": "2026-08-30T00:37:00+09:00",
+            "title": "Children's Science Center Hachilabo",
+            "publisher": "Shibuya City",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": [
+                "IDENTITY",
+                "ADDRESS",
+                "HOURS",
+                "PRICE",
+                "PUBLIC_ACCESS"
+              ],
+              "attribution": "Shibuya City official facility page; factual reference only"
+            },
+            "notes": "Publishes the Owada 3F address, 10:00-17:00 hours, Monday and holiday-shift closure rule, free admission, and no general entry condition. Events may have separate eligibility or material costs and are excluded."
+          }
+        }
+      },
+      {
+        "placeId": "shibuya-central-library",
+        "calendarSources": [
+          {
+            "sourceId": "shibuya-library-opening-calendar",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/open-schedule/open_schedule.json",
+            "checkedAt": "2026-08-30T00:46:00+09:00",
+            "title": "Shibuya City Libraries opening calendar",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Shibuya City Library official daily opening calendar; factual reference only"
+            },
+            "notes": "Publishes daily open/closed status and opening windows through March 2027. Only 2026-08-30 through 2026-10-28 is materialized in this pack."
+          },
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Shibuya Central Library",
+          "source": {
+            "sourceId": "shibuya-library-central",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+            "checkedAt": "2026-08-30T00:41:00+09:00",
+            "title": "Shibuya Central Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, Tuesday-Saturday 09:00-21:00 and Sunday/Monday/holiday 09:00-18:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "address": {
+          "value": "1-4-1 Jingumae, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-library-central",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+            "checkedAt": "2026-08-30T00:41:00+09:00",
+            "title": "Shibuya Central Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, Tuesday-Saturday 09:00-21:00 and Sunday/Monday/holiday 09:00-18:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.672452,
+            "longitude": 139.706176
+          },
+          "source": {
+            "sourceId": "tokyo-open-shibuya-libraries",
+            "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_library.csv",
+            "checkedAt": "2026-08-30T00:39:00+09:00",
+            "title": "Shibuya public libraries information",
+            "publisher": "Shibuya City via Tokyo Open Data Catalog",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC-BY-4.0",
+              "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+              "attribution": "Shibuya City, Tokyo Open Data Catalog (CC BY 4.0)"
+            },
+            "notes": "Supplies the five selected library coordinates, including Yoyogi Library at 35.681969, 139.695981. Identity, address, current hours, closure rules, and public access are separately checked against official library sources."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes Tue-Sat 09:00-21:00 and Sun/Mon/holiday 09:00-18:00; its daily calendar materializes all closures and holiday hours through October 28.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [2, 3, 4, 5, 6],
+                "opens": "09:00",
+                "closes": "21:00"
+              },
+              {
+                "days": [0, 1],
+                "opens": "09:00",
+                "closes": "18:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-09-07",
+                "closed": true,
+                "note": "Official daily calendar: first-Monday closure"
+              },
+              {
+                "date": "2026-09-17",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "18:00",
+                "note": "Official daily calendar: Respect for the Aged Day hours"
+              },
+              {
+                "date": "2026-09-22",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "18:00",
+                "note": "Official daily calendar: national-holiday hours"
+              },
+              {
+                "date": "2026-09-23",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "18:00",
+                "note": "Official daily calendar: Autumnal Equinox Day hours"
+              },
+              {
+                "date": "2026-10-05",
+                "closed": true,
+                "note": "Official daily calendar: first-Monday closure"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "18:00",
+                "note": "Official daily calendar: Sports Day hours"
+              },
+              {
+                "date": "2026-10-15",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-library-central",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+            "checkedAt": "2026-08-30T00:41:00+09:00",
+            "title": "Shibuya Central Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, Tuesday-Saturday 09:00-21:00 and Sunday/Monday/holiday 09:00-18:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "FREE",
+              "minYen": 0,
+              "maxYen": 0,
+              "label": "Free public-library on-site use; copying and borrowing excluded"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "Tokyo Metropolitan Government states that public-library use is free under the Library Act."
+            }
+          },
+          "source": {
+            "sourceId": "tokyo-public-library-free-use",
+            "sourceUrl": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/1000",
+            "checkedAt": "2026-08-30T00:40:00+09:00",
+            "title": "Scope of public library users",
+            "publisher": "Tokyo Metropolitan Government",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["PRICE", "PUBLIC_ACCESS"],
+              "attribution": "Tokyo Metropolitan Government official document; factual reference only"
+            },
+            "notes": "States that use of public libraries is free under the Library Act. The pack uses this only for on-site browsing; copying, borrowing eligibility, reservations, and other services remain outside the reference price."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-library-central",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+            "checkedAt": "2026-08-30T00:41:00+09:00",
+            "title": "Shibuya Central Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, Tuesday-Saturday 09:00-21:00 and Sunday/Monday/holiday 09:00-18:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+          "source": {
+            "sourceId": "shibuya-library-central",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+            "checkedAt": "2026-08-30T00:41:00+09:00",
+            "title": "Shibuya Central Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, Tuesday-Saturday 09:00-21:00 and Sunday/Monday/holiday 09:00-18:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        }
+      },
+      {
+        "placeId": "komorebi-owada-library",
+        "calendarSources": [
+          {
+            "sourceId": "shibuya-library-opening-calendar",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/open-schedule/open_schedule.json",
+            "checkedAt": "2026-08-30T00:46:00+09:00",
+            "title": "Shibuya City Libraries opening calendar",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Shibuya City Library official daily opening calendar; factual reference only"
+            },
+            "notes": "Publishes daily open/closed status and opening windows through March 2027. Only 2026-08-30 through 2026-10-28 is materialized in this pack."
+          },
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Komorebi Owada Library",
+          "source": {
+            "sourceId": "shibuya-library-komorebi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/komorebi/",
+            "checkedAt": "2026-08-30T00:42:00+09:00",
+            "title": "Komorebi Owada Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Monday-Saturday 09:00-21:00 and Sunday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "address": {
+          "value": "Cultural Center Owada 2F, 23-21 Sakuragaokacho, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-library-komorebi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/komorebi/",
+            "checkedAt": "2026-08-30T00:42:00+09:00",
+            "title": "Komorebi Owada Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Monday-Saturday 09:00-21:00 and Sunday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.655378,
+            "longitude": 139.700314
+          },
+          "source": {
+            "sourceId": "tokyo-open-shibuya-libraries",
+            "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_library.csv",
+            "checkedAt": "2026-08-30T00:39:00+09:00",
+            "title": "Shibuya public libraries information",
+            "publisher": "Shibuya City via Tokyo Open Data Catalog",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC-BY-4.0",
+              "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+              "attribution": "Shibuya City, Tokyo Open Data Catalog (CC BY 4.0)"
+            },
+            "notes": "Supplies the five selected library coordinates, including Yoyogi Library at 35.681969, 139.695981. Identity, address, current hours, closure rules, and public access are separately checked against official library sources."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes Mon-Sat 09:00-21:00 and Sun/holiday 09:00-17:00; its daily calendar materializes all closures and holiday hours through October 28.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [1, 2, 3, 4, 5, 6],
+                "opens": "09:00",
+                "closes": "21:00"
+              },
+              {
+                "days": [0],
+                "opens": "09:00",
+                "closes": "17:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-09-08",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-09-10",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-09-14",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Respect for the Aged Day hours"
+              },
+              {
+                "date": "2026-09-22",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: national-holiday hours"
+              },
+              {
+                "date": "2026-09-23",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Autumnal Equinox Day hours"
+              },
+              {
+                "date": "2026-09-24",
+                "closed": true,
+                "note": "Official daily calendar: shifted recurring closure"
+              },
+              {
+                "date": "2026-09-28",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-06",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-08",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Sports Day hours"
+              },
+              {
+                "date": "2026-10-13",
+                "closed": true,
+                "note": "Official daily calendar: shifted recurring closure"
+              },
+              {
+                "date": "2026-10-20",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-26",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-library-komorebi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/komorebi/",
+            "checkedAt": "2026-08-30T00:42:00+09:00",
+            "title": "Komorebi Owada Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Monday-Saturday 09:00-21:00 and Sunday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "FREE",
+              "minYen": 0,
+              "maxYen": 0,
+              "label": "Free public-library on-site use; copying and borrowing excluded"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "Tokyo Metropolitan Government states that public-library use is free under the Library Act."
+            }
+          },
+          "source": {
+            "sourceId": "tokyo-public-library-free-use",
+            "sourceUrl": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/1000",
+            "checkedAt": "2026-08-30T00:40:00+09:00",
+            "title": "Scope of public library users",
+            "publisher": "Tokyo Metropolitan Government",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["PRICE", "PUBLIC_ACCESS"],
+              "attribution": "Tokyo Metropolitan Government official document; factual reference only"
+            },
+            "notes": "States that use of public libraries is free under the Library Act. The pack uses this only for on-site browsing; copying, borrowing eligibility, reservations, and other services remain outside the reference price."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-library-komorebi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/komorebi/",
+            "checkedAt": "2026-08-30T00:42:00+09:00",
+            "title": "Komorebi Owada Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Monday-Saturday 09:00-21:00 and Sunday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.lib.city.shibuya.tokyo.jp/library/komorebi/",
+          "source": {
+            "sourceId": "shibuya-library-komorebi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/komorebi/",
+            "checkedAt": "2026-08-30T00:42:00+09:00",
+            "title": "Komorebi Owada Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Monday-Saturday 09:00-21:00 and Sunday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        }
+      },
+      {
+        "placeId": "tomigaya-library",
+        "calendarSources": [
+          {
+            "sourceId": "shibuya-library-opening-calendar",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/open-schedule/open_schedule.json",
+            "checkedAt": "2026-08-30T00:46:00+09:00",
+            "title": "Shibuya City Libraries opening calendar",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Shibuya City Library official daily opening calendar; factual reference only"
+            },
+            "notes": "Publishes daily open/closed status and opening windows through March 2027. Only 2026-08-30 through 2026-10-28 is materialized in this pack."
+          },
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Tomigaya Library",
+          "source": {
+            "sourceId": "shibuya-library-tomigaya",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/tomigaya/",
+            "checkedAt": "2026-08-30T00:43:00+09:00",
+            "title": "Tomigaya Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "address": {
+          "value": "1-46-2 Uehara, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-library-tomigaya",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/tomigaya/",
+            "checkedAt": "2026-08-30T00:43:00+09:00",
+            "title": "Tomigaya Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.668512,
+            "longitude": 139.687269
+          },
+          "source": {
+            "sourceId": "tokyo-open-shibuya-libraries",
+            "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_library.csv",
+            "checkedAt": "2026-08-30T00:39:00+09:00",
+            "title": "Shibuya public libraries information",
+            "publisher": "Shibuya City via Tokyo Open Data Catalog",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC-BY-4.0",
+              "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+              "attribution": "Shibuya City, Tokyo Open Data Catalog (CC BY 4.0)"
+            },
+            "notes": "Supplies the five selected library coordinates, including Yoyogi Library at 35.681969, 139.695981. Identity, address, current hours, closure rules, and public access are separately checked against official library sources."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes Tue-Sat 09:00-19:00 and Sun/Mon/holiday 09:00-17:00; its daily calendar materializes all closures and holiday hours through October 28.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [2, 3, 4, 5, 6],
+                "opens": "09:00",
+                "closes": "19:00"
+              },
+              {
+                "days": [0, 1],
+                "opens": "09:00",
+                "closes": "17:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-09-07",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-09-10",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-09-15",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Respect for the Aged Day hours"
+              },
+              {
+                "date": "2026-09-22",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: national-holiday hours"
+              },
+              {
+                "date": "2026-09-23",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Autumnal Equinox Day hours"
+              },
+              {
+                "date": "2026-09-24",
+                "closed": true,
+                "note": "Official daily calendar: shifted recurring closure"
+              },
+              {
+                "date": "2026-09-29",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-05",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-08",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Sports Day hours"
+              },
+              {
+                "date": "2026-10-13",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-19",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-27",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-library-tomigaya",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/tomigaya/",
+            "checkedAt": "2026-08-30T00:43:00+09:00",
+            "title": "Tomigaya Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "FREE",
+              "minYen": 0,
+              "maxYen": 0,
+              "label": "Free public-library on-site use; copying and borrowing excluded"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "Tokyo Metropolitan Government states that public-library use is free under the Library Act."
+            }
+          },
+          "source": {
+            "sourceId": "tokyo-public-library-free-use",
+            "sourceUrl": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/1000",
+            "checkedAt": "2026-08-30T00:40:00+09:00",
+            "title": "Scope of public library users",
+            "publisher": "Tokyo Metropolitan Government",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["PRICE", "PUBLIC_ACCESS"],
+              "attribution": "Tokyo Metropolitan Government official document; factual reference only"
+            },
+            "notes": "States that use of public libraries is free under the Library Act. The pack uses this only for on-site browsing; copying, borrowing eligibility, reservations, and other services remain outside the reference price."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-library-tomigaya",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/tomigaya/",
+            "checkedAt": "2026-08-30T00:43:00+09:00",
+            "title": "Tomigaya Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.lib.city.shibuya.tokyo.jp/library/tomigaya/",
+          "source": {
+            "sourceId": "shibuya-library-tomigaya",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/tomigaya/",
+            "checkedAt": "2026-08-30T00:43:00+09:00",
+            "title": "Tomigaya Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        }
+      },
+      {
+        "placeId": "rinsen-minna-library",
+        "calendarSources": [
+          {
+            "sourceId": "shibuya-library-opening-calendar",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/open-schedule/open_schedule.json",
+            "checkedAt": "2026-08-30T00:46:00+09:00",
+            "title": "Shibuya City Libraries opening calendar",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Shibuya City Library official daily opening calendar; factual reference only"
+            },
+            "notes": "Publishes daily open/closed status and opening windows through March 2027. Only 2026-08-30 through 2026-10-28 is materialized in this pack."
+          },
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Rinsen Library",
+          "source": {
+            "sourceId": "shibuya-library-rinsen",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/rinsen/",
+            "checkedAt": "2026-08-30T00:44:00+09:00",
+            "title": "Rinsen Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "address": {
+          "value": "1-9-17 Hiroo, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-library-rinsen",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/rinsen/",
+            "checkedAt": "2026-08-30T00:44:00+09:00",
+            "title": "Rinsen Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.649363,
+            "longitude": 139.716734
+          },
+          "source": {
+            "sourceId": "tokyo-open-shibuya-libraries",
+            "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_library.csv",
+            "checkedAt": "2026-08-30T00:39:00+09:00",
+            "title": "Shibuya public libraries information",
+            "publisher": "Shibuya City via Tokyo Open Data Catalog",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC-BY-4.0",
+              "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+              "attribution": "Shibuya City, Tokyo Open Data Catalog (CC BY 4.0)"
+            },
+            "notes": "Supplies the five selected library coordinates, including Yoyogi Library at 35.681969, 139.695981. Identity, address, current hours, closure rules, and public access are separately checked against official library sources."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes Tue-Sat 09:00-19:00 and Sun/Mon/holiday 09:00-17:00; its daily calendar materializes all closures and holiday hours through October 28.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [2, 3, 4, 5, 6],
+                "opens": "09:00",
+                "closes": "19:00"
+              },
+              {
+                "days": [0, 1],
+                "opens": "09:00",
+                "closes": "17:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-09-08",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-09-10",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-09-14",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Respect for the Aged Day hours"
+              },
+              {
+                "date": "2026-09-22",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: national-holiday hours"
+              },
+              {
+                "date": "2026-09-23",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Autumnal Equinox Day hours"
+              },
+              {
+                "date": "2026-09-24",
+                "closed": true,
+                "note": "Official daily calendar: shifted recurring closure"
+              },
+              {
+                "date": "2026-09-28",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-06",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-08",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Sports Day hours"
+              },
+              {
+                "date": "2026-10-13",
+                "closed": true,
+                "note": "Official daily calendar: shifted recurring closure"
+              },
+              {
+                "date": "2026-10-20",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              },
+              {
+                "date": "2026-10-26",
+                "closed": true,
+                "note": "Official daily calendar: recurring closure"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-library-rinsen",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/rinsen/",
+            "checkedAt": "2026-08-30T00:44:00+09:00",
+            "title": "Rinsen Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "FREE",
+              "minYen": 0,
+              "maxYen": 0,
+              "label": "Free public-library on-site use; copying and borrowing excluded"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "Tokyo Metropolitan Government states that public-library use is free under the Library Act."
+            }
+          },
+          "source": {
+            "sourceId": "tokyo-public-library-free-use",
+            "sourceUrl": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/1000",
+            "checkedAt": "2026-08-30T00:40:00+09:00",
+            "title": "Scope of public library users",
+            "publisher": "Tokyo Metropolitan Government",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["PRICE", "PUBLIC_ACCESS"],
+              "attribution": "Tokyo Metropolitan Government official document; factual reference only"
+            },
+            "notes": "States that use of public libraries is free under the Library Act. The pack uses this only for on-site browsing; copying, borrowing eligibility, reservations, and other services remain outside the reference price."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-library-rinsen",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/rinsen/",
+            "checkedAt": "2026-08-30T00:44:00+09:00",
+            "title": "Rinsen Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.lib.city.shibuya.tokyo.jp/library/rinsen/",
+          "source": {
+            "sourceId": "shibuya-library-rinsen",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/rinsen/",
+            "checkedAt": "2026-08-30T00:44:00+09:00",
+            "title": "Rinsen Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes Tuesday-Saturday 09:00-19:00 and Sunday/Monday/holiday 09:00-17:00 windows and recurring closure rules. The official daily calendar materializes every exception in this pack horizon."
+          }
+        }
+      },
+      {
+        "placeId": "yoyogi-library",
+        "calendarSources": [
+          {
+            "sourceId": "shibuya-library-opening-calendar",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/open-schedule/open_schedule.json",
+            "checkedAt": "2026-08-30T00:46:00+09:00",
+            "title": "Shibuya City Libraries opening calendar",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Shibuya City Library official daily opening calendar; factual reference only"
+            },
+            "notes": "Publishes daily open/closed status and opening windows through March 2027. Only 2026-08-30 through 2026-10-28 is materialized in this pack."
+          },
+          {
+            "sourceId": "cabinet-office-holidays-2026",
+            "sourceUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+            "checkedAt": "2026-08-30T00:47:00+09:00",
+            "title": "National holidays in 2026",
+            "publisher": "Cabinet Office, Government of Japan",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["HOURS"],
+              "attribution": "Cabinet Office official 2026 national-holiday calendar; factual reference only"
+            },
+            "notes": "Publishes 2026-09-21, 2026-09-22, 2026-09-23, and 2026-10-12 as holidays inside this pack horizon."
+          }
+        ],
+        "identity": {
+          "value": "Yoyogi Library",
+          "source": {
+            "sourceId": "shibuya-library-yoyogi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/yoyogi/",
+            "checkedAt": "2026-08-30T00:45:00+09:00",
+            "title": "Yoyogi Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, weekday and weekend/holiday hours, Tuesday and monthly closure rules, and on-site public-library access. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "address": {
+          "value": "Yoyogi Community Center 4F, 3-51-8 Yoyogi, Shibuya City, Tokyo",
+          "source": {
+            "sourceId": "shibuya-library-yoyogi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/yoyogi/",
+            "checkedAt": "2026-08-30T00:45:00+09:00",
+            "title": "Yoyogi Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, weekday and weekend/holiday hours, Tuesday and monthly closure rules, and on-site public-library access. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "coordinates": {
+          "value": {
+            "latitude": 35.681969,
+            "longitude": 139.695981
+          },
+          "source": {
+            "sourceId": "tokyo-open-shibuya-libraries",
+            "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_library.csv",
+            "checkedAt": "2026-08-30T00:39:00+09:00",
+            "title": "Shibuya public libraries information",
+            "publisher": "Shibuya City via Tokyo Open Data Catalog",
+            "sourceKind": "OPEN_DATASET",
+            "usage": {
+              "mode": "OPEN_LICENSE",
+              "licenseId": "CC-BY-4.0",
+              "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+              "attribution": "Shibuya City, Tokyo Open Data Catalog (CC BY 4.0)"
+            },
+            "notes": "Supplies the five selected library coordinates, including Yoyogi Library at 35.681969, 139.695981. Identity, address, current hours, closure rules, and public access are separately checked against official library sources."
+          }
+        },
+        "hours": {
+          "value": {
+            "hoursProvenance": {
+              "kind": "PUBLISHED_WINDOWS",
+              "sourceSummary": "The official page publishes weekday and weekend/holiday windows; its daily calendar materializes closures through October 28, with ambiguous September 22 conservatively closed.",
+              "publishedAllDay": false
+            },
+            "weeklyHours": [
+              {
+                "days": [1, 3, 4, 5],
+                "opens": "11:00",
+                "closes": "19:00"
+              },
+              {
+                "days": [0, 6],
+                "opens": "09:00",
+                "closes": "17:00"
+              }
+            ],
+            "dateExceptions": [
+              {
+                "date": "2026-09-10",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-09-20",
+                "closed": true,
+                "note": "Official daily calendar: third-Sunday closure"
+              },
+              {
+                "date": "2026-09-21",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Respect for the Aged Day hours"
+              },
+              {
+                "date": "2026-09-22",
+                "closed": true,
+                "note": "Official calendar has no open status or hours; fail closed"
+              },
+              {
+                "date": "2026-09-23",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Autumnal Equinox Day hours"
+              },
+              {
+                "date": "2026-10-08",
+                "closed": true,
+                "note": "Official daily calendar: in-library organization closure"
+              },
+              {
+                "date": "2026-10-12",
+                "closed": false,
+                "opens": "09:00",
+                "closes": "17:00",
+                "note": "Official daily calendar: Sports Day hours"
+              },
+              {
+                "date": "2026-10-18",
+                "closed": true,
+                "note": "Official daily calendar: third-Sunday closure"
+              }
+            ]
+          },
+          "source": {
+            "sourceId": "shibuya-library-yoyogi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/yoyogi/",
+            "checkedAt": "2026-08-30T00:45:00+09:00",
+            "title": "Yoyogi Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, weekday and weekend/holiday hours, Tuesday and monthly closure rules, and on-site public-library access. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "price": {
+          "value": {
+            "price": {
+              "kind": "FREE",
+              "minYen": 0,
+              "maxYen": 0,
+              "label": "Free public-library on-site use; copying and borrowing excluded"
+            },
+            "priceProvenance": {
+              "kind": "PUBLISHED_AMOUNT",
+              "sourceSummary": "Tokyo Metropolitan Government states that public-library use is free under the Library Act."
+            }
+          },
+          "source": {
+            "sourceId": "tokyo-public-library-free-use",
+            "sourceUrl": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/1000",
+            "checkedAt": "2026-08-30T00:40:00+09:00",
+            "title": "Scope of public library users",
+            "publisher": "Tokyo Metropolitan Government",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["PRICE", "PUBLIC_ACCESS"],
+              "attribution": "Tokyo Metropolitan Government official document; factual reference only"
+            },
+            "notes": "States that use of public libraries is free under the Library Act. The pack uses this only for on-site browsing; copying, borrowing eligibility, reservations, and other services remain outside the reference price."
+          }
+        },
+        "publicAccess": {
+          "value": {
+            "kind": "ROUTABLE"
+          },
+          "source": {
+            "sourceId": "shibuya-library-yoyogi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/yoyogi/",
+            "checkedAt": "2026-08-30T00:45:00+09:00",
+            "title": "Yoyogi Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, weekday and weekend/holiday hours, Tuesday and monthly closure rules, and on-site public-library access. The official daily calendar materializes every exception in this pack horizon."
+          }
+        },
+        "officialLink": {
+          "value": "https://www.lib.city.shibuya.tokyo.jp/library/yoyogi/",
+          "source": {
+            "sourceId": "shibuya-library-yoyogi",
+            "sourceUrl": "https://www.lib.city.shibuya.tokyo.jp/library/yoyogi/",
+            "checkedAt": "2026-08-30T00:45:00+09:00",
+            "title": "Yoyogi Library",
+            "publisher": "Shibuya City Library",
+            "sourceKind": "OFFICIAL_SITE",
+            "usage": {
+              "mode": "OFFICIAL_FACT_REFERENCE",
+              "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+              "attribution": "Shibuya City Library official facility page; factual reference only"
+            },
+            "notes": "Publishes address, weekday and weekend/holiday hours, Tuesday and monthly closure rules, and on-site public-library access. The official daily calendar materializes every exception in this pack horizon."
+          }
+        }
+      }
+    ]
+  }
+}

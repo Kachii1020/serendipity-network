@@ -8,6 +8,7 @@ import {
 } from "@serendipity/contracts/planner-v2";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { SHIBUYA_ACTIVE_PACK_V2 } from "../../../../../data/shibuya-v2";
 import { searchEveningPlanV2 } from "../../../../../lib/planner-v2/runtime";
 import { POST } from "./route";
 
@@ -15,8 +16,8 @@ const intent: PlannerIntentV2 = {
   schemaVersion: PLANNER_SCHEMA_VERSION,
   area: "shibuya",
   partySize: 1,
-  startAt: "2026-08-29T17:00:00+09:00",
-  endAt: "2026-08-29T22:00:00+09:00",
+  startAt: "2026-08-30T17:00:00+09:00",
+  endAt: "2026-08-30T22:00:00+09:00",
   totalBudgetYen: 5_000,
   stopCount: "AUTO",
   maxWalkMinutesPerLeg: 20,
@@ -24,8 +25,19 @@ const intent: PlannerIntentV2 = {
   excludedTags: [],
 };
 
+const swapIntent: PlannerIntentV2 = {
+  ...intent,
+  startAt: "2026-08-30T13:00:00+09:00",
+  endAt: "2026-08-30T22:00:00+09:00",
+  maxWalkMinutesPerLeg: 30,
+  preferredTags: [],
+};
+
 const findPlan = async (): Promise<SearchPlansDataV2> => {
-  const found = await searchEveningPlanV2(intent, new AbortController().signal);
+  const found = await searchEveningPlanV2(
+    swapIntent,
+    new AbortController().signal,
+  );
   if (!found.ok) throw new Error("Expected canonical plan");
   return found.data;
 };
@@ -33,7 +45,7 @@ const findPlan = async (): Promise<SearchPlansDataV2> => {
 describe("POST /api/v2/plans/swap", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-08-29T08:00:00.000Z"));
+    vi.setSystemTime(new Date("2026-08-30T00:00:00.000Z"));
   });
 
   afterEach(() => {
@@ -62,7 +74,7 @@ describe("POST /api/v2/plans/swap", () => {
           schemaVersion: PLANNER_SCHEMA_VERSION,
           candidateSetId: found.candidateSetId,
           planId: found.plan.planId,
-          intent,
+          intent: swapIntent,
           plan: found.plan,
           stopIndex: stop.position,
           preference,
@@ -106,7 +118,7 @@ describe("POST /api/v2/plans/swap", () => {
           schemaVersion: PLANNER_SCHEMA_VERSION,
           candidateSetId: found.candidateSetId,
           planId: stalePlan.planId,
-          intent,
+          intent: swapIntent,
           plan: stalePlan,
           stopIndex: 0,
           preference: "LESS_WALKING",
@@ -119,6 +131,33 @@ describe("POST /api/v2/plans/swap", () => {
     expect(await response.json()).toMatchObject({
       ok: false,
       error: { code: "STALE_DATA_PACK" },
+    });
+  });
+
+  it("returns STALE_DATA_PACK after the audited pack horizon", async () => {
+    const found = await findPlan();
+    vi.setSystemTime(
+      new Date(Date.parse(SHIBUYA_ACTIVE_PACK_V2.validThrough) + 1),
+    );
+    const response = await POST(
+      new Request("https://hub.test/api/v2/plans/swap", {
+        body: JSON.stringify({
+          schemaVersion: PLANNER_SCHEMA_VERSION,
+          candidateSetId: found.candidateSetId,
+          planId: found.plan.planId,
+          intent: found.plan.intent,
+          plan: found.plan,
+          stopIndex: 0,
+          preference: "LESS_WALKING",
+        }),
+        method: "POST",
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    expect(await response.json()).toMatchObject({
+      ok: false,
+      error: { code: "STALE_DATA_PACK", retryable: false },
     });
   });
 });

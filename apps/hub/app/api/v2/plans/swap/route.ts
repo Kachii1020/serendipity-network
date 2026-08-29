@@ -1,5 +1,4 @@
 import {
-  validatePlannerIntentV2,
   validateSwapPlanInputV2,
   type SwapPlanDataV2,
   type SwapPlanInputV2,
@@ -30,20 +29,7 @@ export const createPlannerSwapPost = (
   createPlannerPostHandler({
     execute: swap,
     packVersion,
-    validate: (value) => {
-      const validated = validateSwapPlanInputV2(value);
-      if (!validated.ok) return validated;
-      const intent = validatePlannerIntentV2(validated.value.intent, {
-        now: new Date(),
-      });
-      return intent.ok
-        ? validated
-        : {
-            ok: false as const,
-            code: intent.code,
-            issues: intent.issues,
-          };
-    },
+    validate: validateSwapPlanInputV2,
   });
 
 export const POST = createPlannerSwapPost(swapEveningPlanV2);

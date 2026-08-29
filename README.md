@@ -20,12 +20,13 @@ Every result says so before the user saves or leaves the site.
 
 1. Open the [planner](https://serendipity-phase0-hub.vercel.app/plan).
 2. In a WebMCP-enabled browser, ask:
-   **“I am solo at Shibuya Station from 17:00 to 22:00. Keep it under ¥5,000;
-   I want art, books, and somewhere quiet. Build one plan and show the price
-   source for the first stop.”**
+   **“I am solo at Shibuya Station from 13:00 to 22:00. Keep it under ¥8,000;
+   I want art, something hands-on, somewhere lively, and somewhere quiet. Build
+   one plan and show the price source for the first stop.”**
 3. The agent calls `find_evening_plan`; the same page renders one sourced
    two- or three-stop route. `show_place_evidence` opens the cited identity,
-   address, hours, price, and official-link claims.
+   address, coordinates, hours, price, public-access, official-link, and
+   schedule-calendar evidence.
 4. Ask **“Swap the last stop for a different interest, then save the plan.”**
    `swap_plan_stop` changes one stop and visibly summarizes price, walking, and
    downstream-time changes. `save_plan` stores a bounded snapshot in this
@@ -38,17 +39,21 @@ ran.
 ## What the result means
 
 - **Places are real:** the ACTIVE Shibuya pack contains nine municipal or
-  public cultural, library, park, botanical, and activity locations.
+  public heritage, gallery, library, botanical, and science locations.
 - **Sources are explicit:** every identity, address, hours, price, coordinate,
-  and official link is backed by CC BY 4.0, CC0, or Shibuya City's compatible
-  reuse terms.
+  and official link is backed by licensed open data or a field-scoped factual
+  reference to an official page. The ACTIVE pack must exactly match its
+  versioned reviewed claims, including source metadata/usage and root data
+  license. No source prose or media is copied.
 - **Prices are references:** only the listed admission or activity is counted.
   Transport, food, optional purchases, and live inventory are excluded.
 - **Walking is an estimate:** licensed coordinates are converted using a 1.25
   route factor, 75 metres per minute, rounded up to five minutes. It is not
   turn-by-turn navigation.
-- **Freshness is bounded:** data is checked within seven days before ACTIVE
-  promotion, warned after 14 days, and excluded after 60 days.
+- **Freshness is bounded:** a reviewed pack covers at most 60 Tokyo calendar
+  days and expires before any required hours/price source becomes 60 days old.
+  After 14 days the result asks users to recheck sources; search, swap,
+  evidence, and server-rendered results fail closed after `validThrough`.
 - **No filler:** when interests are supplied, every stop must match at least one
   of them. Otherwise the planner returns an honest no-result.
 
@@ -120,6 +125,7 @@ its documented local Supabase environment and use `pnpm dev:phase0`.
 
 ```bash
 pnpm audit:sources       # rights, evidence references, HTTPS, ACTIVE pack
+pnpm run audit:sources -- --check-urls # release-time live URL health
 pnpm test:v2             # contracts, pack, engine, APIs, tools, state, storage
 pnpm test:v2:browser     # UI, exact five tools, a11y, mobile, 400% reflow
 pnpm test:v2:release     # 20 sequential read-only canonical searches
@@ -146,7 +152,8 @@ pnpm test:visual
   tokens, cookies, credentials, raw HTML, or hidden instructions.
 - Saved plans are explicit, local-only, capped at ten records and 256 KiB, and
   contain only the normalized intent, public plan, public evidence, and save
-  time. Corrupt storage is preserved and reported rather than overwritten.
+  time. Unreadable corrupt bytes are preserved; readable partial corruption
+  keeps valid records and is repaired only by an explicit save/delete.
 - Search and swap fail closed under concurrent or stale operations. A failed
   evidence, swap, save, or delete never removes the displayed plan.
 - Official links require an explicit user click and use `noopener noreferrer`.
@@ -161,19 +168,24 @@ third-party venue photos or logos.
 ## Known limits
 
 - Shibuya only; solo only; dates from today through seven days ahead.
-- Published regular hours may not contain holidays or same-day closures. Users
-  must recheck the official page before travelling.
+- Published recurring, holiday, and daily-calendar closures are materialized
+  only inside the pack's audited horizon (currently through 2026-10-28).
+  Same-day disruptions remain possible, so users must recheck each official
+  page before travelling.
 - Coordinate walking estimates do not account for crossings, construction,
   accessibility, stairs, or station exits.
-- The initial rights-clear pack is strongest for culture, books, quiet,
-  hands-on, and outdoor interests. Unsupported music, food, coffee, or shopping
+- The initial rights-clear pack is strongest for culture, books, quiet, and
+  hands-on interests. Unsupported music, food, coffee, or shopping
   requests return no-result rather than unrelated recommendations.
 - Browser support for draft Site Tools varies. The manual UI remains fully
   functional and labels that mode honestly.
 
 ## Submission status
 
-The product, public GitHub repository, dated Git history, GitHub-detected MIT
-license, source-rights audit, and live Vercel deployment are present. A public
-YouTube demo under three minutes remains the final account-owner submission
-action until its URL is recorded.
+The public GitHub repository, dated history, GitHub-detected MIT license, and
+an earlier v2 Vercel deployment are present. The current pack 1.3.0 release
+candidate has green focused, build, browser, accessibility, and security gates;
+its final post-documentation `pnpm check`, immutable preview, production
+promotion, supported-client Site Tools verification, and updated public demo
+remain open. Results from the earlier deployment are not counted as evidence
+for this candidate.

@@ -6,8 +6,16 @@
 - T202 precedes T203–T207; public shapes cannot be inferred independently.
 - T203 must produce a valid CANDIDATE pack before T204 can prove the exact path.
 - T204 precedes controller/UI work in T205–T207.
-- T208 requires T202–T207; T209 requires all T208 local gates.
-- T210 begins only after the production reliability run in T209 passes.
+- T208 requires T202–T207; T209 requires a fresh pass of every T208 local gate
+  against the exact release-candidate commit.
+- T210 documentation reconciliation may run alongside T208, but final public
+  packaging and submission closure require T209 to pass.
+
+**Current release-candidate status:** 9/10 complete. T201–T209 are implemented
+and the exact candidate passes local and production gates. T210 remains open
+until submission media is regenerated from the shipped build and the official
+supported Site Tools client becomes available.
+Results from an older deployment do not close those tasks.
 
 ## Gate 0 and shared foundation
 
@@ -23,7 +31,7 @@
       then implement the parallel planner contracts in
       `packages/contracts/src/planner-v2.ts` and package exports without
       changing v1 constants or schemas — verifies FR-201, FR-204–FR-208,
-      FR-214–FR-215 and V2-CTR-001–004/V2-PACK-002–012.
+      FR-214–FR-215 and V2-CTR-001–005/V2-PACK-002–018.
 
 - [x] **T203** [US1] Build and audit
       `apps/hub/data/shibuya.places.v2.json` with at least nine authorized real
@@ -31,7 +39,9 @@
       prices, evidenced coordinates, and official links; run
       `scripts/audit-v2-sources.mjs` and record permissions/attribution under this
       specification's evidence directory — verifies FR-204–FR-207, FR-212,
-      SC-203, V2-PACK-001–012, and V2-FIX-001–003.
+      SC-203, V2-PACK-001–018, and V2-FIX-001–003. Pack 1.3.0 replaces the
+      exhibition-bound ninth place with Yoyogi Library and records its 59-day
+      closure/freshness ledger in `evidence/source-pack-1.3.0-ledger.md`.
 
 ## Independently usable product slices
 
@@ -40,14 +50,15 @@
       beside the untouched
       v1 composer in `packages/bundle-engine`; use conservative maxYen budget and
       the locked coordinate-walk formula — verifies FR-202–FR-203, FR-207–FR-209,
-      V2-ENG-001–014, and V2-SWAP-001–005.
+      V2-ENG-001–017, and V2-SWAP-001–006.
 
 - [x] **T205** [US1] [US2] Implement `POST /api/v2/plans/search`,
       `POST /api/v2/plans/swap`, `GET /api/v2/places/{id}/evidence`, the shared v2
       action controller, and exactly five top-level Site Tools
       (`find_evening_plan`, `show_place_evidence`, `swap_plan_stop`, `save_plan`,
       `delete_saved_plan`) with stale-result and operation locking tests — verifies
-      FR-211–FR-215 and V2-API-001–005/V2-TOOL-001–008.
+      FR-211–FR-215 and V2-API-001–007/V2-TOOL-001–010 plus
+      V2-RACE-001–002/V2-LOCK-001.
 
 - [x] **T206** [US1] Replace the primary landing/planner experience with one
       concise source-backed flow: visible input in the first viewport, one concrete
@@ -58,7 +69,7 @@
 - [x] **T207** [US2] [US3] [US4] Add evidence disclosure, single-position swap,
       official outbound links, and validated local save/delete with immutable
       snapshots and quota/corruption recovery — verifies FR-204–FR-210,
-      V2-SWAP-001–005, V2-STO-001–009, and V2-UX-007/009.
+      V2-SWAP-001–006, V2-STO-001–009, and V2-UX-007/009/011–012.
 
 ## Convergence and release
 
@@ -66,22 +77,55 @@
       tests, `pnpm check`, 8/8 build, result-size/public-payload scan, v1 regression,
       320/mobile/200%/400% visual checks, keyboard flows, and axe across every v2
       state; save evidence under this specification — verifies SC-201–SC-203,
-      SC-205–SC-206, V2-REG-001–002, and all required local matrix rows.
+      SC-205–SC-206, V2-REG-001–003, and all required local matrix rows. The
+      pack 1.3.0 reviewed-claim, strict-date, calendar-visibility,
+      warning-replacement, registration-rollback, race-safety, exact-output,
+      and storage-repair regressions are present and the focused gates are
+      green, including stable-plan restoration after a failed re-search.
+      Deployment/client evidence remains T209.
 
 - [x] **T209** Deploy Hub preview only, replay the exact
       `find → evidence → swap → save → delete` path 3/3, run five cold synthetic
       goals, promote the audited pack to ACTIVE, then deploy Hub production and run
       20 read-only journeys with search p95 ≤3s and external mutations 0; stop and
       roll back on the first non-favicon failure — verifies SC-204,
-      V2-DEP-001–004, and V2-RBK-002.
+      V2-DEP-001–004, and V2-RBK-002. Deployment
+      Preview protection required authenticated smoke before promotion. The
+      promoted production `dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6` then passed v2
+      browser 12/12, the exact five-tool path 3/3, and read-only search 20/20
+      with p95 246ms, max 848ms, and 20 unique correlations.
 
 - [ ] **T210** Reconcile spec/plan/data-model/contracts/tasks against the shipped
       code and evidence; update README, public data attribution, Devpost copy,
       screenshots, and the <3-minute demo to show the actual Chrome Site Tool path,
       real-place evidence, explicit no-booking boundary, and rollback state — closes
       FR-201–FR-215 and SC-201–SC-206 without rewriting specification 001 history.
+      The `product-reality-check` skill and draft packaging exist, but final
+      screenshots/video and release claims remain open until T209 passes.
 
-## Local implementation evidence — 2026-08-29
+## Current release-candidate local evidence — 2026-08-30
+
+- Pack 1.3.0: 9 routable places, 18 sources, reviewed-claim/data-license
+  binding, and an audited horizon through 2026-10-28 JST.
+- `pnpm test:v2`: 135/135; full unit suite: 342/342 after the performance
+  optimization; source-audit regressions: 11/11 plus standalone PASS with 9
+  routable places and 18 sources.
+- V2 browser: 12/12; security: 56 public assets plus 5/5 runtime cases;
+  accessibility legacy/general: 9/9; build: 8/8.
+- Final post-documentation `pnpm check` and `pnpm build` pass on the exact
+  candidate; the performance threshold remains 100ms and runs isolated from
+  unrelated test-file CPU contention.
+- Closure regressions cover strict Gregorian dates, visible schedule calendars,
+  swap-warning replacement, late-evidence isolation, all-or-none registration,
+  exact per-action output validation/public safety, and explicit storage repair.
+- Evidence/status boundary:
+  `evidence/release-candidate-1.3.0-closure.md`. No preview, production, or real
+  supported-client pass is claimed by this local evidence.
+
+## Prior local baseline evidence — 2026-08-29
+
+The following results predate the current release-candidate closure batch. They
+remain useful regression evidence but are not a fresh T208 pass.
 
 - T204–T207: `pnpm test:v2` passes 58/58; Hub and all workspace typechecks pass.
 - T208: `pnpm check` passes 257/257 tests and `pnpm build` passes 8/8.
@@ -96,9 +140,14 @@
   mobile CTA is inside the first viewport and result focus lands on the sourced
   plan summary.
 
-## Production implementation evidence — 2026-08-30
+## Prior production evidence — 2026-08-30
 
-- T209: final deployment `dpl_4LBiYvg2NP1KEq4WLT1Pry1u4C2b` is READY in
+The following results describe deployment
+`dpl_4LBiYvg2NP1KEq4WLT1Pry1u4C2b`. They are preserved as historical evidence;
+they do not verify the current release candidate and therefore do not close
+T209.
+
+- The historical deployment `dpl_4LBiYvg2NP1KEq4WLT1Pry1u4C2b` is READY in
   `hnd1` at the fixed production alias.
 - Production V2 browser suite passes 6/6; the exact five-tool
   `find → evidence → swap → save → delete` path passes 3/3 fresh contexts.

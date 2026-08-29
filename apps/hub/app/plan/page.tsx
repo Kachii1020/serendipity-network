@@ -3,14 +3,17 @@ import {
   type PlannerIntentV2,
   type PlannerTag,
 } from "@serendipity/contracts/planner-v2";
-import { composeEveningPlan } from "@serendipity/bundle-engine/planner-v2";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 
 import { PlannerClient } from "../../components/planner-v2/planner-client";
+import { PlannerMaintenance } from "../../components/planner-v2/planner-maintenance";
 import {
+  defaultPlannerForm,
+  earliestPlannerStart,
   normalizePlannerQuery,
+  tokyoDate,
   toTokyoTimestamp,
   type PlannerQuery,
 } from "../../components/planner-v2/planner-query";
@@ -31,7 +34,20 @@ export default async function PlanPage({
 }) {
   await connection();
   const query = await searchParams;
-  const normalized = normalizePlannerQuery(query, new Date());
+  const now = new Date();
+  const sourcePackValidThrough = SHIBUYA_ACTIVE_PACK_V2.validThrough.slice(
+    0,
+    10,
+  );
+  const today = tokyoDate(0, now);
+  const minimumPlanningDate = defaultPlannerForm(now).date;
+  if (
+    today > sourcePackValidThrough ||
+    minimumPlanningDate > sourcePackValidThrough
+  ) {
+    return <PlannerMaintenance validThrough={sourcePackValidThrough} />;
+  }
+  const normalized = normalizePlannerQuery(query, now, sourcePackValidThrough);
   if (normalized.invalid) {
     const target = normalized.normalized.toString();
     redirect(target ? `/plan?${target}` : "/plan");
@@ -52,28 +68,12 @@ export default async function PlanPage({
     stopCount: "AUTO",
     totalBudgetYen: normalized.defaults.budget,
   };
-  const initialComposition = normalized.autoSearch
-    ? await composeEveningPlan({
-        asOf: new Date(),
-        dataPack: SHIBUYA_ACTIVE_PACK_V2,
-        intent,
-      })
-    : null;
-  const initialSearchData =
-    initialComposition?.ok === true
-      ? {
-          candidateSetId: initialComposition.plan.candidateSetId,
-          plan: initialComposition.plan,
-          warnings: initialComposition.warnings,
-        }
-      : undefined;
-
   return (
     <PlannerClient
-      autoSearch={normalized.autoSearch && !initialSearchData}
+      autoSearch={normalized.autoSearch}
       defaults={normalized.defaults}
+      earliestStartToday={earliestPlannerStart(normalized.minDate, now)}
       hubOrigin={process.env.NEXT_PUBLIC_HUB_ORIGIN ?? "http://localhost:3100"}
-      {...(initialSearchData ? { initialSearchData } : {})}
       initialIntent={intent}
       maxDate={normalized.maxDate}
       minDate={normalized.minDate}

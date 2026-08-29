@@ -5,17 +5,20 @@ import {
   type PlannerIntentV2,
   type PlannerPlaceV2,
   type SwapPreferenceV2,
+  validatePlannerIntentV2,
+  validateReviewedPlaceDataPackV2,
 } from "@serendipity/contracts/planner-v2";
 
 export type ComposeEveningPlanV2Input = Readonly<{
   intent: PlannerIntentV2;
   dataPack: PlaceDataPackV2;
+  reviewedClaims: unknown;
   asOf?: Date;
 }>;
 
 export type ComposeEveningPlanV2Result =
   | Readonly<{ ok: true; plan: EveningPlanV2; warnings: readonly string[] }>
-  | Readonly<{ ok: false; code: "NO_VALID_PLAN" }>;
+  | Readonly<{ ok: false; code: "NO_VALID_PLAN" | "STALE_DATA_PACK" }>;
 
 export type SwapEveningPlanStopV2Input = ComposeEveningPlanV2Input &
   Readonly<{
@@ -31,7 +34,17 @@ export type SwapEveningPlanStopV2Result =
       code: "NO_REPLACEMENT" | "STALE_DATA_PACK" | "STALE_PLAN";
     }>;
 
+export type ActivePlanningDataPackValidationV2 =
+  | Readonly<{ ok: true; dataPack: PlaceDataPackV2 }>
+  | Readonly<{
+      ok: false;
+      reason: "INVALID_DATA_PACK" | "INACTIVE_DATA_PACK" | "EXPIRED_DATA_PACK";
+      issues: readonly string[];
+    }>;
+
 type Coordinates = Readonly<{ latitude: number; longitude: number }>;
+type RoutablePlannerPlace = PlannerPlaceV2 &
+  Readonly<{ coordinates: Coordinates }>;
 type TravelEstimate = Readonly<{ distanceMeters: number; minutes: number }>;
 type OperatingInterval = Readonly<{
   opensAt: number;
@@ -73,8 +86,83 @@ const DISCLAIMER =
 const MINUTE = 60_000;
 const DAY = 86_400_000;
 const MAX_WAIT_MINUTES = 30;
+const CLOSING_HEADROOM_MINUTES = 10;
 const WALKING_ROUTE_FACTOR = 1.25;
 const WALKING_METERS_PER_MINUTE = 75;
+const packValidationCache = new WeakMap<
+  object,
+  {
+    readonly serialized: string;
+    readonly validation: ReturnType<typeof validateReviewedPlaceDataPackV2>;
+  }
+>();
+
+const validatePackCached = (
+  dataPack: unknown,
+  reviewedClaims: unknown,
+): ReturnType<typeof validateReviewedPlaceDataPackV2> => {
+  if (dataPack === null || typeof dataPack !== "object") {
+    return validateReviewedPlaceDataPackV2(dataPack, reviewedClaims);
+  }
+  let serialized: string;
+  try {
+    serialized = JSON.stringify([dataPack, reviewedClaims]);
+  } catch {
+    return validateReviewedPlaceDataPackV2(dataPack, reviewedClaims);
+  }
+  const cached = packValidationCache.get(dataPack);
+  if (cached?.serialized === serialized) return cached.validation;
+  const validation = validateReviewedPlaceDataPackV2(dataPack, reviewedClaims);
+  packValidationCache.set(dataPack, { serialized, validation });
+  return validation;
+};
+
+/**
+ * Engine boundary guard. Direct callers cannot bypass schema/semantic pack
+ * validation, ACTIVE promotion, or the audited as-of horizon.
+ */
+export const validateActivePlanningDataPackV2 = (
+  dataPack: unknown,
+  reviewedClaims: unknown,
+  asOf: Date,
+  intent?: PlannerIntentV2,
+): ActivePlanningDataPackValidationV2 => {
+  const validation = validatePackCached(dataPack, reviewedClaims);
+  if (!validation.ok) {
+    return {
+      ok: false,
+      reason: "INVALID_DATA_PACK",
+      issues: validation.issues,
+    };
+  }
+  if (validation.value.status !== "ACTIVE") {
+    return {
+      ok: false,
+      reason: "INACTIVE_DATA_PACK",
+      issues: ["/status must be ACTIVE for route planning"],
+    };
+  }
+  const asOfTime = asOf.getTime();
+  const generatedAt = Date.parse(validation.value.generatedAt);
+  const validThrough = Date.parse(validation.value.validThrough);
+  if (
+    !Number.isFinite(asOfTime) ||
+    !Number.isFinite(generatedAt) ||
+    !Number.isFinite(validThrough) ||
+    asOfTime < generatedAt ||
+    asOfTime > validThrough ||
+    (intent !== undefined && Date.parse(intent.endAt) > validThrough)
+  ) {
+    return {
+      ok: false,
+      reason: "EXPIRED_DATA_PACK",
+      issues: [
+        "/generatedAt and /validThrough must cover both asOf and the requested endAt",
+      ],
+    };
+  }
+  return { ok: true, dataPack: validation.value };
+};
 
 const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
 const round = (value: number, places: number): number => {
@@ -164,6 +252,7 @@ const operatingIntervals = (
   place: PlannerPlaceV2,
   date: string,
 ): readonly OperatingInterval[] => {
+  if (place.hoursProvenance.kind !== "PUBLISHED_WINDOWS") return [];
   const exception = place.dateExceptions.find((item) => item.date === date);
   if (exception?.closed) return [];
   if (exception && !exception.closed) {
@@ -200,7 +289,7 @@ const schedulePlace = (
     const endsAtMs = startsAtMs + place.recommendedVisitMinutes * MINUTE;
     if (
       waitMinutes <= MAX_WAIT_MINUTES &&
-      endsAtMs <= interval.closesAt &&
+      endsAtMs <= interval.closesAt - CLOSING_HEADROOM_MINUTES * MINUTE &&
       endsAtMs <= intentEndMs
     ) {
       return {
@@ -222,10 +311,18 @@ const sourceAgeDays = (checkedAt: string, asOf: Date): number =>
 const freshnessForPlace = (
   place: PlannerPlaceV2,
   asOf: Date,
+  dataPack: PlaceDataPackV2,
 ): Readonly<{ eligible: boolean; warnings: readonly string[] }> => {
+  const sourceById = new Map(
+    dataPack.sources.map((source) => [source.sourceId, source]),
+  );
   const ages = [
     sourceAgeDays(place.evidence.hours.checkedAt, asOf),
     sourceAgeDays(place.evidence.price.checkedAt, asOf),
+    ...place.calendarSourceIds.flatMap((sourceId) => {
+      const source = sourceById.get(sourceId);
+      return source ? [sourceAgeDays(source.checkedAt, asOf)] : [];
+    }),
   ];
   if (ages.some((age) => age > 60)) return { eligible: false, warnings: [] };
   return {
@@ -302,29 +399,15 @@ const scheduleRoute = (
   dataPack: PlaceDataPackV2,
   context: PlanningContext,
 ): RawPlan | null => {
+  // `places` comes from eligiblePlacesForIntent, which has already applied
+  // every per-place route, provenance, tag, exclusion, coordinate, freshness,
+  // and opening-window guard. Keep only route-level constraints here: this
+  // function runs for every permutation (up to 24,360 at 30 places).
   const exerciseStopCount = places.filter(({ category }) =>
     ["fitness", "pool"].includes(category),
   ).length;
-  const matchesRequestedInterest =
-    intent.preferredTags.length === 0 ||
-    places.every(({ tags }) =>
-      tags.some((tag) => intent.preferredTags.includes(tag)),
-    );
-  const hasUnrequestedExerciseFiller = places.some(
-    ({ category, tags }) =>
-      ["fitness", "pool"].includes(category) &&
-      intent.preferredTags.length > 0 &&
-      !tags.some((tag) => intent.preferredTags.includes(tag)),
-  );
   if (
     exerciseStopCount > 1 ||
-    !matchesRequestedInterest ||
-    hasUnrequestedExerciseFiller ||
-    places.some(
-      (place) =>
-        place.tags.some((tag) => intent.excludedTags.includes(tag)) ||
-        !context.freshnessByPlaceId.get(place.placeId)?.eligible,
-    ) ||
     new Set(places.map(({ category }) => category)).size < 2
   ) {
     return null;
@@ -393,7 +476,7 @@ const createPlanningContext = (
   const freshnessByPlaceId = new Map(
     dataPack.places.map((place) => [
       place.placeId,
-      freshnessForPlace(place, asOf),
+      freshnessForPlace(place, asOf, dataPack),
     ]),
   );
   const intervalsByPlaceId = new Map(
@@ -403,12 +486,16 @@ const createPlanningContext = (
     ]),
   );
   const travelByEdge = new Map<string, TravelEstimate>();
-  for (const to of dataPack.places) {
+  const routablePlaces = dataPack.places.filter(
+    (place): place is RoutablePlannerPlace =>
+      place.routeEligibility.kind === "ROUTABLE" && place.coordinates !== null,
+  );
+  for (const to of routablePlaces) {
     travelByEdge.set(
       `shibuya-station->${to.placeId}`,
       estimateCoordinateTravelV2(dataPack.station.coordinates, to.coordinates),
     );
-    for (const from of dataPack.places) {
+    for (const from of routablePlaces) {
       if (from.placeId === to.placeId) continue;
       travelByEdge.set(
         `${from.placeId}->${to.placeId}`,
@@ -435,6 +522,24 @@ const compareRawPlans = (left: RawPlan, right: RawPlan): number =>
   (left.stops.at(-1)?.endsAtMs ?? 0) - (right.stops.at(-1)?.endsAtMs ?? 0) ||
   left.identity.localeCompare(right.identity);
 
+const eligiblePlacesForIntent = (
+  intent: PlannerIntentV2,
+  dataPack: PlaceDataPackV2,
+  context: PlanningContext,
+): RoutablePlannerPlace[] =>
+  dataPack.places.filter(
+    (place): place is RoutablePlannerPlace =>
+      place.routeEligibility.kind === "ROUTABLE" &&
+      place.priceProvenance.kind === "PUBLISHED_AMOUNT" &&
+      place.coordinates !== null &&
+      place.price.maxYen <= intent.totalBudgetYen &&
+      !place.tags.some((tag) => intent.excludedTags.includes(tag)) &&
+      (intent.preferredTags.length === 0 ||
+        place.tags.some((tag) => intent.preferredTags.includes(tag))) &&
+      context.freshnessByPlaceId.get(place.placeId)?.eligible === true &&
+      (context.intervalsByPlaceId.get(place.placeId)?.length ?? 0) > 0,
+  );
+
 const generateRawPlans = (
   intent: PlannerIntentV2,
   dataPack: PlaceDataPackV2,
@@ -443,7 +548,7 @@ const generateRawPlans = (
 ): RawPlan[] => {
   const context = createPlanningContext(intent, dataPack, asOf);
   const plans: RawPlan[] = [];
-  const places = dataPack.places;
+  const places = eligiblePlacesForIntent(intent, dataPack, context);
   for (let firstIndex = 0; firstIndex < places.length; firstIndex += 1) {
     const first = places[firstIndex];
     if (!first) continue;
@@ -487,7 +592,7 @@ const findBestRawPlan = (
       winner = plan;
     }
   };
-  const places = dataPack.places;
+  const places = eligiblePlacesForIntent(intent, dataPack, context);
   for (let firstIndex = 0; firstIndex < places.length; firstIndex += 1) {
     const first = places[firstIndex];
     if (!first) continue;
@@ -551,16 +656,17 @@ const materializePlan = async (
       startsAt: toJstTimestamp(stop.startsAtMs),
       endsAt: toJstTimestamp(stop.endsAtMs),
       price: stop.place.price,
+      priceProvenance: stop.place.priceProvenance,
       travelFromPreviousMinutes: stop.travel.minutes,
       travelFromPreviousDistanceMeters: stop.travel.distanceMeters,
       travelOriginLabel: stop.travelOriginLabel,
       travelMethod: "COORDINATE_ESTIMATE",
       travelLabel: `Estimated ${stop.travel.minutes} min / ${stop.travel.distanceMeters} m from coordinates`,
-      openingFit: `Scheduled within published ${stop.openingLabel} hours.`,
+      openingFit: `Scheduled within published ${stop.openingLabel} hours with ${CLOSING_HEADROOM_MINUTES} minutes before closing.`,
       whyThisStop:
         matchedTags.length > 0
-          ? `Matches ${matchedTags.join(", ")} while keeping published hours and plan constraints aligned.`
-          : `Adds a ${stop.place.category} stop while keeping published hours and plan constraints aligned.`,
+          ? `Matches ${matchedTags.join(", ")} within your time, walking, and budget limits.`
+          : `Adds a ${stop.place.category} stop within your time, walking, and budget limits.`,
       sourcePublisher: source?.publisher ?? "Published source",
       sourceCheckedAt:
         [
@@ -595,17 +701,32 @@ const materializePlan = async (
   };
 };
 
-const warningsFor = (raw: RawPlan, asOf: Date): readonly string[] => [
+const warningsFor = (
+  raw: RawPlan,
+  asOf: Date,
+  dataPack: PlaceDataPackV2,
+): readonly string[] => [
   ...new Set(
-    raw.stops.flatMap(({ place }) => freshnessForPlace(place, asOf).warnings),
+    raw.stops.flatMap(
+      ({ place }) => freshnessForPlace(place, asOf, dataPack).warnings,
+    ),
   ),
 ];
 
 export const composeEveningPlan = async ({
   intent,
   dataPack,
-  asOf = new Date(dataPack.generatedAt),
+  reviewedClaims,
+  asOf = new Date(),
 }: ComposeEveningPlanV2Input): Promise<ComposeEveningPlanV2Result> => {
+  if (!validatePlannerIntentV2(intent, { now: asOf }).ok) {
+    return { ok: false, code: "NO_VALID_PLAN" };
+  }
+  if (
+    !validateActivePlanningDataPackV2(dataPack, reviewedClaims, asOf, intent).ok
+  ) {
+    return { ok: false, code: "STALE_DATA_PACK" };
+  }
   const winner =
     findBestRawPlan(intent, dataPack, 3, asOf) ??
     findBestRawPlan(intent, dataPack, 2, asOf);
@@ -614,7 +735,7 @@ export const composeEveningPlan = async ({
   return {
     ok: true,
     plan: await materializePlan(winner, intent, dataPack, candidateSetId),
-    warnings: warningsFor(winner, asOf),
+    warnings: warningsFor(winner, asOf, dataPack),
   };
 };
 
@@ -648,11 +769,20 @@ const differentInterestGain = (
 export const swapEveningPlanStop = async ({
   intent,
   dataPack,
+  reviewedClaims,
   plan,
   stopIndex,
   preference,
-  asOf = new Date(dataPack.generatedAt),
+  asOf = new Date(),
 }: SwapEveningPlanStopV2Input): Promise<SwapEveningPlanStopV2Result> => {
+  if (!validatePlannerIntentV2(intent, { now: asOf }).ok) {
+    return { ok: false, code: "STALE_PLAN" };
+  }
+  if (
+    !validateActivePlanningDataPackV2(dataPack, reviewedClaims, asOf, intent).ok
+  ) {
+    return { ok: false, code: "STALE_DATA_PACK" };
+  }
   if (plan.packVersion !== dataPack.packVersion) {
     return { ok: false, code: "STALE_DATA_PACK" };
   }
@@ -736,7 +866,7 @@ export const swapEveningPlanStop = async ({
   return {
     ok: true,
     plan: await materializePlan(replacement, intent, dataPack, candidateSetId),
-    warnings: warningsFor(replacement, asOf),
+    warnings: warningsFor(replacement, asOf, dataPack),
   };
 };
 

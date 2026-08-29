@@ -30,7 +30,7 @@ type PlannerIntentV2 = {
   partySize: 1;
   startAt: string;
   endAt: string;
-  totalBudgetYen: number; // integer 0..100_000
+  totalBudgetYen: number; // integer 0..30_000
   stopCount: "AUTO";
   maxWalkMinutesPerLeg: number; // integer 5..30
   preferredTags: PlannerTag[];
@@ -38,9 +38,11 @@ type PlannerIntentV2 = {
 };
 ```
 
-- Timestamps are ISO 8601 with `+09:00`, share one local date, span 2–10 hours,
-  start at 12:00 or later, and end at 23:30 or earlier. When a clock is supplied,
-  the date is Tokyo today through today +7.
+- Timestamps are ISO 8601 with `+09:00`, contain a real Gregorian calendar date,
+  share one local date, span 2–10 hours, start at 12:00 or later, and end at
+  23:30 or earlier. When a clock is supplied, the date is Tokyo today through
+  today +7 and start may be at most five minutes in the past. Values such as
+  `2026-09-31` are rejected rather than normalized by `Date`.
 - Preferred and excluded arrays are unique, use the closed tag enum, contain at
   most five values each, and do not overlap. UI presets further limit interests
   to three.
@@ -62,6 +64,18 @@ type SourceUsageV2 =
       permissionEvidencePath: string;
       attribution: string;
     }
+  | {
+      mode: "OFFICIAL_FACT_REFERENCE";
+      factScope: Array<
+        | "IDENTITY"
+        | "ADDRESS"
+        | "COORDINATES"
+        | "HOURS"
+        | "PRICE"
+        | "PUBLIC_ACCESS"
+      >;
+      attribution: string;
+    }
   | { mode: "OFFICIAL_LINK_ONLY" };
 
 type SourceRecordV2 = {
@@ -80,15 +94,19 @@ type EvidenceReferenceV2 = { sourceId: string; checkedAt: string };
 
 type PlaceEvidenceRefsV2 = {
   identity: EvidenceReferenceV2;
-  location: EvidenceReferenceV2;
+  address: EvidenceReferenceV2;
+  coordinates: EvidenceReferenceV2 | null;
   hours: EvidenceReferenceV2;
   price: EvidenceReferenceV2;
+  publicAccess: EvidenceReferenceV2;
   officialLink: EvidenceReferenceV2;
 };
 ```
 
-- Factual references may use only `OPEN_LICENSE` or
-  `EXPLICIT_PERMISSION`. `OFFICIAL_LINK_ONLY` is used solely to validate an
+- Factual references may use `OPEN_LICENSE`, `EXPLICIT_PERMISSION`, or an
+  `OFFICIAL_FACT_REFERENCE` whose `factScope` includes that field. The latter
+  records only bounded facts from an official page; it does not relicense page
+  prose or media. `OFFICIAL_LINK_ONLY` is used solely to validate an
   outbound `officialUrl`; `officialLink` must reference an `OFFICIAL_SITE` on
   the same origin.
 - An explicit permission path must be one file directly under
@@ -96,6 +114,9 @@ type PlaceEvidenceRefsV2 = {
   file is never bundled or returned.
 - ACTIVE promotion requires every source `checkedAt` to be no later than
   `generatedAt` and no more than seven days old at that moment.
+- Every `generatedAt`, `validThrough`, source/evidence timestamp, optional
+  `publishedAt`, and date-exception date must pass the same strict Gregorian
+  calendar check used by intent and envelope validation.
 - At runtime, hours/price use the newest referenced source check: older than 14
   days adds a warning; older than 60 days excludes the place. If this exclusion
   removes all routes, return `STALE_DATA_PACK`.
@@ -110,6 +131,9 @@ const PLACE_CATEGORIES_V2 = [
   "fitness",
   "pool",
   "public-space",
+  "gallery",
+  "botanical",
+  "science-center",
 ] as const;
 
 type PriceEvidenceV2 =
@@ -117,16 +141,49 @@ type PriceEvidenceV2 =
   | { kind: "EXACT"; minYen: number; maxYen: number; label: string }
   | { kind: "RANGE"; minYen: number; maxYen: number; label: string };
 
+type PriceProvenanceV2 =
+  | { kind: "PUBLISHED_AMOUNT"; sourceSummary: string }
+  | {
+      kind: "PLANNER_ZERO_NO_MANDATORY_PRICE_PUBLISHED";
+      sourceSummary: string;
+    };
+
+type HoursProvenanceV2 =
+  | {
+      kind: "PUBLISHED_WINDOWS";
+      sourceSummary: string;
+      publishedAllDay: boolean;
+    }
+  | { kind: "PUBLISHED_INCOMPLETE"; sourceSummary: string }
+  | { kind: "NO_SET_HOURS"; sourceSummary: string };
+
+type RouteEligibilityV2 =
+  | { kind: "ROUTABLE" }
+  | {
+      kind: "REFERENCE_ONLY";
+      reasons: Array<
+        | "RESTRICTED_ACCESS"
+        | "UNSUPPORTED_COORDINATES"
+        | "INCOMPLETE_HOURS"
+        | "NO_SET_HOURS"
+        | "UNSOURCED_PRICE"
+      >;
+      note: string;
+    };
+
 type PlannerPlaceV2 = {
   placeId: string;
   name: string;
   summary: string;
   category: PlaceCategoryV2;
   address: string;
-  coordinates: { latitude: number; longitude: number };
+  coordinates: { latitude: number; longitude: number } | null;
   tags: PlannerTag[];
   officialUrl: string;
   recommendedVisitMinutes: number; // integer 20..180
+  routeEligibility: RouteEligibilityV2;
+  calendarSourceIds: string[];
+  hoursProvenance: HoursProvenanceV2;
   weeklyHours: Array<{
     days: number[]; // unique 0..6, Sunday=0
     opens: string; // HH:mm
@@ -143,6 +200,7 @@ type PlannerPlaceV2 = {
       }
   >;
   price: PriceEvidenceV2;
+  priceProvenance: PriceProvenanceV2;
   evidence: PlaceEvidenceRefsV2;
 };
 ```
@@ -151,8 +209,15 @@ type PlannerPlaceV2 = {
   non-negative integers at most 100,000.
 - Budget feasibility uses the conservative sum of `maxYen`; output shows both
   summed minimum and maximum.
-- Place IDs and source IDs are unique. ACTIVE requires at least nine places and
-  three categories.
+- `PLANNER_ZERO_NO_MANDATORY_PRICE_PUBLISHED` is never routable; an unknown
+  mandatory amount cannot consume ¥0 of a hard budget.
+- `NO_SET_HOURS` and `PUBLISHED_INCOMPLETE` are reference-only. A routable place
+  requires complete published windows, a published price basis, coordinates,
+  and separate address/coordinate evidence.
+- `calendarSourceIds` names the official holiday/daily-calendar sources that
+  materially affect this place; the pack-level set is exactly their union.
+- Place IDs and source IDs are unique. ACTIVE requires at least nine routable
+  places and three categories.
 - `capacity`, `inventory`, `hold`, `reservation`, `discount`, live status, and
   any `UNKNOWN` value are forbidden.
 
@@ -165,6 +230,8 @@ type PlaceDataPackV2 = {
   status: "CANDIDATE" | "ACTIVE";
   area: "shibuya";
   generatedAt: string;
+  validThrough: string;
+  calendarSourceIds: string[];
   dataLicense: {
     licenseId: string;
     licenseUrl: string;
@@ -192,8 +259,61 @@ walk minutes = ceil(raw minutes / 5) × 5
 An estimated leg is rejected when it exceeds `maxWalkMinutesPerLeg`; it is not
 clamped to 30. The UI/result always exposes
 `travelMethod: "COORDINATE_ESTIMATE"` and never presents the estimate as a live
-map route. A stop may wait at most 30 minutes for opening, and every plan must
-contain at least two place categories.
+map route. A stop may wait at most 30 minutes and must finish at least 10 minutes
+before its published closing time. Every plan contains at least two categories.
+The request end must not exceed `validThrough`; the pack spans at most 60 Tokyo
+calendar days and must expire before any routable hours/price or official
+calendar evidence crosses the 60-day hard-stale threshold.
+`calendarSourceIds` references official `HOURS` sources used to materialize
+holidays and published daily closures. Every `dateExceptions` date is unique
+and inside the pack horizon. The current 1.3.0 pack has 9 routable places and 18
+sources, is valid through `2026-10-28T23:59:59+09:00`, uses the Cabinet Office
+2026 holiday table and Shibuya City Libraries' official daily calendar, and
+fails closed on an ambiguous calendar entry rather than inferring that a place
+is open.
+
+## Reviewed claim ledger
+
+The runtime pack is accepted only with a version-matched
+`ReviewedPackClaimsV2` entry. It is generated after source review and freezes
+the complete planning-relevant projection rather than only place values:
+
+```ts
+type ReviewedClaimSourceV2 = {
+  sourceId: string;
+  sourceUrl: string;
+  checkedAt: string;
+  title: string;
+  publisher: string;
+  sourceKind: SourceRecordV2["sourceKind"];
+  usage: SourceUsageV2;
+  publishedAt?: string;
+  notes?: string;
+};
+
+type ReviewedPackClaimsV2 = {
+  schemaVersion: "2";
+  packVersion: string;
+  status: PlaceDataPackV2["status"];
+  generatedAt: string;
+  validThrough: string;
+  dataLicense: PlaceDataPackV2["dataLicense"];
+  station: {
+    name: string;
+    coordinates: PlaceDataPackV2["station"]["coordinates"];
+    sources: ReviewedClaimSourceV2[];
+  };
+  calendarSources: ReviewedClaimSourceV2[];
+  places: ReviewedPlaceClaimsV2[];
+};
+```
+
+Each place entry binds identity, address, coordinates, complete weekly and
+exception hours plus provenance, price plus provenance, route/public-access
+eligibility, official URL, primary sources, and calendar sources. Any value,
+source title/publisher/kind/usage/attribution/URL/timestamp/notes, calendar
+source, or root data-license drift makes the pack stale before the engine can
+compose or swap.
 
 ## Plan
 
@@ -212,6 +332,7 @@ type EveningPlanStopV2 = {
   startsAt: string;
   endsAt: string;
   price: PriceEvidenceV2;
+  priceProvenance: PriceProvenanceV2;
   travelFromPreviousMinutes: number;
   travelFromPreviousDistanceMeters: number;
   travelOriginLabel: string;
@@ -273,15 +394,24 @@ type PlaceEvidenceV2 = {
   claims: {
     identity: EvidenceClaimV2;
     address: EvidenceClaimV2;
+    coordinates: EvidenceClaimV2 | null;
     hours: EvidenceClaimV2;
     price: EvidenceClaimV2;
+    publicAccess: EvidenceClaimV2;
     officialLink: EvidenceClaimV2;
   };
   sources: SourceRecordV2[];
 };
 
 type EvidenceClaimV2 = {
-  kind: "IDENTITY" | "ADDRESS" | "HOURS" | "PRICE" | "OFFICIAL_LINK";
+  kind:
+    | "IDENTITY"
+    | "ADDRESS"
+    | "COORDINATES"
+    | "HOURS"
+    | "PRICE"
+    | "PUBLIC_ACCESS"
+    | "OFFICIAL_LINK";
   value: string;
   publisher: string;
   sourceTitle: string;
@@ -290,8 +420,11 @@ type EvidenceClaimV2 = {
 };
 ```
 
-Only sources referenced by the place's five evidence references are returned.
-Permission documents and full pack content are never returned.
+Only sources referenced by the place's seven evidence references and that
+place's `calendarSourceIds` are returned. Calendar sources are supplemental
+schedule evidence and appear in the visible disclosure even when they are not
+the primary `hours` claim. Permission documents and full pack content are never
+returned.
 
 ## Local saved plans
 
@@ -313,6 +446,11 @@ type SavedPlanDocumentV2 = {
 - Key: `serendipity.saved-itineraries.v2`; serialized cap: 256 KiB.
 - A duplicate is idempotent `ALREADY_SAVED`; it is not rewritten or reordered.
 - The eleventh distinct plan returns `STORAGE_LIMIT_REACHED`; no silent eviction.
-- Corrupt data is preserved and reported; failed writes keep previous bytes.
-- Delete is idempotent and returns `NOT_FOUND` when already absent.
+- Unreadable corrupt bytes are preserved and reported. In a readable document,
+  strict valid records are retained, malformed/poisoned records are ignored,
+  and the sanitized document is written only on the next explicit save/delete.
+  A successful repair mutation clears the corruption warning; failed writes
+  keep previous bytes.
+- Delete is idempotent. The internal storage result is `NOT_FOUND` and the
+  public Site Tool result is `deleted: false` when the plan is already absent.
 - No server migration exists because v1 has no equivalent saved-plan store.

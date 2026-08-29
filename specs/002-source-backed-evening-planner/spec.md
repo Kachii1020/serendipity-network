@@ -1,6 +1,7 @@
 # Feature Specification: Source-backed evening planner
 
-**Status**: Implemented and production-verified; public repo/video packaging pending
+**Status**: Release candidate implemented; fresh local gate, preview,
+production promotion, and supported-client Site Tools verification pending
 **Input**: Product reset approved on 2026-08-29
 **Replaces in the primary experience**: the consumer-facing Provider reservation demo in specification 001
 
@@ -16,14 +17,15 @@ Version 2 lets a solo visitor give an afternoon/evening time window, reference
 budget, interests, exclusions, and walking tolerance. It returns one feasible
 2- or 3-stop Shibuya plan whose place identities, opening hours, reference
 prices, official links, and walking estimates are traceable to open data or
-explicit permission. It never claims live availability or booking authority.
+bounded official factual references with documented reuse/attribution rules.
+It never claims live availability or booking authority.
 
 ## Scope
 
 ### In scope
 
-- Shibuya, solo planning, same-day afternoon/evening windows, and an automatic
-  2–3-stop result.
+- Shibuya, solo planning, one local-date afternoon/evening window from today
+  through the next seven Tokyo dates, and an automatic 2–3-stop result.
 - One selected plan at a time, with one-stop swap goals for cheaper, less
   walking, or closer interest fit.
 - Source evidence, checked dates, visible attribution, and official outbound
@@ -77,14 +79,15 @@ leaving the product.
 
 **Independent verification**: `show_place_evidence` returns only the current
 plan's place claims, each with one or more declared sources, their checked date,
-license/permission basis, and official link; the same facts are reachable in the
-visible UI.
+license/permission/factual-reference basis, and official link; the same facts
+are reachable in the visible UI.
 
 1. **Given** a selected plan, **when** evidence for a displayed place is opened,
    **then** identity, hours, reference price, coordinate sources, transparent
    walking-estimate method, attribution, and freshness are visible.
 2. **Given** a source is soft-stale, **when** its place remains usable, **then**
-   the plan says to recheck it.
+   the plan says to recheck it, and a later swap replaces that warning set with
+   the warnings that apply to the replacement plan.
 3. **Given** a required claim is hard-stale or lacks rights evidence, **when** a
    search runs, **then** the claim cannot enter the selected plan.
 
@@ -127,19 +130,25 @@ snapshot.
 
 - **FR-201**: The product MUST accept only `schemaVersion: "2"` Shibuya solo
   intents with a same-local-date 2–10 hour window starting no earlier than
-  12:00 and ending no later than 23:30, 0–100,000 JPY reference budget, `AUTO`
-  stop count, and 5–30 minute maximum walking leg.
+  12:00, no more than five minutes before the injected current time, and ending
+  no later than 23:30, 0–30,000 JPY reference budget, `AUTO` stop count, and
+  5–30 minute maximum walking leg.
 - **FR-202**: The product MUST generate schedules from Shibuya Station using
   normalized opening windows, planned durations, and evidenced coordinates.
   Walking is a labelled estimate: haversine distance ×1.25, divided by 75m/min,
   then rounded up to the next five minutes; waiting for a place to open is
-  capped at 30 minutes.
+  capped at 30 minutes and every stop ends at least 10 minutes before closing.
 - **FR-203**: A plan MUST contain two or three distinct real places and remain
   within the requested end time, reference budget, exclusions, and walking cap;
   it MUST contain at least two place categories.
-- **FR-204**: Every factual identity, location, opening-hours, price, and station
-  coordinate claim MUST cite one `OPEN_LICENSE` or evidenced
-  `EXPLICIT_PERMISSION` source reference with its checked timestamp.
+- **FR-204**: Every identity, address, coordinate, opening-hours, price, public
+  access, and station-coordinate claim MUST cite an `OPEN_LICENSE`, evidenced
+  `EXPLICIT_PERMISSION`, or field-scoped `OFFICIAL_FACT_REFERENCE` with its
+  checked timestamp. Address and coordinates MUST use separate evidence fields,
+  and every ACTIVE pack MUST exactly match a versioned reviewed-claim snapshot.
+  That snapshot MUST also bind station and calendar sources, source title,
+  publisher, kind, URL, checked/published dates, complete usage/license/fact
+  scope, notes, and the root data-license record.
 - **FR-205**: `OFFICIAL_LINK_ONLY` sources MAY supply outbound official links
   but MUST NOT substantiate copied factual claims.
 - **FR-206**: The UI and tool output MUST show the minimum–maximum reference
@@ -148,18 +157,30 @@ snapshot.
   provided.
 - **FR-207**: Hours/price whose newest referenced source is older than 60 days
   MUST be excluded; data older than 14 days MAY remain only with a visible
-  recheck warning.
+  recheck warning. An intent ending after the pack's audited `validThrough`
+  horizon MUST return no plan. `validThrough` MUST be at most 60 Tokyo calendar
+  days after generation and MUST precede the 60-day hard-stale instant of every
+  hours/price source used by a routable place and every official calendar
+  source. All date/timestamp fields MUST name real Gregorian dates rather than
+  values that JavaScript would normalize.
 - **FR-208**: Search ranking MUST use only interest fit, walking efficiency,
   time use, and category variety with deterministic tie-breaking.
 - **FR-209**: One-stop swap (`CHEAPER`, `LESS_WALKING`, or
   `DIFFERENT_INTEREST`) MUST preserve the non-selected place IDs, rerun all
   feasibility calculations, and fail without replacing the visible plan if no
-  valid alternative exists.
+  valid alternative exists. A successful swap MUST replace, not merge, the
+  visible freshness-warning set.
 - **FR-210**: Save/delete MUST use validated localStorage only, retain at most
   ten immutable snapshots, make no network request, and store no PII or secret.
+  Unreadable bytes MUST remain untouched; readable partial corruption MUST keep
+  independent valid records and may be repaired only by an explicit mutation.
 - **FR-211**: The top-level document MUST register exactly the approved five
   Site Tools; visible controls and Site Tools MUST call the same action
-  controller.
+  controller, project the same normalized intent into the URL and visible form,
+  and claim connection only after all five registrations succeed. A partial
+  registration failure MUST dispose every earlier handle. Search/swap/storage
+  locking and plan-scoped evidence guards MUST apply equally to manual and Site
+  Tool calls.
 - **FR-212**: Runtime search MUST make zero Provider, Supabase, scraping, or
   third-party API calls; the data pack is validated before use and invalid or
   absent packs fail closed.
@@ -169,7 +190,10 @@ snapshot.
   discount, real-time status, sponsorship, or affiliation.
 - **FR-215**: Search results and Site Tool envelopes MUST remain at or below
   65,536 UTF-8 bytes and contain no token, credential, raw source HTML, or
-  permission document.
+  permission document. Each tool's success and failure output MUST pass its own
+  exact public schema before serialization. Credential-like keys, raw markup,
+  cycles, cross-reference mismatches, and late results from an obsolete plan
+  MUST fail closed before UI or storage projection.
 
 ## Success criteria
 
@@ -177,10 +201,12 @@ snapshot.
   place is, why the price is shown, and why Site Tools help within 30 seconds.
 - **SC-202**: The three promotion fixtures each return a feasible plan with all
   source/evidence fields and no unsupported claims.
-- **SC-203**: At least nine ACTIVE places across three categories pass source,
-  license, freshness, link, and static data audits.
-- **SC-204**: The canonical production `find → evidence → swap → save → delete`
-  path succeeds 20/20 with no external mutation and search p95 at or below 3s.
+- **SC-203**: At least nine routable ACTIVE places across three categories pass
+  field-level source, mixed-rights, freshness, link, and static data audits.
+- **SC-204**: The exact `find → evidence → swap → save → delete` Site
+  Tool path succeeds 3/3 in fresh supported-client contexts, and production
+  read-only search succeeds 20/20 with no external mutation and p95 at or below
+  3s.
 - **SC-205**: 320px, mobile landscape, keyboard, 200% text, 400% zoom, and axe
   checks pass for input, result, evidence, swap, saved, no-result, and error
   states.
@@ -194,7 +220,8 @@ snapshot.
 - Reference amounts are per person and exclude transport and optional purchases.
 - Opening hours are normalized weekly windows plus explicit date exceptions;
   public-holiday differences that are not sourced remain an explicit caveat.
-- The first source set is limited to licenses that can be documented and
-  attributed; official venue pages are outbound links unless permission exists.
+- Reusable datasets require documented licenses. Ordinary official pages may
+  support only short field-scoped factual references; their prose, media, and
+  page design are never copied or described as open-licensed.
 - Actual venue names are factual identifiers, not affiliation claims. No
   third-party branding or media is required for the product to work.

@@ -15,12 +15,28 @@ if ((!local && !preview) || baseUrl.pathname !== "/") {
   );
 }
 
-const tokyoDate = new Intl.DateTimeFormat("en-CA", {
+const now = new Date();
+const tokyoParts = new Intl.DateTimeFormat("en-GB", {
   day: "2-digit",
+  hour: "2-digit",
+  hourCycle: "h23",
+  minute: "2-digit",
   month: "2-digit",
   timeZone: "Asia/Tokyo",
   year: "numeric",
-}).format(new Date());
+}).formatToParts(now);
+const part = (type) => tokyoParts.find((item) => item.type === type)?.value;
+const currentMinutes = Number(part("hour")) * 60 + Number(part("minute"));
+const dateOffset = currentMinutes > 17 * 60 + 5 ? 1 : 0;
+const tokyoDate = new Date(
+  Date.UTC(
+    Number(part("year")),
+    Number(part("month")) - 1,
+    Number(part("day")) + dateOffset,
+  ),
+)
+  .toISOString()
+  .slice(0, 10);
 
 const intent = {
   area: "shibuya",
@@ -28,7 +44,7 @@ const intent = {
   excludedTags: ["alcohol", "smoking"],
   maxWalkMinutesPerLeg: 20,
   partySize: 1,
-  preferredTags: ["art", "books", "quiet"],
+  preferredTags: ["art", "hands-on", "lively", "quiet"],
   schemaVersion: "2",
   startAt: `${tokyoDate}T17:00:00+09:00`,
   stopCount: "AUTO",

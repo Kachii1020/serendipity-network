@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_HUB_ORIGIN ?? "http://localhost:3100",
   ),
   description:
-    "Build a feasible Shibuya route from real places with published hours, reference prices, walking estimates, and visible sources.",
+    "Build a feasible Shibuya route from real places with published hours, visible price bases, walking estimates, and sources.",
   openGraph: {
     description:
       "Two or three real Shibuya places, one feasible plan, and the source behind every important fact.",

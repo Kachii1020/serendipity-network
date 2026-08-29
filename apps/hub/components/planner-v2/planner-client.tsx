@@ -23,6 +23,7 @@ import {
   useReducer,
   useRef,
   useState,
+  type FormEvent,
 } from "react";
 
 import {
@@ -34,10 +35,16 @@ import {
   type SavePlanToolInputV2,
   type ShowPlaceEvidenceToolInputV2,
   type SwapPlanStopToolInputV2,
+  validatePlannerV2EvidenceData,
+  validatePlannerV2SearchData,
+  validatePlannerV2SwapData,
 } from "../../lib/tools/planner-v2-tools";
 import { DecisionDialog } from "../product/decision-dialog";
-import { PlannerConnectionStatus } from "./planner-connection";
-import { PlannerForm, type PlannerFormDefaults } from "./planner-form";
+import {
+  PlannerConnectionStatus,
+  type PlannerConnectionMode,
+} from "./planner-connection";
+import { PlannerForm } from "./planner-form";
 import {
   initialPlannerState,
   plannerBusy,
@@ -45,7 +52,15 @@ import {
   type PlannerState,
   type PlannerUiError,
 } from "./planner-machine";
+import type { PlannerFormDefaults } from "./planner-options";
 import { PlannerPlan } from "./planner-plan";
+import {
+  normalizePlannerQuery,
+  plannerFormDefaultsFromIntent,
+  plannerIntentFromDefaults,
+  plannerSearchParamsFromDefaults,
+  type PlannerQuery,
+} from "./planner-query";
 import {
   deletePlanSnapshot,
   loadSavedPlans,
@@ -66,45 +81,18 @@ type PlannerActivity = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-const eveningPlanData = (value: unknown): boolean =>
-  isRecord(value) &&
-  value.schemaVersion === PLANNER_SCHEMA_VERSION &&
-  typeof value.planId === "string" &&
-  typeof value.candidateSetId === "string" &&
-  typeof value.packVersion === "string" &&
-  isRecord(value.intent) &&
-  Array.isArray(value.stops) &&
-  value.stops.length >= 2 &&
-  value.stops.length <= 3 &&
-  value.stops.every(
-    (stop) =>
-      isRecord(stop) &&
-      isRecord(stop.place) &&
-      typeof stop.place.placeId === "string" &&
-      typeof stop.place.name === "string" &&
-      typeof stop.place.officialUrl === "string",
-  ) &&
-  isRecord(value.totals);
-
-const searchData = (value: unknown): value is SearchPlansDataV2 =>
-  isRecord(value) &&
-  typeof value.candidateSetId === "string" &&
-  eveningPlanData(value.plan) &&
-  Array.isArray(value.warnings);
-
-const swapData = (value: unknown): value is SwapPlanDataV2 =>
-  isRecord(value) &&
-  typeof value.candidateSetId === "string" &&
-  eveningPlanData(value.plan) &&
-  typeof value.replacedStopIndex === "number" &&
-  typeof value.preference === "string";
-
-const evidenceData = (value: unknown): value is PlaceEvidenceDataV2 =>
-  isRecord(value) &&
-  isRecord(value.evidence) &&
-  value.evidence.schemaVersion === PLANNER_SCHEMA_VERSION &&
-  typeof value.evidence.placeId === "string" &&
-  Array.isArray(value.evidence.sources);
+const queryFromFormData = (form: HTMLFormElement): PlannerQuery => {
+  const params = new URLSearchParams();
+  for (const [key, value] of new FormData(form)) {
+    if (typeof value === "string") params.append(key, value);
+  }
+  const query: PlannerQuery = {};
+  for (const key of new Set(params.keys())) {
+    const values = params.getAll(key);
+    query[key] = values.length === 1 ? values[0] : values;
+  }
+  return query;
+};
 
 const publicError = (
   code: PlannerErrorCodeV2,
@@ -141,8 +129,8 @@ const focusTarget = (selector: string): void => {
 export function PlannerClient({
   autoSearch,
   defaults,
+  earliestStartToday,
   hubOrigin,
-  initialSearchData,
   initialIntent,
   maxDate,
   minDate,
@@ -150,34 +138,27 @@ export function PlannerClient({
 }: {
   readonly autoSearch: boolean;
   readonly defaults: PlannerFormDefaults;
+  readonly earliestStartToday: string | null;
   readonly hubOrigin: string;
-  readonly initialSearchData?: SearchPlansDataV2;
   readonly initialIntent: PlannerIntentV2;
   readonly maxDate: string;
   readonly minDate: string;
   readonly packVersion: string;
 }) {
-  const [state, dispatch] = useReducer(plannerReducer, {
-    ...initialPlannerState,
-    ...(initialSearchData
-      ? {
-          candidateSetId: initialSearchData.candidateSetId,
-          intent: initialIntent,
-          phase: "planned" as const,
-          plan: initialSearchData.plan,
-        }
-      : {}),
-  });
+  const [state, dispatch] = useReducer(plannerReducer, initialPlannerState);
   const stateRef = useRef<PlannerState>(state);
   const operationLock = useRef(false);
   const autoSearchStarted = useRef(false);
-  const initialFocusDone = useRef(false);
   const [activities, setActivities] = useState<readonly PlannerActivity[]>([]);
   const [openEvidencePlaceId, setOpenEvidencePlaceId] = useState<string | null>(
     null,
   );
   const [changeSummary, setChangeSummary] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [formDefaults, setFormDefaults] = useState(defaults);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [connectionMode, setConnectionMode] =
+    useState<PlannerConnectionMode>("checking");
 
   stateRef.current = state;
 
@@ -191,10 +172,10 @@ export function PlannerClient({
   }, []);
 
   useEffect(() => {
-    if (!initialSearchData || initialFocusDone.current) return;
-    initialFocusDone.current = true;
-    focusTarget(".v2-plan-summary");
-  }, [initialSearchData]);
+    const reconcileHistory = () => globalThis.location.reload();
+    globalThis.addEventListener("popstate", reconcileHistory);
+    return () => globalThis.removeEventListener("popstate", reconcileHistory);
+  }, []);
 
   const envelopeContext = useCallback(
     () => ({
@@ -246,13 +227,46 @@ export function PlannerClient({
     [],
   );
 
+  const cancelledAction = useCallback(
+    (
+      name: PlannerV2ToolName,
+      transport: PlannerTransport,
+      message: string,
+    ): PlannerEnvelopeV2<never> => {
+      const envelope = failureEnvelope(publicError("CANCELLED", message, true));
+      recordActivity(name, transport, envelope);
+      return envelope;
+    },
+    [failureEnvelope, recordActivity],
+  );
+
+  const projectIntent = useCallback((intent: PlannerIntentV2) => {
+    const nextDefaults = plannerFormDefaultsFromIntent(intent);
+    setFormDefaults(nextDefaults);
+    setFormError(null);
+    const nextUrl = `/plan?${plannerSearchParamsFromDefaults(nextDefaults)}`;
+    if (
+      `${globalThis.location.pathname}${globalThis.location.search}` !== nextUrl
+    ) {
+      globalThis.history.pushState(null, "", nextUrl);
+    }
+  }, []);
+
   const find = useCallback(
     async (
       intent: PlannerIntentV2,
       transport: PlannerTransport,
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV2<SearchPlansDataV2>> => {
-      if (operationLock.current || plannerBusy(stateRef.current)) {
+      if (signal?.aborted) {
+        return cancelledAction(
+          "find_evening_plan",
+          transport,
+          "The planner request was cancelled.",
+        );
+      }
+      const previous = stateRef.current;
+      if (operationLock.current || plannerBusy(previous)) {
         const envelope = failureEnvelope(
           publicError(
             "CANCELLED",
@@ -264,8 +278,11 @@ export function PlannerClient({
         return envelope;
       }
       operationLock.current = true;
+      projectIntent(intent);
       setChangeSummary(null);
+      setOpenEvidencePlaceId(null);
       dispatch({ intent, type: "SEARCH_STARTED" });
+      const validationClock = new Date();
       let envelope: PlannerEnvelopeV2<SearchPlansDataV2>;
       try {
         const response = await fetch("/api/v2/plans/search", {
@@ -275,7 +292,16 @@ export function PlannerClient({
           ...(signal ? { signal } : {}),
         });
         envelope =
-          (await responseEnvelope(response, searchData)) ??
+          (await responseEnvelope(
+            response,
+            (value): value is SearchPlansDataV2 =>
+              validatePlannerV2SearchData(
+                value,
+                intent,
+                packVersion,
+                validationClock,
+              ),
+          )) ??
           failureEnvelope(
             publicError(
               "INTERNAL_ERROR",
@@ -297,11 +323,18 @@ export function PlannerClient({
         operationLock.current = false;
       }
 
+      if (signal?.aborted && envelope.ok) {
+        envelope = failureEnvelope(
+          publicError("CANCELLED", "The planner request was cancelled.", true),
+        );
+      }
+
       if (envelope.ok) {
         dispatch({
           candidateSetId: envelope.data.candidateSetId,
           plan: envelope.data.plan,
           type: "SEARCH_SUCCEEDED",
+          warnings: envelope.data.warnings,
         });
         focusTarget(".v2-plan-summary");
       } else {
@@ -312,12 +345,42 @@ export function PlannerClient({
               ? "SEARCH_EMPTY"
               : "SEARCH_FAILED",
         });
-        focusTarget(".v2-empty-state");
+        focusTarget(
+          previous.phase === "planned" && previous.plan
+            ? ".v2-plan-summary"
+            : ".v2-empty-state",
+        );
       }
       recordActivity("find_evening_plan", transport, envelope);
       return envelope;
     },
-    [failureEnvelope, recordActivity],
+    [
+      cancelledAction,
+      failureEnvelope,
+      packVersion,
+      projectIntent,
+      recordActivity,
+    ],
+  );
+
+  const submitPlannerForm = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const normalized = normalizePlannerQuery(
+        queryFromFormData(event.currentTarget),
+        new Date(),
+        maxDate,
+      );
+      if (normalized.invalid) {
+        setFormError(
+          "Choose a future 2–10 hour window, up to 5 non-conflicting interests, and a walking limit from 5 to 30 minutes.",
+        );
+        return;
+      }
+      setFormError(null);
+      void find(plannerIntentFromDefaults(normalized.defaults), "manual");
+    },
+    [find, maxDate],
   );
 
   const loadEvidence = useCallback(
@@ -325,13 +388,22 @@ export function PlannerClient({
       placeId: string,
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV2<PlaceEvidenceDataV2>> => {
+      if (signal?.aborted) {
+        return failureEnvelope(
+          publicError("CANCELLED", "The evidence request was cancelled.", true),
+        );
+      }
       try {
         const response = await fetch(
           `/api/v2/places/${encodeURIComponent(placeId)}/evidence`,
           signal ? { signal } : {},
         );
         return (
-          (await responseEnvelope(response, evidenceData)) ??
+          (await responseEnvelope(
+            response,
+            (value): value is PlaceEvidenceDataV2 =>
+              validatePlannerV2EvidenceData(value, placeId, packVersion),
+          )) ??
           failureEnvelope(
             publicError(
               "INTERNAL_ERROR",
@@ -352,7 +424,7 @@ export function PlannerClient({
         );
       }
     },
-    [failureEnvelope],
+    [failureEnvelope, packVersion],
   );
 
   const showEvidence = useCallback(
@@ -361,7 +433,15 @@ export function PlannerClient({
       transport: PlannerTransport,
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV2<PlaceEvidenceDataV2>> => {
+      if (signal?.aborted) {
+        return cancelledAction(
+          "show_place_evidence",
+          transport,
+          "The evidence request was cancelled.",
+        );
+      }
       const current = stateRef.current;
+      const sourcePlanId = current.plan?.planId;
       const matching =
         current.phase === "planned" &&
         current.candidateSetId === input.candidateSetId &&
@@ -382,22 +462,63 @@ export function PlannerClient({
         recordActivity("show_place_evidence", transport, envelope);
         return envelope;
       }
-      dispatch({ placeId: input.placeId, type: "EVIDENCE_STARTED" });
-      const envelope = await loadEvidence(input.placeId, signal);
+      if (!sourcePlanId) {
+        const envelope = failureEnvelope(
+          publicError("STALE_PLAN", "That place is not in the current plan."),
+        );
+        recordActivity("show_place_evidence", transport, envelope);
+        return envelope;
+      }
+      dispatch({
+        placeId: input.placeId,
+        planId: sourcePlanId,
+        type: "EVIDENCE_STARTED",
+      });
+      let envelope = await loadEvidence(input.placeId, signal);
+      if (signal?.aborted && envelope.ok) {
+        envelope = failureEnvelope(
+          publicError("CANCELLED", "The evidence request was cancelled.", true),
+        );
+      }
+      const latest = stateRef.current;
+      const stillCurrent =
+        latest.phase === "planned" &&
+        latest.plan?.planId === sourcePlanId &&
+        latest.plan.stops.some(({ place }) => place.placeId === input.placeId);
+      if (!stillCurrent && envelope.ok) {
+        envelope = failureEnvelope(
+          publicError(
+            "CANCELLED",
+            "The plan changed before evidence finished loading.",
+            true,
+          ),
+        );
+      }
       if (envelope.ok) {
         dispatch({
           evidence: envelope.data.evidence,
           placeId: input.placeId,
+          planId: sourcePlanId,
           type: "EVIDENCE_SUCCEEDED",
         });
         focusTarget(`#place-${input.placeId} .v2-source-details`);
       } else {
-        dispatch({ error: envelope.error, type: "EVIDENCE_FAILED" });
+        dispatch({
+          error: envelope.error,
+          planId: sourcePlanId,
+          type: "EVIDENCE_FAILED",
+        });
       }
       recordActivity("show_place_evidence", transport, envelope);
       return envelope;
     },
-    [failureEnvelope, loadEvidence, recordActivity, successEnvelope],
+    [
+      cancelledAction,
+      failureEnvelope,
+      loadEvidence,
+      recordActivity,
+      successEnvelope,
+    ],
   );
 
   const swap = useCallback(
@@ -406,12 +527,20 @@ export function PlannerClient({
       transport: PlannerTransport,
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV2<SwapPlanDataV2>> => {
+      if (signal?.aborted) {
+        return cancelledAction(
+          "swap_plan_stop",
+          transport,
+          "The replacement was cancelled.",
+        );
+      }
       const current = stateRef.current;
       const stopIndex = current.plan?.stops.findIndex(
         ({ place }) => place.placeId === input.targetPlaceId,
       );
+      const busy = operationLock.current || plannerBusy(current);
       if (
-        operationLock.current ||
+        busy ||
         current.phase !== "planned" ||
         current.candidateSetId !== input.candidateSetId ||
         current.plan?.planId !== input.planId ||
@@ -421,18 +550,20 @@ export function PlannerClient({
       ) {
         const envelope = failureEnvelope(
           publicError(
-            operationLock.current ? "CANCELLED" : "STALE_PLAN",
-            operationLock.current
+            busy ? "CANCELLED" : "STALE_PLAN",
+            busy
               ? "Another planner operation is already active."
               : "That stop is not in the current plan.",
-            operationLock.current,
+            busy,
           ),
         );
         recordActivity("swap_plan_stop", transport, envelope);
         return envelope;
       }
       operationLock.current = true;
+      setOpenEvidencePlaceId(null);
       dispatch({ type: "SWAP_STARTED" });
+      const validationClock = new Date();
       const request: SwapPlanInputV2 = {
         schemaVersion: PLANNER_SCHEMA_VERSION,
         candidateSetId: current.candidateSetId,
@@ -451,7 +582,14 @@ export function PlannerClient({
           ...(signal ? { signal } : {}),
         });
         envelope =
-          (await responseEnvelope(response, swapData)) ??
+          (await responseEnvelope(response, (value): value is SwapPlanDataV2 =>
+            validatePlannerV2SwapData(
+              value,
+              input,
+              packVersion,
+              validationClock,
+            ),
+          )) ??
           failureEnvelope(
             publicError(
               "INTERNAL_ERROR",
@@ -472,6 +610,11 @@ export function PlannerClient({
       } finally {
         operationLock.current = false;
       }
+      if (signal?.aborted && envelope.ok) {
+        envelope = failureEnvelope(
+          publicError("CANCELLED", "The replacement was cancelled.", true),
+        );
+      }
       if (envelope.ok) {
         const previousStop = current.plan.stops[stopIndex];
         const nextStop =
@@ -483,7 +626,12 @@ export function PlannerClient({
             `Replaced ${previousStop.place.name} with ${nextStop.place.name}. Reference total ¥${oldTotal.toLocaleString("en-US")} → ¥${nextTotal.toLocaleString("en-US")}; walking ${current.plan.totals.totalWalkMinutes} → ${envelope.data.plan.totals.totalWalkMinutes} min. Later times were recalculated.`,
           );
         }
-        dispatch({ plan: envelope.data.plan, type: "SWAP_SUCCEEDED" });
+        dispatch({
+          plan: envelope.data.plan,
+          type: "SWAP_SUCCEEDED",
+          warnings: envelope.data.warnings,
+        });
+        setOpenEvidencePlaceId(null);
         const changed =
           envelope.data.plan.stops[envelope.data.replacedStopIndex];
         if (changed) focusTarget(`#place-${changed.place.placeId}`);
@@ -493,7 +641,7 @@ export function PlannerClient({
       recordActivity("swap_plan_stop", transport, envelope);
       return envelope;
     },
-    [failureEnvelope, recordActivity],
+    [cancelledAction, failureEnvelope, packVersion, recordActivity],
   );
 
   const save = useCallback(
@@ -508,8 +656,17 @@ export function PlannerClient({
         status: string;
       }>
     > => {
+      if (signal?.aborted) {
+        return cancelledAction(
+          "save_plan",
+          transport,
+          "The save request was cancelled.",
+        );
+      }
       const current = stateRef.current;
+      const busy = operationLock.current || plannerBusy(current);
       if (
+        busy ||
         current.phase !== "planned" ||
         current.candidateSetId !== input.candidateSetId ||
         current.plan?.planId !== input.planId ||
@@ -517,11 +674,18 @@ export function PlannerClient({
         current.storagePending
       ) {
         const envelope = failureEnvelope(
-          publicError("STALE_PLAN", "Only the current plan can be saved."),
+          publicError(
+            busy ? "CANCELLED" : "STALE_PLAN",
+            busy
+              ? "Another planner operation is already active."
+              : "Only the current plan can be saved.",
+            busy,
+          ),
         );
         recordActivity("save_plan", transport, envelope);
         return envelope;
       }
+      operationLock.current = true;
       dispatch({ type: "SAVE_STARTED" });
       const evidence: Record<string, PlaceEvidenceV2> = {
         ...current.evidenceByPlace,
@@ -530,11 +694,24 @@ export function PlannerClient({
         if (evidence[stop.place.placeId]) continue;
         const loaded = await loadEvidence(stop.place.placeId, signal);
         if (!loaded.ok) {
+          operationLock.current = false;
           dispatch({ error: loaded.error, type: "SAVE_FAILED" });
           recordActivity("save_plan", transport, loaded);
           return loaded;
         }
         evidence[stop.place.placeId] = loaded.data.evidence;
+      }
+      if (signal?.aborted) {
+        operationLock.current = false;
+        const error = publicError(
+          "CANCELLED",
+          "The save request was cancelled.",
+          true,
+        );
+        const envelope = failureEnvelope(error);
+        dispatch({ error, type: "SAVE_FAILED" });
+        recordActivity("save_plan", transport, envelope);
+        return envelope;
       }
       const savedAt = new Date().toISOString();
       const record: SavedPlanRecordV2 = {
@@ -560,17 +737,43 @@ export function PlannerClient({
           type: "SAVE_FAILED",
         });
       }
+      operationLock.current = false;
       recordActivity("save_plan", transport, envelope);
       return envelope;
     },
-    [failureEnvelope, loadEvidence, recordActivity, successEnvelope],
+    [
+      cancelledAction,
+      failureEnvelope,
+      loadEvidence,
+      recordActivity,
+      successEnvelope,
+    ],
   );
 
   const deleteSaved = useCallback(
     (
       input: DeleteSavedPlanToolInputV2,
       transport: PlannerTransport,
+      signal?: AbortSignal,
     ): PlannerEnvelopeV2<{ deleted: boolean; savedPlanId: string }> => {
+      if (signal?.aborted) {
+        const envelope = failureEnvelope(
+          publicError("CANCELLED", "The delete request was cancelled.", true),
+        );
+        recordActivity("delete_saved_plan", transport, envelope);
+        return envelope;
+      }
+      if (operationLock.current || plannerBusy(stateRef.current)) {
+        const envelope = failureEnvelope(
+          publicError(
+            "CANCELLED",
+            "Another planner operation is already active.",
+            true,
+          ),
+        );
+        recordActivity("delete_saved_plan", transport, envelope);
+        return envelope;
+      }
       const result = deletePlanSnapshot(localStorage, input.planId);
       const envelope = result.ok
         ? successEnvelope({
@@ -606,20 +809,7 @@ export function PlannerClient({
         };
       }
       if (name === "find_evening_plan") return { ok: true as const };
-      if (name === "delete_saved_plan") {
-        const savedPlanId = (input as DeleteSavedPlanToolInputV2).planId;
-        return current.savedPlans.some(
-          (record) => record.savedPlanId === savedPlanId,
-        )
-          ? { ok: true as const }
-          : {
-              ok: false as const,
-              error: publicError(
-                "STALE_PLAN",
-                "That saved plan is not in this browser.",
-              ),
-            };
-      }
+      if (name === "delete_saved_plan") return { ok: true as const };
       const reference = input as SavePlanToolInputV2;
       return current.phase === "planned" &&
         current.candidateSetId === reference.candidateSetId &&
@@ -654,35 +844,57 @@ export function PlannerClient({
   };
 
   useEffect(() => {
-    if (!isWebMcpAvailable(document)) return;
-    const registration = registerPlannerV2Tools(
-      {
-        checkState: (name, input) =>
-          controllerRef.current.checkState(name, input),
-        deleteSaved: (input) =>
-          controllerRef.current.deleteSaved(input, "site-tool"),
-        find: (input, _transport, signal) =>
-          controllerRef.current.find(input, "site-tool", signal),
-        hubOrigin: globalThis.location.origin,
-        packVersion,
-        save: (input, _transport, signal) =>
-          controllerRef.current.save(input, "site-tool", signal),
-        showEvidence: (input, _transport, signal) =>
-          controllerRef.current.showEvidence(input, "site-tool", signal),
-        swap: (input, _transport, signal) =>
-          controllerRef.current.swap(input, "site-tool", signal),
+    if (!isWebMcpAvailable(document)) {
+      setConnectionMode("manual");
+      return;
+    }
+    setConnectionMode("connecting");
+    let active = true;
+    let registration: ReturnType<typeof registerPlannerV2Tools>;
+    try {
+      registration = registerPlannerV2Tools(
+        {
+          checkState: (name, input) =>
+            controllerRef.current.checkState(name, input),
+          deleteSaved: (input, _transport, signal) =>
+            controllerRef.current.deleteSaved(input, "site-tool", signal),
+          find: (input, _transport, signal) =>
+            controllerRef.current.find(input, "site-tool", signal),
+          hubOrigin: globalThis.location.origin,
+          packVersion,
+          save: (input, _transport, signal) =>
+            controllerRef.current.save(input, "site-tool", signal),
+          showEvidence: (input, _transport, signal) =>
+            controllerRef.current.showEvidence(input, "site-tool", signal),
+          swap: (input, _transport, signal) =>
+            controllerRef.current.swap(input, "site-tool", signal),
+        },
+        document,
+      );
+    } catch {
+      setConnectionMode("failed");
+      return;
+    }
+    void registration.ready.then(
+      () => {
+        if (active) setConnectionMode("connected");
       },
-      document,
+      () => {
+        registration.dispose();
+        if (active) setConnectionMode("failed");
+      },
     );
-    void registration.ready.catch(() => undefined);
-    return () => registration.dispose();
-  }, [hubOrigin, packVersion]);
+    return () => {
+      active = false;
+      registration.dispose();
+    };
+  }, [packVersion]);
 
   useEffect(() => {
-    if (!autoSearch || initialSearchData || autoSearchStarted.current) return;
+    if (!autoSearch || autoSearchStarted.current) return;
     autoSearchStarted.current = true;
     void find(initialIntent, "manual");
-  }, [autoSearch, find, initialIntent, initialSearchData]);
+  }, [autoSearch, find, initialIntent]);
 
   const plannerReference = useMemo(() => {
     if (!state.plan || !state.candidateSetId) return null;
@@ -702,7 +914,7 @@ export function PlannerClient({
         <Link className="wordmark" href="/" translate="no">
           SERENDIPITY<span aria-hidden="true">✦</span>
         </Link>
-        <PlannerConnectionStatus />
+        <PlannerConnectionStatus mode={connectionMode} />
       </header>
       <main className="v2-planner-main" id="planner-content">
         <div className="v2-planner-layout">
@@ -713,9 +925,13 @@ export function PlannerClient({
                 <strong>Adjust the plan</strong>
               </div>
               <PlannerForm
-                defaults={defaults}
+                defaults={formDefaults}
+                earliestStartToday={earliestStartToday}
+                error={formError}
+                key={plannerSearchParamsFromDefaults(formDefaults).toString()}
                 maxDate={maxDate}
                 minDate={minDate}
+                onSubmit={submitPlannerForm}
               />
             </div>
           </aside>
@@ -747,7 +963,8 @@ export function PlannerClient({
                 savedPlans={state.savedPlans}
                 storageCorrupt={state.storageCorrupt}
                 storagePending={state.storagePending}
-                swapping={state.phase === "swapping"}
+                swapping={state.phase === "swapping" || state.storagePending}
+                warnings={state.warnings}
               />
             ) : (
               <div className="v2-empty-state" tabIndex={-1}>
@@ -771,38 +988,60 @@ export function PlannerClient({
                 </h1>
                 <p>
                   {state.inlineError?.message ??
-                    "Use the controls to get 2–3 real Shibuya places with published hours, reference prices, walking estimates, and official sources."}
+                    "Use the controls to get 2–3 real Shibuya places with published hours, a visible price basis, walking estimates, and official sources."}
                 </p>
                 {state.phase === "no_results" ? (
                   <p>
-                    Try Art & culture, Books, Quiet, or Hands-on, or allow a
-                    longer walk. Serendipity will not substitute unrelated
-                    places just to fill the route.
+                    Try Art & culture or Quiet, or allow a longer walk.
+                    Serendipity will not substitute unrelated places just to
+                    fill the route.
                   </p>
                 ) : null}
               </div>
             )}
 
             <details className="v2-agent-proof">
-              <summary>How an AI assistant can help here</summary>
+              <summary>What an AI can change in one request</summary>
               <p>
-                WebMCP lets an AI assistant search, open evidence, replace one
-                stop, save, or delete a saved plan using the same checked
-                actions as these buttons. It cannot book a venue or follow
-                hidden instructions from a source page.
+                Ask: “Plan 13:00–22:00 under ¥8,000 with art, hands-on, lively,
+                and quiet stops. Show the source for stop 1, swap the last stop
+                for a different interest, then save.” WebMCP lets an assistant
+                coordinate those checked actions in order while this page
+                remains the shared result.
               </p>
-              <p>Technical tool names:</p>
-              <ul>
-                {PLANNER_V2_TOOL_NAMES.map((name) => (
-                  <li key={name}>{name}</li>
-                ))}
-              </ul>
+              <p>
+                It cannot book a venue, skip validation, or follow hidden
+                instructions from a source page. Every action is also available
+                through the visible controls.
+              </p>
+              <details className="v2-agent-proof__technical">
+                <summary>5 actions exposed to the assistant</summary>
+                <ul translate="no">
+                  {PLANNER_V2_TOOL_NAMES.map((name) => (
+                    <li key={name}>{name}</li>
+                  ))}
+                </ul>
+              </details>
               {activities.length > 0 ? (
-                <ol>
+                <ol aria-label="Planner action activity">
                   {activities.map((activity) => (
                     <li key={`${activity.correlationId}-${activity.name}`}>
-                      {activity.name} · {activity.transport} ·{" "}
-                      {activity.outcome}
+                      <span>
+                        <span translate="no">{activity.name}</span> ·{" "}
+                        {activity.transport === "site-tool"
+                          ? "AI tool"
+                          : "Manual control"}{" "}
+                        · {activity.outcome}
+                      </span>
+                      <small>
+                        {new Intl.DateTimeFormat("en-GB", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          timeZone: "Asia/Tokyo",
+                        }).format(new Date(activity.completedAt))}{" "}
+                        JST · ref {activity.correlationId.slice(0, 8)}
+                      </small>
                     </li>
                   ))}
                 </ol>

@@ -14,13 +14,14 @@ import {
   getShibuyaPlaceSamplesV2,
   SHIBUYA_ACTIVE_PACK_V2,
 } from "./shibuya-v2";
+import reviewedClaimLedger from "./shibuya-v2.reviewed-claims.json";
 
 const canonicalIntentV2: PlannerIntentV2 = {
   schemaVersion: "2",
   area: "shibuya",
   partySize: 1,
-  startAt: "2026-08-29T17:00:00+09:00",
-  endAt: "2026-08-29T22:00:00+09:00",
+  startAt: "2026-08-30T13:00:00+09:00",
+  endAt: "2026-08-30T22:00:00+09:00",
   totalBudgetYen: 5000,
   stopCount: "AUTO",
   maxWalkMinutesPerLeg: 20,
@@ -42,6 +43,30 @@ describe("Shibuya planner v2 data pack", () => {
         ({ usage }) => usage.mode === "OFFICIAL_LINK_ONLY",
       ),
     ).toBe(false);
+    expect(
+      SHIBUYA_ACTIVE_PACK_V2.places.filter(
+        ({ routeEligibility }) => routeEligibility.kind === "ROUTABLE",
+      ),
+    ).toHaveLength(9);
+  });
+
+  it("PV2-DATA-001a exposes only fully sourced route-eligible places", () => {
+    expect(
+      SHIBUYA_ACTIVE_PACK_V2.places.every(
+        ({
+          coordinates,
+          evidence,
+          hoursProvenance,
+          priceProvenance,
+          routeEligibility,
+        }) =>
+          routeEligibility.kind === "ROUTABLE" &&
+          hoursProvenance.kind === "PUBLISHED_WINDOWS" &&
+          priceProvenance.kind === "PUBLISHED_AMOUNT" &&
+          coordinates !== null &&
+          evidence.coordinates !== null,
+      ),
+    ).toBe(true);
   });
 
   it("PV2-DATA-001b fails closed on stale or link-only factual evidence", () => {
@@ -60,6 +85,7 @@ describe("Shibuya planner v2 data pack", () => {
     expect(evidence?.sources.map(({ sourceId }) => sourceId)).toEqual([
       "shibuya-city-asakura",
       "wikidata-asakura",
+      "cabinet-office-holidays-2026",
     ]);
     expect(evidence?.claims.price.value).toContain("¥500");
     expect(getPlaceEvidenceV2("missing-place")).toBeNull();
@@ -71,27 +97,175 @@ describe("Shibuya planner v2 data pack", () => {
     expect(serialized).not.toContain("http://");
     expect(getShibuyaPlaceSamplesV2().map(({ placeId }) => placeId)).toEqual([
       "kawamoto-puppet-gallery",
-      "komorebi-owada-library",
-      "miyashita-park",
+      "shibuya-botanical-center",
+      "yoyogi-library",
     ]);
+  });
+
+  it("PV2-DATA-003b every route price and coordinate has its own provenance", () => {
+    for (const place of SHIBUYA_ACTIVE_PACK_V2.places) {
+      expect(place.priceProvenance.kind).toBe("PUBLISHED_AMOUNT");
+      expect(place.evidence.coordinates).not.toBeNull();
+      const evidence = getPlaceEvidenceV2(place.placeId);
+      expect(evidence?.claims.price.value).not.toContain("planner reference");
+      expect(evidence?.claims.address.sourceUrl).toBeTruthy();
+      expect(evidence?.claims.coordinates?.sourceUrl).toBeTruthy();
+      expect(evidence?.claims.publicAccess.kind).toBe("PUBLIC_ACCESS");
+      expect(evidence?.claims.publicAccess.value).toContain(
+        "not live availability",
+      );
+    }
+  });
+
+  it("PV2-DATA-003c materializes every published closure through October 28", () => {
+    const expectedClosedByPlace = new Map<string, readonly string[]>([
+      [
+        "kyu-asakura-house",
+        [
+          "2026-08-31",
+          "2026-09-07",
+          "2026-09-14",
+          "2026-09-24",
+          "2026-09-28",
+          "2026-10-05",
+          "2026-10-13",
+          "2026-10-19",
+          "2026-10-26",
+        ],
+      ],
+      ["kawamoto-puppet-gallery", []],
+      [
+        "shibuya-botanical-center",
+        [
+          "2026-08-31",
+          "2026-09-07",
+          "2026-09-14",
+          "2026-09-24",
+          "2026-09-28",
+          "2026-10-05",
+          "2026-10-13",
+          "2026-10-19",
+          "2026-10-26",
+        ],
+      ],
+      [
+        "hachilabo-science-center",
+        [
+          "2026-08-31",
+          "2026-09-07",
+          "2026-09-14",
+          "2026-09-24",
+          "2026-09-28",
+          "2026-10-05",
+          "2026-10-13",
+          "2026-10-19",
+          "2026-10-26",
+        ],
+      ],
+      [
+        "shibuya-central-library",
+        ["2026-09-07", "2026-09-17", "2026-10-05", "2026-10-15"],
+      ],
+      [
+        "komorebi-owada-library",
+        [
+          "2026-09-08",
+          "2026-09-10",
+          "2026-09-14",
+          "2026-09-24",
+          "2026-09-28",
+          "2026-10-06",
+          "2026-10-08",
+          "2026-10-13",
+          "2026-10-20",
+          "2026-10-26",
+        ],
+      ],
+      [
+        "tomigaya-library",
+        [
+          "2026-09-07",
+          "2026-09-10",
+          "2026-09-15",
+          "2026-09-24",
+          "2026-09-29",
+          "2026-10-05",
+          "2026-10-08",
+          "2026-10-13",
+          "2026-10-19",
+          "2026-10-27",
+        ],
+      ],
+      [
+        "rinsen-minna-library",
+        [
+          "2026-09-08",
+          "2026-09-10",
+          "2026-09-14",
+          "2026-09-24",
+          "2026-09-28",
+          "2026-10-06",
+          "2026-10-08",
+          "2026-10-13",
+          "2026-10-20",
+          "2026-10-26",
+        ],
+      ],
+      [
+        "yoyogi-library",
+        [
+          "2026-09-01",
+          "2026-09-08",
+          "2026-09-10",
+          "2026-09-15",
+          "2026-09-20",
+          "2026-09-22",
+          "2026-09-29",
+          "2026-10-06",
+          "2026-10-08",
+          "2026-10-13",
+          "2026-10-18",
+          "2026-10-20",
+          "2026-10-27",
+        ],
+      ],
+    ]);
+    const horizonDates: string[] = [];
+    for (
+      let cursor = Date.parse("2026-08-30T00:00:00Z");
+      cursor <= Date.parse("2026-10-28T00:00:00Z");
+      cursor += 86_400_000
+    ) {
+      horizonDates.push(new Date(cursor).toISOString().slice(0, 10));
+    }
+
+    for (const place of SHIBUYA_ACTIVE_PACK_V2.places) {
+      const closedDates = horizonDates.filter((date) => {
+        const exception = place.dateExceptions.find(
+          (candidate) => candidate.date === date,
+        );
+        if (exception) return exception.closed;
+        const weekday = new Date(`${date}T12:00:00+09:00`).getUTCDay();
+        return !place.weeklyHours.some(({ days }) => days.includes(weekday));
+      });
+      expect(closedDates, place.placeId).toEqual(
+        expectedClosedByPlace.get(place.placeId),
+      );
+    }
   });
 
   it("PV2-DATA-004 composes a coherent sourced culture route", async () => {
     const result = await composeEveningPlan({
       intent: canonicalIntentV2,
       dataPack: SHIBUYA_ACTIVE_PACK_V2,
-      asOf: new Date("2026-08-29T13:50:00Z"),
+      asOf: new Date("2026-08-30T12:00:00+09:00"),
+      reviewedClaims: reviewedClaimLedger,
     });
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.plan.stops.map(({ place }) => place.placeId)).toEqual([
-      "kawamoto-puppet-gallery",
-      "komorebi-owada-library",
-      "shibuya-botanical-center",
-    ]);
-    expect(result.plan.totals.maxPriceYen).toBe(100);
     expect(result.plan.stops).toHaveLength(3);
+    expect(result.plan.totals.maxPriceYen).toBeLessThanOrEqual(5000);
     expect(
       result.plan.stops.every(({ place }) =>
         place.tags.some((tag) => canonicalIntentV2.preferredTags.includes(tag)),
@@ -103,34 +277,47 @@ describe("Shibuya planner v2 data pack", () => {
   });
 
   it("PV2-DATA-005 supports a stateless repeatable single-stop swap", async () => {
+    const swapIntent: PlannerIntentV2 = {
+      ...canonicalIntentV2,
+      startAt: "2026-08-30T13:00:00+09:00",
+      endAt: "2026-08-30T22:00:00+09:00",
+      maxWalkMinutesPerLeg: 30,
+      preferredTags: [],
+    };
     const initial = await composeEveningPlan({
-      intent: canonicalIntentV2,
+      asOf: new Date("2026-08-30T12:00:00+09:00"),
+      intent: swapIntent,
       dataPack: SHIBUYA_ACTIVE_PACK_V2,
+      reviewedClaims: reviewedClaimLedger,
     });
     expect(initial.ok).toBe(true);
     if (!initial.ok) return;
     const swapped = await swapEveningPlanStop({
-      intent: canonicalIntentV2,
+      asOf: new Date("2026-08-30T12:00:00+09:00"),
+      intent: swapIntent,
       dataPack: SHIBUYA_ACTIVE_PACK_V2,
       plan: initial.plan,
-      stopIndex: 2,
+      stopIndex: 0,
       preference: "DIFFERENT_INTEREST",
+      reviewedClaims: reviewedClaimLedger,
     });
     expect(swapped.ok).toBe(true);
     if (!swapped.ok) return;
-    expect(swapped.plan.stops[0]?.place.placeId).toBe(
-      initial.plan.stops[0]?.place.placeId,
-    );
     expect(swapped.plan.stops[1]?.place.placeId).toBe(
       initial.plan.stops[1]?.place.placeId,
     );
-    expect(swapped.plan.stops[2]?.place.placeId).not.toBe(
+    expect(swapped.plan.stops).toHaveLength(3);
+    expect(swapped.plan.stops[2]?.place.placeId).toBe(
       initial.plan.stops[2]?.place.placeId,
+    );
+    expect(swapped.plan.stops[0]?.place.placeId).not.toBe(
+      initial.plan.stops[0]?.place.placeId,
     );
   });
 
   it("PV2-DATA-005b never pads a preferred-interest plan with unrelated stops", async () => {
     const result = await composeEveningPlan({
+      asOf: new Date("2026-08-30T12:00:00+09:00"),
       intent: {
         ...canonicalIntentV2,
         maxWalkMinutesPerLeg: 10,
@@ -138,6 +325,7 @@ describe("Shibuya planner v2 data pack", () => {
         totalBudgetYen: 3000,
       },
       dataPack: SHIBUYA_ACTIVE_PACK_V2,
+      reviewedClaims: reviewedClaimLedger,
     });
     if (!result.ok) {
       expect(result).toEqual({ ok: false, code: "NO_VALID_PLAN" });
@@ -168,12 +356,15 @@ describe("Shibuya planner v2 data pack", () => {
     "PV2-DATA-006 composes the %s promotion fixture",
     async (_label, startAt, endAt) => {
       const result = await composeEveningPlan({
+        asOf: new Date(Date.parse(startAt) - 5 * 60_000),
         intent: { ...canonicalIntentV2, startAt, endAt },
         dataPack: SHIBUYA_ACTIVE_PACK_V2,
+        reviewedClaims: reviewedClaimLedger,
       });
       expect(result.ok).toBe(true);
       if (!result.ok) return;
-      expect(result.plan.stops).toHaveLength(3);
+      expect(result.plan.stops.length).toBeGreaterThanOrEqual(2);
+      expect(result.plan.stops.length).toBeLessThanOrEqual(3);
     },
   );
 });

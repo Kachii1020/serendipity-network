@@ -5,11 +5,14 @@ That license does not replace the terms attached to third-party data.
 
 ## Shibuya place data pack
 
-`apps/hub/data/shibuya.places.v2.json` is a curated database made available
-under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
-Its current place facts are derived from Shibuya City and Tokyo Metropolitan
-Government open data under CC BY 4.0-compatible terms. The pack's
-`dataLicense` and each source record contain the required attribution.
+`apps/hub/data/shibuya.places.v2.json` is a curated mixed-rights database. Its
+root license identifier is `MIXED-SEE-SOURCES`; each source record governs the
+facts attributed to that source. Actual Tokyo/Shibuya catalog data retains its
+declared open-data license, Wikidata records retain CC0, and short factual
+references to ordinary official portal pages are marked
+`OFFICIAL_FACT_REFERENCE`. That marker authorizes only bounded factual
+verification in this project; it is not a claim that the whole portal page is
+open-licensed.
 
 Station and coordinate facts imported from Wikidata remain available under the
 [Creative Commons CC0 1.0 dedication](https://creativecommons.org/publicdomain/zero/1.0/).
@@ -17,10 +20,12 @@ Project-authored summaries are available under
 [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)
 with attribution to `Serendipity Network contributors`.
 
-Every pack source declares its own license or explicit-permission basis. Those
-source-specific terms continue to apply. A source marked `OFFICIAL_LINK_ONLY`
-is used only as an outbound link and does not authorize copying its text,
-images, prices, hours, logos, or other content into the pack.
+Every pack source declares its own open-license, explicit-permission,
+official-fact-reference, or link-only basis. Those source-specific terms
+continue to apply. `OFFICIAL_FACT_REFERENCE` may support only the short factual
+fields named in its `factScope`; no source prose or media is copied. A source
+marked `OFFICIAL_LINK_ONLY` is used only as an outbound link and does not
+authorize copying its text, images, prices, hours, logos, or other content.
 
 If a later pack incorporates OpenStreetMap data, that derived database must
 adopt the [Open Data Commons Open Database License 1.0

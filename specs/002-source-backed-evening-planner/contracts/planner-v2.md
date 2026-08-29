@@ -47,8 +47,11 @@ type PlannerEnvelopeV2<T> =
 ```
 
 Every serialized response is at most 65,536 UTF-8 bytes and passes the shared
-public-payload safety scanner. `STORAGE_CORRUPT` and `STORAGE_UNAVAILABLE`
-preserve existing bytes and cross the Site Tool boundary only as safe messages.
+public-payload safety scanner. Timestamps must describe real Gregorian dates;
+values that JavaScript would normalize, such as `2026-09-31`, are invalid at
+the intent, pack, evidence, saved-snapshot, and envelope boundaries.
+`STORAGE_CORRUPT` and `STORAGE_UNAVAILABLE` preserve existing bytes and cross
+the Site Tool boundary only as safe messages.
 
 ## REST endpoints
 
@@ -92,11 +95,14 @@ type SwapPlanDataV2 = {
   plan: EveningPlanV2;
   replacedStopIndex: number;
   preference: "CHEAPER" | "LESS_WALKING" | "DIFFERENT_INTEREST";
+  warnings: string[];
 };
 ```
 
 The server preserves all non-target place IDs, recomputes the complete route,
-and returns `NO_REPLACEMENT` without changing the visible plan when none exists.
+returns the warning set for the replacement plan, and returns `NO_REPLACEMENT`
+without changing the visible plan when none exists. A successful swap replaces
+the prior warning set rather than merging warnings from a removed place.
 
 ### Evidence
 
@@ -118,8 +124,10 @@ type PlaceEvidenceDataV2 = {
     claims: {
       identity: EvidenceClaimV2;
       address: EvidenceClaimV2;
+      coordinates: EvidenceClaimV2 | null;
       hours: EvidenceClaimV2;
       price: EvidenceClaimV2;
+      publicAccess: EvidenceClaimV2;
       officialLink: EvidenceClaimV2;
     };
     sources: SourceRecordV2[];
@@ -127,14 +135,20 @@ type PlaceEvidenceDataV2 = {
 };
 ```
 
-Only sources used by that place are returned. Permission documents, raw source
-content, and the complete data pack never cross this boundary.
+Only sources used by that place are returned. This includes the place's
+supplemental official holiday/daily-calendar sources, which the visible UI
+labels as schedule-calendar evidence even when they are not the primary hours
+claim. Permission documents, raw source content, and the complete data pack
+never cross this boundary.
 
 ### HTTP behavior
 
 - Request body limit: 16,384 UTF-8 bytes.
 - Every response: `Cache-Control: no-store`, JSON UTF-8, and
   `X-Correlation-Id`.
+- Every success data object and every failure error object must have the exact
+  keys declared by its endpoint/tool contract. A safe-looking but malformed
+  success cannot be projected into UI state.
 - 200: success, `NO_VALID_PLAN`, or `NO_REPLACEMENT`.
 - 400: invalid JSON/schema/version/date semantics.
 - 404: `PLACE_NOT_FOUND`.
@@ -143,6 +157,24 @@ content, and the complete data pack never cross this boundary.
 - 500: `INTERNAL_ERROR` or normalized storage failure.
 - Search/swap/evidence perform no Provider, Supabase, scraping, or third-party
   runtime request.
+
+## Reviewed pack boundary
+
+The ACTIVE runtime pack has a build-time reviewed-claim ledger keyed by
+`packVersion`. The engine accepts the pack only when the ledger exactly matches:
+
+- pack status, generated/valid-through timestamps, and root data-license ID,
+  URL, and attribution;
+- Shibuya Station name, coordinates, and complete source metadata;
+- each place's identity, address, coordinates, hours/provenance/exceptions,
+  price/provenance, public-access eligibility, and official URL;
+- each referenced source's ID, URL, checked/published timestamps, title,
+  publisher, kind, complete usage/license/fact-scope object, and notes; and
+- all pack- and place-level official calendar sources.
+
+The reviewed ledger is a release artifact, not a public API response. Missing
+or mismatched review data fails closed as `STALE_DATA_PACK` before composition;
+changing only a source attribution or root data-license field is still drift.
 
 ## Top-level Site Tools
 
@@ -160,6 +192,8 @@ type FindEveningPlanToolOutputV2 = PlannerEnvelopeV2<SearchPlansDataV2>;
 - `readOnlyHint: true`
 - Uses the same search action as the visible primary CTA.
 - Atomically replaces the visible plan only after a validated success.
+- Projects the normalized intent into the same visible form and allowlisted URL
+  representation used by a manual search.
 - Does not save, navigate, reserve, or claim live availability.
 
 ### `show_place_evidence`
@@ -199,6 +233,8 @@ type SwapPlanStopToolOutputV2 = PlannerEnvelopeV2<SwapPlanDataV2>;
   the complete current intent to the REST swap contract.
 - A success changes exactly one place and then updates the visible plan.
 - Invalid/stale references and `NO_REPLACEMENT` preserve the prior plan.
+- A success replaces the visible freshness-warning set with the warning set in
+  the swap response.
 
 ### `save_plan`
 
@@ -252,10 +288,17 @@ type PlannerPhaseV2 =
   call returns `CANCELLED` before network or storage work.
 - Search clears the previous candidate set only when starting a deliberate new
   query. Swap failure retains the last stable plan.
-- Registered callbacks use the current controller reference and all five
-  registrations are disposed on unmount/Strict Mode remount.
-- Late results whose operation epoch/candidate-set ID no longer matches are
-  discarded.
+- Registered callbacks use the current controller reference. Registration is
+  all-or-none: if any of the five registrations throws or rejects, every prior
+  registration is disposed and the page remains in manual-controls mode.
+  Successful registrations are disposed on unmount/Strict Mode remount.
+- Evidence carries the source plan ID. A late evidence success/failure whose
+  plan ID no longer matches, including one arriving after search or swap, is
+  discarded and cannot enter a later saved snapshot.
 - `candidateSetId` and `planId` are deterministic hashes of validated public
   input/pack/selected place data. They are references, not credentials or
   authorization tokens.
+- Tool wrappers validate the exact success payload for their own tool and the
+  exact `{code,message,retryable}` failure before serialization. Unknown
+  credential-like keys, raw markup, cycles, oversize output, and cross-reference
+  mismatches normalize to a safe `INTERNAL_ERROR`.

@@ -1,6 +1,8 @@
 import Link from "next/link";
 
-import { PlannerForm, type PlannerFormDefaults } from "./planner-form";
+import { PlannerMaintenance } from "./planner-maintenance";
+import { PlannerForm } from "./planner-form";
+import type { PlannerFormDefaults } from "./planner-options";
 
 export type LandingSampleStop = {
   readonly category: string;
@@ -11,14 +13,20 @@ export type LandingSampleStop = {
 
 export function PlannerLanding({
   defaults,
+  available = true,
+  earliestStartToday,
   maxDate,
   minDate,
   sampleStops,
+  sourcePackValidThrough,
 }: {
+  readonly available?: boolean;
   readonly defaults: PlannerFormDefaults;
+  readonly earliestStartToday: string | null;
   readonly maxDate: string;
   readonly minDate: string;
   readonly sampleStops: readonly LandingSampleStop[];
+  readonly sourcePackValidThrough: string;
 }) {
   return (
     <div className="v2-site-shell">
@@ -39,12 +47,12 @@ export function PlannerLanding({
             <h1>A plan you can actually verify.</h1>
             <p className="v2-hero__lede">
               Pick a time, budget, and mood. Get a feasible route with published
-              hours, reference prices, walking estimates, and the source behind
-              every stop.
+              hours, a visible price basis, walking estimates, and the source
+              behind every stop.
             </p>
             <ul className="v2-promise-list">
               <li>Real place names and addresses</li>
-              <li>Price and opening-hours evidence</li>
+              <li>Price basis and opening-hours evidence</li>
               <li>Official links for the next step</li>
             </ul>
           </div>
@@ -54,17 +62,25 @@ export function PlannerLanding({
               <span>Start at Shibuya Station</span>
               <strong>Build one doable afternoon or evening</strong>
             </div>
-            <PlannerForm
-              defaults={defaults}
-              maxDate={maxDate}
-              minDate={minDate}
-            />
+            {available ? (
+              <PlannerForm
+                defaults={defaults}
+                earliestStartToday={earliestStartToday}
+                maxDate={maxDate}
+                minDate={minDate}
+              />
+            ) : (
+              <PlannerMaintenance
+                compact
+                validThrough={sourcePackValidThrough}
+              />
+            )}
           </div>
         </section>
 
         <section aria-labelledby="example-title" className="v2-example">
           <div>
-            <p className="v2-eyebrow">What comes back</p>
+            <p className="v2-eyebrow">Example output · not live availability</p>
             <h2 id="example-title">Places first. Proof beside them.</h2>
             <p>
               Serendipity combines published facts into one route; it does not
@@ -88,16 +104,30 @@ export function PlannerLanding({
 
         <section aria-labelledby="agent-title" className="v2-agent-story">
           <div>
-            <p className="v2-eyebrow">Human and agent, one plan</p>
+            <p className="v2-eyebrow">Why use an AI assistant?</p>
             <h2 id="agent-title">
-              Ask for a change. See the same page change.
+              One request can coordinate the whole revision.
             </h2>
           </div>
-          <p>
-            With WebMCP, an AI assistant can use the planner&apos;s validated
-            search, evidence, swap, and save actions instead of guessing at the
-            interface. Manual controls always remain available.
-          </p>
+          <div className="v2-agent-story__workflow">
+            <p className="v2-agent-request">
+              <span>Example request</span>
+              “Plan 13:00–22:00 under ¥8,000 with art, hands-on, lively, and
+              quiet stops. Show the source for stop 1, swap the last stop for a
+              different interest, and save only if it still fits.”
+            </p>
+            <ol aria-label="Actions coordinated from one request">
+              <li>Rebuild the route with all constraints</li>
+              <li>Check the evidence for the changed place</li>
+              <li>Replace only a stop that still fits</li>
+              <li>Save only after an explicit request</li>
+            </ol>
+            <p>
+              WebMCP gives the assistant 5 validated planner actions, so it can
+              complete that sequence without guessing at buttons or inventing
+              place facts. The same result stays visible and editable here.
+            </p>
+          </div>
         </section>
       </main>
 

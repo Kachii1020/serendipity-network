@@ -1,19 +1,11 @@
-export const PLANNER_INTEREST_OPTIONS = [
-  { label: "Art & culture", value: "art" },
-  { label: "Hands-on", value: "hands-on" },
-  { label: "Quiet", value: "quiet" },
-  { label: "Books", value: "books" },
-] as const;
+"use client";
 
-export type PlannerFormDefaults = {
-  readonly budget: number;
-  readonly date: string;
-  readonly end: string;
-  readonly excludedTags: readonly string[];
-  readonly interests: readonly string[];
-  readonly start: string;
-  readonly walk: number;
-};
+import { useState, type FormEventHandler } from "react";
+
+import {
+  PLANNER_INTEREST_OPTIONS,
+  type PlannerFormDefaults,
+} from "./planner-options";
 
 const timeOptions = (firstHour: number, lastHour: number) =>
   Array.from({ length: (lastHour - firstHour) * 2 + 2 }, (_, index) => {
@@ -23,18 +15,76 @@ const timeOptions = (firstHour: number, lastHour: number) =>
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
   });
 
+const exclusionOptions = [
+  ["alcohol", "Alcohol-focused"],
+  ["smoking", "Smoking"],
+  ["outdoors", "Outdoor stops"],
+] as const;
+
+const tagLabel = (value: string): string => {
+  const labels: Readonly<Record<string, string>> = {
+    "coffee-tea": "Coffee & tea",
+    "hands-on": "Hands-on",
+    viewpoint: "Viewpoint",
+  };
+  return labels[value] ?? value.charAt(0).toUpperCase() + value.slice(1);
+};
+
 export function PlannerForm({
   defaults,
+  earliestStartToday,
+  error,
   maxDate,
   minDate,
+  onSubmit,
 }: {
   readonly defaults: PlannerFormDefaults;
+  readonly earliestStartToday: string | null;
+  readonly error?: string | null;
   readonly maxDate: string;
   readonly minDate: string;
+  readonly onSubmit?: FormEventHandler<HTMLFormElement>;
 }) {
+  const [selectedDate, setSelectedDate] = useState(defaults.date);
+  const minimumStart = selectedDate === minDate ? earliestStartToday : "12:00";
+  const effectiveStart =
+    minimumStart && defaults.start < minimumStart
+      ? minimumStart
+      : defaults.start;
+  const visibleInterests = new Set<string>(
+    PLANNER_INTEREST_OPTIONS.map(({ value }) => value),
+  );
+  const visibleExclusions = new Set<string>(
+    exclusionOptions.map(([value]) => value),
+  );
+  const additionalInterests = defaults.interests.filter(
+    (value) => !visibleInterests.has(value),
+  );
+  const additionalExclusions = defaults.excludedTags.filter(
+    (value) => !visibleExclusions.has(value),
+  );
+  const startOptions = [
+    ...new Set([...timeOptions(12, 21), defaults.start]),
+  ].sort();
+  const endOptions = [
+    ...new Set([...timeOptions(14, 23), defaults.end]),
+  ].sort();
+  const budgetOptions = [...new Set([3000, 5000, 8000, defaults.budget])].sort(
+    (left, right) => left - right,
+  );
+  const walkOptions = [...new Set([10, 20, 30, defaults.walk])].sort(
+    (left, right) => left - right,
+  );
+
   return (
-    <form action="/plan" className="v2-planner-form" method="get">
+    <form
+      action="/plan"
+      className="v2-planner-form"
+      method="get"
+      onSubmit={onSubmit}
+    >
       <input name="auto" type="hidden" value="1" />
+      <input name="interests" type="hidden" value="none" />
       <div className="v2-form-row v2-form-row--three">
         <label>
           <span>Date</span>
@@ -43,15 +93,25 @@ export function PlannerForm({
             max={maxDate}
             min={minDate}
             name="date"
+            onChange={(event) => setSelectedDate(event.currentTarget.value)}
             required
             type="date"
           />
         </label>
         <label>
           <span>Start</span>
-          <select defaultValue={defaults.start} name="start" required>
-            {timeOptions(12, 21).map((value) => (
-              <option key={value} value={value}>
+          <select
+            defaultValue={effectiveStart}
+            key={selectedDate}
+            name="start"
+            required
+          >
+            {startOptions.map((value) => (
+              <option
+                disabled={minimumStart === null || value < minimumStart}
+                key={value}
+                value={value}
+              >
                 {value} JST
               </option>
             ))}
@@ -60,7 +120,7 @@ export function PlannerForm({
         <label>
           <span>Finish by</span>
           <select defaultValue={defaults.end} name="end" required>
-            {timeOptions(14, 23).map((value) => (
+            {endOptions.map((value) => (
               <option key={value} value={value}>
                 {value} JST
               </option>
@@ -72,7 +132,7 @@ export function PlannerForm({
       <fieldset className="v2-choice-group v2-choice-group--budget">
         <legend>Reference budget</legend>
         <div className="v2-chip-grid v2-chip-grid--budget">
-          {[3000, 5000, 8000].map((budget) => (
+          {budgetOptions.map((budget) => (
             <label key={budget}>
               <input
                 defaultChecked={defaults.budget === budget}
@@ -103,28 +163,45 @@ export function PlannerForm({
         </div>
       </fieldset>
 
+      {additionalInterests.length > 0 ? (
+        <fieldset className="v2-choice-group v2-applied-constraints">
+          <legend>Also requested by the current link or assistant</legend>
+          <div className="v2-chip-grid">
+            {additionalInterests.map((value) => (
+              <label key={value}>
+                <input
+                  defaultChecked
+                  name="interests"
+                  type="checkbox"
+                  value={value}
+                />
+                <span>{tagLabel(value)}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+
       <details className="v2-advanced">
         <summary>Walking and exclusions</summary>
         <div className="v2-advanced__body">
           <label>
             <span>Maximum walk between stops</span>
             <select defaultValue={defaults.walk} name="walk">
-              <option value="10">10 minutes</option>
-              <option value="20">20 minutes</option>
-              <option value="30">30 minutes</option>
+              {walkOptions.map((minutes) => (
+                <option key={minutes} value={minutes}>
+                  {minutes} minutes
+                </option>
+              ))}
             </select>
           </label>
           <fieldset>
             <legend>Leave out</legend>
             <div className="v2-check-list">
-              {[
-                ["alcohol", "Alcohol-focused"],
-                ["smoking", "Smoking"],
-                ["outdoors", "Outdoor stops"],
-              ].map(([value, label]) => (
+              {exclusionOptions.map(([value, label]) => (
                 <label key={value}>
                   <input
-                    defaultChecked={defaults.excludedTags.includes(value!)}
+                    defaultChecked={defaults.excludedTags.includes(value)}
                     name="exclude"
                     type="checkbox"
                     value={value}
@@ -133,6 +210,21 @@ export function PlannerForm({
                 </label>
               ))}
             </div>
+            {additionalExclusions.length > 0 ? (
+              <div className="v2-check-list v2-applied-constraints">
+                {additionalExclusions.map((value) => (
+                  <label key={value}>
+                    <input
+                      defaultChecked
+                      name="exclude"
+                      type="checkbox"
+                      value={value}
+                    />
+                    <span>{tagLabel(value)}</span>
+                  </label>
+                ))}
+              </div>
+            ) : null}
           </fieldset>
         </div>
       </details>
@@ -140,6 +232,11 @@ export function PlannerForm({
       <button className="v2-primary-action" type="submit">
         Build my evening <span aria-hidden="true">→</span>
       </button>
+      {error ? (
+        <p className="v2-inline-error" role="alert">
+          {error}
+        </p>
+      ) : null}
       <p className="v2-form-boundary">
         Solo · Shibuya Station start · listed admission/activity only · not live
         availability
