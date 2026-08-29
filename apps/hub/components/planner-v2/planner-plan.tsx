@@ -84,7 +84,7 @@ export function PlannerPlan({
       <article className="v2-plan-card">
         <header className="v2-plan-summary" tabIndex={-1}>
           <p className="v2-eyebrow">Your source-backed Shibuya plan</p>
-          <h1>{plan.stops.length} sourced stops. One feasible route.</h1>
+          <h1>{plan.stops.length} sourced stops. One schedule-fit route.</h1>
           <ul className="v2-plan-summary__meta" aria-label="Plan totals">
             <li>
               {price(plan.totals.minPriceYen, plan.totals.maxPriceYen)} of ¥
@@ -97,6 +97,10 @@ export function PlannerPlan({
             <li>{plan.totals.totalWalkMinutes} min estimated walking</li>
             <li>{plan.totals.stopCount} stops</li>
           </ul>
+          <p className="v2-reference-definition">
+            Reference prices cover only the listed admission or activity.
+            Transport, food, and optional purchases are not included.
+          </p>
           <p className="v2-plan-disclaimer">{plan.disclaimer}</p>
           {deadlineHeadroom > 0 ? (
             <p className="v2-plan-headroom">
@@ -117,11 +121,9 @@ export function PlannerPlan({
             const evidenceOpen = openEvidencePlaceId === stop.place.placeId;
             return (
               <li key={stop.place.placeId}>
-                {index > 0 ? (
-                  <p className="v2-travel-leg">
-                    {stop.travelLabel} · from {stop.travelOriginLabel}
-                  </p>
-                ) : null}
+                <p className="v2-travel-leg">
+                  {stop.travelLabel} · from {stop.travelOriginLabel}
+                </p>
                 <article
                   className="v2-stop"
                   data-position={stop.position}
@@ -192,7 +194,7 @@ export function PlannerPlan({
                     open={evidenceOpen}
                   >
                     <summary>
-                      Sources · checked {stop.sourceCheckedAt.slice(0, 10)}
+                      Sources · compared {stop.sourceCheckedAt.slice(0, 10)}
                     </summary>
                     {evidenceLoadingPlaceId === stop.place.placeId ? (
                       <p role="status">Loading source evidence…</p>
@@ -203,7 +205,7 @@ export function PlannerPlan({
                             <strong>{category(claim.kind)}</strong>
                             <span>{claim.value}</span>
                             <span>
-                              {claim.publisher} · checked{" "}
+                              {claim.publisher} · compared{" "}
                               {claim.checkedAt.slice(0, 10)}
                             </span>
                             <a

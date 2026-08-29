@@ -307,7 +307,7 @@ const scheduleRoute = (
   ).length;
   const matchesRequestedInterest =
     intent.preferredTags.length === 0 ||
-    places.some(({ tags }) =>
+    places.every(({ tags }) =>
       tags.some((tag) => intent.preferredTags.includes(tag)),
     );
   const hasUnrequestedExerciseFiller = places.some(
@@ -559,8 +559,8 @@ const materializePlan = async (
       openingFit: `Scheduled within published ${stop.openingLabel} hours.`,
       whyThisStop:
         matchedTags.length > 0
-          ? `Matches ${matchedTags.join(", ")} while keeping the route feasible.`
-          : `Adds a ${stop.place.category} stop while keeping the route feasible.`,
+          ? `Matches ${matchedTags.join(", ")} while keeping published hours and plan constraints aligned.`
+          : `Adds a ${stop.place.category} stop while keeping published hours and plan constraints aligned.`,
       sourcePublisher: source?.publisher ?? "Published source",
       sourceCheckedAt:
         [

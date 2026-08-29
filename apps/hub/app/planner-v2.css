@@ -191,12 +191,17 @@
 
 .v2-chip-grid label {
   cursor: pointer;
+  position: relative;
 }
 
 .v2-chip-grid input {
+  cursor: pointer;
+  height: 100%;
+  inset: 0;
   opacity: 0;
-  pointer-events: none;
   position: absolute;
+  width: 100%;
+  z-index: 1;
 }
 
 .v2-chip-grid label > span {
@@ -576,6 +581,13 @@
   line-height: 1.5;
   margin: 1.25rem 0 0;
   padding-left: 0.8rem;
+}
+
+.v2-reference-definition {
+  color: #4e4e4e;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  margin: 0.85rem 0 0;
 }
 
 .v2-plan-headroom,

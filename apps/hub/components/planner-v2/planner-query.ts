@@ -13,11 +13,11 @@ const walkValues = [10, 20, 30] as const;
 const exclusionValues = ["alcohol", "smoking", "outdoors"] as const;
 const interestValues = [
   ...PLANNER_INTEREST_OPTIONS.map(({ value }) => value),
-  "books",
   "coffee-tea",
   "food",
   "lively",
   "music",
+  "outdoors",
   "shopping",
   "viewpoint",
 ] as const;

@@ -88,10 +88,15 @@ describe("Shibuya planner v2 data pack", () => {
     expect(result.plan.stops.map(({ place }) => place.placeId)).toEqual([
       "kawamoto-puppet-gallery",
       "komorebi-owada-library",
-      "miyashita-park",
+      "shibuya-botanical-center",
     ]);
-    expect(result.plan.totals.maxPriceYen).toBe(0);
+    expect(result.plan.totals.maxPriceYen).toBe(100);
     expect(result.plan.stops).toHaveLength(3);
+    expect(
+      result.plan.stops.every(({ place }) =>
+        place.tags.some((tag) => canonicalIntentV2.preferredTags.includes(tag)),
+      ),
+    ).toBe(true);
     expect(result.plan.stops.every((stop) => stop.travelLabel.length > 0)).toBe(
       true,
     );
@@ -122,6 +127,25 @@ describe("Shibuya planner v2 data pack", () => {
     expect(swapped.plan.stops[2]?.place.placeId).not.toBe(
       initial.plan.stops[2]?.place.placeId,
     );
+  });
+
+  it("PV2-DATA-005b never pads a preferred-interest plan with unrelated stops", async () => {
+    const result = await composeEveningPlan({
+      intent: {
+        ...canonicalIntentV2,
+        maxWalkMinutesPerLeg: 10,
+        preferredTags: ["hands-on"],
+        totalBudgetYen: 3000,
+      },
+      dataPack: SHIBUYA_ACTIVE_PACK_V2,
+    });
+    if (!result.ok) {
+      expect(result).toEqual({ ok: false, code: "NO_VALID_PLAN" });
+      return;
+    }
+    expect(
+      result.plan.stops.every(({ place }) => place.tags.includes("hands-on")),
+    ).toBe(true);
   });
 
   it.each([

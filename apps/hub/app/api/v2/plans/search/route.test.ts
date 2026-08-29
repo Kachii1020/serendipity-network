@@ -17,7 +17,7 @@ const intent: PlannerIntentV2 = {
   totalBudgetYen: 5_000,
   stopCount: "AUTO",
   maxWalkMinutesPerLeg: 20,
-  preferredTags: ["art"],
+  preferredTags: ["art", "books", "quiet"],
   excludedTags: [],
 };
 

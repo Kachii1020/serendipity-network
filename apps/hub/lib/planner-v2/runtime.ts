@@ -134,7 +134,7 @@ const swapEveningPlan = async (
         code: swapped.code,
         message:
           swapped.code === "NO_REPLACEMENT"
-            ? "No honest replacement preserves the rest of this route and its constraints."
+            ? "No honest replacement preserves this stop and the current constraints. Try a different stop or adjust interests or walking distance."
             : "The displayed plan or place dataset changed. Build a fresh plan.",
         retryable: false,
       },

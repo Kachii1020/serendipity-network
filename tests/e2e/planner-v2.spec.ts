@@ -150,6 +150,9 @@ test("PV2-ST-001 exact five tools share find, evidence, swap, save, and delete s
 
   const found = await execute(page, "find_evening_plan", intent());
   expect(found).toMatchObject({ ok: true, schemaVersion: "2" });
+  expect((found.meta as { origin: string }).origin).toBe(
+    new URL(page.url()).origin,
+  );
   const foundData = found.data as {
     candidateSetId: string;
     plan: { planId: string; stops: Array<{ place: { placeId: string } }> };
@@ -179,6 +182,9 @@ test("PV2-ST-001 exact five tools share find, evidence, swap, save, and delete s
     targetPlaceId: target.place.placeId,
   });
   expect(swapped).toMatchObject({ ok: true });
+  await expect(
+    page.getByText(/Reference total .* walking .* min/),
+  ).toBeVisible();
   const swappedData = swapped.data as {
     candidateSetId: string;
     plan: { planId: string };
@@ -243,6 +249,9 @@ test("PV2-A11Y-002 honest no-result and runtime error remain accessible", async 
   await expect(
     page.getByRole("heading", { name: "Nothing verifiable fits yet." }),
   ).toBeVisible();
+  await expect(
+    page.getByText(/will not substitute unrelated places/),
+  ).toBeVisible();
   await expectNoMaterialAxeViolations(page);
 
   await page.route("**/api/v2/plans/search", (route) =>
@@ -273,4 +282,27 @@ test("PV2-A11Y-002 honest no-result and runtime error remain accessible", async 
     page.getByRole("heading", { name: "We could not build the plan." }),
   ).toBeVisible();
   await expectNoMaterialAxeViolations(page);
+});
+
+test("PV2-UI-003 no-result recovery preserves three explicit interests", async ({
+  page,
+}) => {
+  await page.goto(
+    `/plan?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=3000&walk=10&interests=hands-on&auto=1`,
+  );
+  await expect(
+    page.getByRole("heading", { name: "Nothing verifiable fits yet." }),
+  ).toBeVisible();
+  await page.getByRole("checkbox", { name: "Hands-on" }).uncheck();
+  await page.getByRole("checkbox", { name: "Art & culture" }).check();
+  await page.getByRole("checkbox", { name: "Quiet" }).check();
+  await page.getByRole("checkbox", { name: "Books" }).check();
+  await page.getByRole("button", { name: /Build my evening/ }).click();
+  await expect(page).toHaveURL(/interests=art/);
+  await expect(page).toHaveURL(/interests=quiet/);
+  await expect(page).toHaveURL(/interests=books/);
+  await expect(page.getByRole("checkbox", { name: "Books" })).toBeChecked();
+  await expect(
+    page.getByRole("heading", { name: /sourced stops/i }),
+  ).toBeVisible();
 });

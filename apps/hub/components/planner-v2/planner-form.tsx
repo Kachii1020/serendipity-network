@@ -15,6 +15,14 @@ export type PlannerFormDefaults = {
   readonly walk: number;
 };
 
+const timeOptions = (firstHour: number, lastHour: number) =>
+  Array.from({ length: (lastHour - firstHour) * 2 + 2 }, (_, index) => {
+    const totalMinutes = firstHour * 60 + index * 30;
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  });
+
 export function PlannerForm({
   defaults,
   maxDate,
@@ -41,27 +49,23 @@ export function PlannerForm({
         </label>
         <label>
           <span>Start</span>
-          <input
-            defaultValue={defaults.start}
-            max="21:30"
-            min="12:00"
-            name="start"
-            required
-            step="1800"
-            type="time"
-          />
+          <select defaultValue={defaults.start} name="start" required>
+            {timeOptions(12, 21).map((value) => (
+              <option key={value} value={value}>
+                {value} JST
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           <span>Finish by</span>
-          <input
-            defaultValue={defaults.end}
-            max="23:30"
-            min="14:00"
-            name="end"
-            required
-            step="1800"
-            type="time"
-          />
+          <select defaultValue={defaults.end} name="end" required>
+            {timeOptions(14, 23).map((value) => (
+              <option key={value} value={value}>
+                {value} JST
+              </option>
+            ))}
+          </select>
         </label>
       </div>
 
@@ -137,7 +141,7 @@ export function PlannerForm({
         Build my evening <span aria-hidden="true">→</span>
       </button>
       <p className="v2-form-boundary">
-        Solo · Shibuya Station start · published information, not live
+        Solo · Shibuya Station start · listed admission/activity only · not live
         availability
       </p>
     </form>

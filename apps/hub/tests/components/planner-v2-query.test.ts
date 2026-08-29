@@ -78,4 +78,27 @@ describe("planner v2 query boundary", () => {
       "2026-08-31T17:30:00+09:00",
     );
   });
+
+  it("preserves three unique supported interests without falling back", () => {
+    const result = normalizePlannerQuery(
+      {
+        auto: "1",
+        budget: "3000",
+        date: "2026-08-29",
+        end: "22:00",
+        interests: ["art", "books", "quiet"],
+        start: "17:00",
+        walk: "10",
+      },
+      clock,
+    );
+
+    expect(result.invalid).toBe(false);
+    expect(result.defaults.interests).toEqual(["art", "quiet", "books"]);
+    expect(result.normalized.getAll("interests")).toEqual([
+      "art",
+      "quiet",
+      "books",
+    ]);
+  });
 });

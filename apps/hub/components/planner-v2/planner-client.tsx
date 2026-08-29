@@ -157,7 +157,7 @@ export function PlannerClient({
     () => ({
       completedAt: new Date().toISOString(),
       correlationId: crypto.randomUUID(),
-      origin: new URL(hubOrigin).origin,
+      origin: globalThis.location?.origin ?? new URL(hubOrigin).origin,
       packVersion,
     }),
     [hubOrigin, packVersion],
@@ -620,7 +620,7 @@ export function PlannerClient({
           controllerRef.current.deleteSaved(input, "site-tool"),
         find: (input, _transport, signal) =>
           controllerRef.current.find(input, "site-tool", signal),
-        hubOrigin,
+        hubOrigin: globalThis.location.origin,
         packVersion,
         save: (input, _transport, signal) =>
           controllerRef.current.save(input, "site-tool", signal),
@@ -741,12 +741,14 @@ export function PlannerClient({
             )}
 
             <details className="v2-agent-proof">
-              <summary>How the agent uses this page</summary>
+              <summary>How an AI assistant can help here</summary>
               <p>
-                Five top-level Site Tools call the same validated controller as
-                these visible controls. No Provider iframe, reservation token,
-                or hidden booking claim is involved.
+                WebMCP lets an AI assistant search, open evidence, replace one
+                stop, save, or delete a saved plan using the same checked
+                actions as these buttons. It cannot book a venue or follow
+                hidden instructions from a source page.
               </p>
+              <p>Technical tool names:</p>
               <ul>
                 {PLANNER_V2_TOOL_NAMES.map((name) => (
                   <li key={name}>{name}</li>
