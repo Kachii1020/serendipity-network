@@ -1,18 +1,19 @@
 "use client";
 
+import type {
+  PlaceEvidenceDataV2,
+  PlaceEvidenceV2,
+  PlannerErrorCodeV2,
+  PlannerEnvelopeV2,
+  PlannerIntentV2,
+  SearchPlansDataV2,
+  SwapPlanDataV2,
+  SwapPlanInputV2,
+} from "@serendipity/contracts/planner-v2";
 import {
   PLANNER_SCHEMA_VERSION,
-  validateEveningPlanV2,
-  validatePlannerEnvelopeV2,
-  type PlaceEvidenceDataV2,
-  type PlaceEvidenceV2,
-  type PlannerErrorCodeV2,
-  type PlannerEnvelopeV2,
-  type PlannerIntentV2,
-  type SearchPlansDataV2,
-  type SwapPlanDataV2,
-  type SwapPlanInputV2,
-} from "@serendipity/contracts/planner-v2";
+  validatePlannerEnvelopeV2Client,
+} from "@serendipity/contracts/planner-v2-shared";
 import { isWebMcpAvailable } from "@serendipity/webmcp";
 import Link from "next/link";
 import {
@@ -65,16 +66,36 @@ type PlannerActivity = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+const eveningPlanData = (value: unknown): boolean =>
+  isRecord(value) &&
+  value.schemaVersion === PLANNER_SCHEMA_VERSION &&
+  typeof value.planId === "string" &&
+  typeof value.candidateSetId === "string" &&
+  typeof value.packVersion === "string" &&
+  isRecord(value.intent) &&
+  Array.isArray(value.stops) &&
+  value.stops.length >= 2 &&
+  value.stops.length <= 3 &&
+  value.stops.every(
+    (stop) =>
+      isRecord(stop) &&
+      isRecord(stop.place) &&
+      typeof stop.place.placeId === "string" &&
+      typeof stop.place.name === "string" &&
+      typeof stop.place.officialUrl === "string",
+  ) &&
+  isRecord(value.totals);
+
 const searchData = (value: unknown): value is SearchPlansDataV2 =>
   isRecord(value) &&
   typeof value.candidateSetId === "string" &&
-  validateEveningPlanV2(value.plan).ok &&
+  eveningPlanData(value.plan) &&
   Array.isArray(value.warnings);
 
 const swapData = (value: unknown): value is SwapPlanDataV2 =>
   isRecord(value) &&
   typeof value.candidateSetId === "string" &&
-  validateEveningPlanV2(value.plan).ok &&
+  eveningPlanData(value.plan) &&
   typeof value.replacedStopIndex === "number" &&
   typeof value.preference === "string";
 
@@ -97,8 +118,11 @@ const responseEnvelope = async <T,>(
 ): Promise<PlannerEnvelopeV2<T> | undefined> => {
   try {
     const value: unknown = await response.json();
-    const validated = validatePlannerEnvelopeV2(value, dataValidator);
-    return validated.ok ? validated.value : undefined;
+    return validatePlannerEnvelopeV2Client(value) &&
+      isRecord(value) &&
+      (!value.ok || dataValidator(value.data))
+      ? (value as PlannerEnvelopeV2<T>)
+      : undefined;
   } catch {
     return undefined;
   }

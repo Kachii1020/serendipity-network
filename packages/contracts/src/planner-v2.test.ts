@@ -10,6 +10,11 @@ import {
   validateShowPlaceEvidenceInputV2,
   validateSwapPlanInputV2,
 } from "./planner-v2";
+import {
+  plannerIntentV2ClientSchema,
+  validatePlannerEnvelopeV2Client,
+  validatePlannerIntentV2Client,
+} from "./planner-v2-shared";
 
 const intent = {
   schemaVersion: "2",
@@ -66,6 +71,31 @@ describe("planner v2 contracts", () => {
         { now },
       ).ok,
     ).toBe(false);
+  });
+
+  it("PV2-CT-003a keeps the lightweight Site Tool guard aligned", () => {
+    const now = new Date("2030-05-17T01:00:00Z");
+    expect(validatePlannerIntentV2Client(intent, now).ok).toBe(true);
+    expect(
+      validatePlannerIntentV2Client({ ...intent, totalBudgetYen: 30_001 }, now)
+        .ok,
+    ).toBe(false);
+    expect(plannerIntentV2ClientSchema.properties.stopCount).toEqual({
+      const: "AUTO",
+    });
+    expect(
+      validatePlannerEnvelopeV2Client({
+        data: {},
+        meta: {
+          completedAt: "2030-05-17T09:00:00.000Z",
+          correlationId: "client-envelope-1",
+          origin: "https://hub.test",
+          packVersion: "1.0.0",
+        },
+        ok: true,
+        schemaVersion: "2",
+      }),
+    ).toBe(true);
   });
 
   it("PV2-CT-003b enforces product budget, tag, and evening bounds", () => {

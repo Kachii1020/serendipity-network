@@ -1,14 +1,16 @@
 import {
-  PLANNER_SCHEMA_VERSION,
-  SWAP_PREFERENCES,
-  plannerIntentV2Schema,
-  validatePlannerEnvelopeV2,
-  validatePlannerIntentV2,
   type PlannerEnvelopeV2,
   type PlannerIntentV2,
   type PlannerPublicErrorV2,
 } from "@serendipity/contracts/planner-v2";
-import { assertPublicPayloadSafe } from "@serendipity/contracts";
+import {
+  PLANNER_SCHEMA_VERSION,
+  SWAP_PREFERENCES,
+  plannerIntentV2ClientSchema,
+  validatePlannerEnvelopeV2Client,
+  validatePlannerIntentV2Client,
+} from "@serendipity/contracts/planner-v2-shared";
+import { assertPublicPayloadSafe } from "@serendipity/contracts/public-safety";
 import {
   registerTool,
   type RegistrationHandle,
@@ -93,7 +95,7 @@ const idSchema = {
   pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
 } as const;
 
-export const findEveningPlanToolInputSchema = plannerIntentV2Schema;
+export const findEveningPlanToolInputSchema = plannerIntentV2ClientSchema;
 
 const referenceProperties = {
   schemaVersion: { const: PLANNER_SCHEMA_VERSION },
@@ -174,7 +176,7 @@ const validateReference = (
 
 const inputValidators: Record<PlannerV2ToolName, (value: unknown) => boolean> =
   {
-    find_evening_plan: (value) => validatePlannerIntentV2(value).ok,
+    find_evening_plan: (value) => validatePlannerIntentV2Client(value).ok,
     show_place_evidence: (value) =>
       validateReference(value, ["placeId"]) && validId(value.placeId),
     swap_plan_stop: (value) =>
@@ -226,7 +228,7 @@ const failureEnvelope = (
 });
 
 const validEnvelope = (value: unknown): boolean =>
-  validatePlannerEnvelopeV2(value).ok;
+  validatePlannerEnvelopeV2Client(value);
 
 const serializeResult = (
   value: unknown,
@@ -280,9 +282,10 @@ const createDefinition = <TInput extends PlannerV2ToolInput>(
   async execute(input, execution) {
     const validInput =
       options.name === "find_evening_plan"
-        ? validatePlannerIntentV2(input, {
-            now: (dependencies.clock ?? (() => new Date()))(),
-          }).ok
+        ? validatePlannerIntentV2Client(
+            input,
+            (dependencies.clock ?? (() => new Date()))(),
+          ).ok
         : inputValidators[options.name](input);
     if (!validInput) {
       const code =
@@ -316,7 +319,7 @@ const createDefinition = <TInput extends PlannerV2ToolInput>(
     if (!state.ok) {
       const stateEnvelope = failureEnvelope(state.error, dependencies);
       const safeStateError =
-        validatePlannerEnvelopeV2(stateEnvelope).ok &&
+        validatePlannerEnvelopeV2Client(stateEnvelope) &&
         assertPublicPayloadSafe(stateEnvelope).ok
           ? state.error
           : error(

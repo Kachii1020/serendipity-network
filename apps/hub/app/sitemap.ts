@@ -9,5 +9,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
       url: origin,
     },
+    {
+      changeFrequency: "weekly",
+      priority: 0.9,
+      url: `${origin}/plan`,
+    },
   ];
 }

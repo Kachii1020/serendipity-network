@@ -6,7 +6,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./hash": "./src/hash.ts",
-    "./planner-v2": "./src/planner-v2.ts"
+    "./planner-v2": "./src/planner-v2.ts",
+    "./planner-v2-shared": "./src/planner-v2-shared.ts",
+    "./public-safety": "./src/public-safety.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

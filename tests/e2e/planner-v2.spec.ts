@@ -29,7 +29,7 @@ const intent = () => ({
   excludedTags: ["alcohol", "smoking"],
   maxWalkMinutesPerLeg: 20,
   partySize: 1,
-  preferredTags: ["art", "books", "quiet"],
+  preferredTags: ["art", "books", "quiet", "lively"],
   schemaVersion: "2",
   startAt: `${tokyoDate()}T17:00:00+09:00`,
   stopCount: "AUTO",
@@ -297,10 +297,13 @@ test("PV2-UI-003 no-result recovery preserves three explicit interests", async (
   await page.getByRole("checkbox", { name: "Art & culture" }).check();
   await page.getByRole("checkbox", { name: "Quiet" }).check();
   await page.getByRole("checkbox", { name: "Books" }).check();
+  await page.getByText("Walking and exclusions", { exact: true }).click();
+  await page.locator("select[name='walk']").selectOption("20");
   await page.getByRole("button", { name: /Build my evening/ }).click();
   await expect(page).toHaveURL(/interests=art/);
   await expect(page).toHaveURL(/interests=quiet/);
   await expect(page).toHaveURL(/interests=books/);
+  await expect(page).toHaveURL(/walk=20/);
   await expect(page.getByRole("checkbox", { name: "Books" })).toBeChecked();
   await expect(
     page.getByRole("heading", { name: /sourced stops/i }),

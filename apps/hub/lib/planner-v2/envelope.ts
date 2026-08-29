@@ -8,7 +8,7 @@ import {
   type PlannerEnvelopeV2,
   type PlannerErrorCodeV2,
 } from "@serendipity/contracts/planner-v2";
-import { assertPublicPayloadSafe } from "@serendipity/contracts";
+import { assertPublicPayloadSafe } from "@serendipity/contracts/public-safety";
 
 export const PLANNER_V2_MAX_RESPONSE_BYTES = 65_536;
 

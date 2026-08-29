@@ -428,6 +428,31 @@ for (const sourceId of sourceById.keys()) {
   }
 }
 
+if (errors.length === 0 && process.argv.includes("--check-urls")) {
+  const urls = new Set([
+    ...sources.map(({ url }) => url),
+    ...places.map(({ officialUrl }) => officialUrl),
+  ]);
+  for (const url of urls) {
+    try {
+      const response = await globalThis.fetch(url, {
+        headers: { "user-agent": "SerendipitySourceAudit/2.0" },
+        redirect: "follow",
+        signal: globalThis.AbortSignal.timeout(10_000),
+      });
+      await response.body?.cancel();
+      if (response.status < 200 || response.status >= 400) {
+        fail(`source URL ${url}`, `returned HTTP ${response.status}`);
+      }
+    } catch (error) {
+      fail(
+        `source URL ${url}`,
+        error instanceof Error ? error.message : "request failed",
+      );
+    }
+  }
+}
+
 if (errors.length > 0) {
   console.error(`v2 source audit failed with ${errors.length} issue(s):`);
   for (const error of errors) console.error(`- ${error}`);
@@ -435,5 +460,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `v2 source audit passed: ${places.length} places, coordinate-derived walking, ${sources.length} sources`,
+  `v2 source audit passed: ${places.length} places, coordinate-derived walking, ${sources.length} sources${process.argv.includes("--check-urls") ? ", live URLs 200-399" : ""}`,
 );

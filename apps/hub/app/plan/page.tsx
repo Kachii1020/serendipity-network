@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/plan" },
   description:
     "Plan 2–3 real Shibuya stops with published evidence and official links.",
-  robots: { follow: true, index: false },
+  robots: { follow: true, index: true },
   title: "Build a source-backed Shibuya plan",
 };
 

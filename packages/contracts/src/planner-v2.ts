@@ -1,53 +1,22 @@
 import Ajv, { type ErrorObject, type ValidateFunction } from "ajv";
 import type { FromSchema } from "json-schema-to-ts";
 
-export const PLANNER_SCHEMA_VERSION = "2" as const;
-export const PLANNER_AREAS = ["shibuya"] as const;
-export const PLANNER_TAGS = [
-  "art",
-  "books",
-  "coffee-tea",
-  "food",
-  "music",
-  "shopping",
-  "viewpoint",
-  "hands-on",
-  "quiet",
-  "lively",
-  "alcohol",
-  "smoking",
-  "outdoors",
-] as const;
-export const PLACE_CATEGORIES_V2 = [
-  "heritage",
-  "library",
-  "park",
-  "fitness",
-  "pool",
-  "public-space",
-  "gallery",
-  "botanical",
-] as const;
-export const SWAP_PREFERENCES = [
-  "CHEAPER",
-  "LESS_WALKING",
-  "DIFFERENT_INTEREST",
-] as const;
-export const PLANNER_ERROR_CODES = [
-  "VALIDATION_ERROR",
-  "UNSUPPORTED_SCHEMA_VERSION",
-  "CANCELLED",
-  "NO_VALID_PLAN",
-  "NO_REPLACEMENT",
-  "PLACE_NOT_FOUND",
-  "STALE_DATA_PACK",
-  "STALE_PLAN",
-  "ALREADY_SAVED",
-  "STORAGE_LIMIT_REACHED",
-  "STORAGE_UNAVAILABLE",
-  "STORAGE_CORRUPT",
-  "INTERNAL_ERROR",
-] as const;
+import {
+  PLACE_CATEGORIES_V2,
+  PLANNER_ERROR_CODES,
+  PLANNER_SCHEMA_VERSION,
+  PLANNER_TAGS,
+  SWAP_PREFERENCES,
+} from "./planner-v2-shared";
+
+export {
+  PLACE_CATEGORIES_V2,
+  PLANNER_AREAS,
+  PLANNER_ERROR_CODES,
+  PLANNER_SCHEMA_VERSION,
+  PLANNER_TAGS,
+  SWAP_PREFERENCES,
+} from "./planner-v2-shared";
 
 const timestampV2Schema = {
   type: "string",
