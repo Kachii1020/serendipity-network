@@ -68,7 +68,7 @@
       state; save evidence under this specification — verifies SC-201–SC-203,
       SC-205–SC-206, V2-REG-001–002, and all required local matrix rows.
 
-- [ ] **T209** Deploy Hub preview only, replay the exact
+- [x] **T209** Deploy Hub preview only, replay the exact
       `find → evidence → swap → save → delete` path 3/3, run five cold synthetic
       goals, promote the audited pack to ACTIVE, then deploy Hub production and run
       20 read-only journeys with search p95 ≤3s and external mutations 0; stop and
@@ -95,6 +95,23 @@
 - Direct visual inspection at 1440×900 and 390×844 found no console errors;
   mobile CTA is inside the first viewport and result focus lands on the sourced
   plan summary.
+
+## Production implementation evidence — 2026-08-30
+
+- T209: final deployment `dpl_4LBiYvg2NP1KEq4WLT1Pry1u4C2b` is READY in
+  `hnd1` at the fixed production alias.
+- Production V2 browser suite passes 6/6; the exact five-tool
+  `find → evidence → swap → save → delete` path passes 3/3 fresh contexts.
+- Production read-only reliability passes 20/20 with p95 876ms, max 1036ms,
+  and 20 unique correlations.
+- Production security passes 54 public assets plus 5/5 runtime/header cases;
+  live source URLs all return 200–399.
+- Lighthouse passes `/` at 97/100/100/100 and SSR `/plan` at
+  98/100/100/100; planner LCP 2414ms, TBT 14ms, CLS 0.00078.
+- Five synthetic visible-UI runs yield 4/5 goal completion; all discovered
+  truth, recovery, source-copy, locale, and interest-persistence defects are
+  covered by the final code and regression suite.
+- Full evidence: `evidence/production-closure-2026-08-30.md`.
 
 ## Stop-loss
 
