@@ -225,6 +225,25 @@ test("PV2-SEC-001 source-backed planner exposes only safe IDs, evidence, and HTT
 
   await page.goto("/plan");
   await expect(page.locator("iframe")).toHaveCount(0);
+  await expect
+    .poll(() =>
+      page.evaluate(async () => {
+        const context = (
+          document as Document & { readonly modelContext?: SecurityPageContext }
+        ).modelContext;
+        if (!context) return [];
+        return (await context.getTools()).map(({ name }) => name).sort();
+      }),
+    )
+    .toEqual(
+      [
+        "delete_saved_plan",
+        "find_evening_plan",
+        "save_plan",
+        "show_place_evidence",
+        "swap_plan_stop",
+      ].sort(),
+    );
   const evidence = await page.evaluate(async (input) => {
     const context = (
       document as Document & { readonly modelContext?: SecurityPageContext }
