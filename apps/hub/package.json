@@ -1,0 +1,30 @@
+{
+  "name": "@serendipity/hub",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev -p 3100",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@serendipity/bundle-engine": "workspace:*",
+    "@serendipity/contracts": "workspace:*",
+    "@serendipity/provider-config": "workspace:*",
+    "@serendipity/test-fixtures": "workspace:*",
+    "@serendipity/ui": "workspace:*",
+    "@serendipity/webmcp": "workspace:*",
+    "@supabase/supabase-js": "^2.0.0",
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "server-only": "^0.0.1",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.0"
+  }
+}

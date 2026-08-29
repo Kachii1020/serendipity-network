@@ -1,0 +1,37 @@
+# Credentials and machine-specific environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies, caches, and build output
+node_modules/
+.pnpm-store/
+.turbo/
+**/.turbo/
+.next/
+.next-*/
+**/.next/
+**/.next-*/
+coverage/
+*.tsbuildinfo
+
+# Test and generated evidence output
+artifacts/
+playwright-report/
+test-results/
+specs/001-serendipity-network/evidence/artifacts/
+
+# Local tools, work areas, and deployment metadata
+.lazyweb/
+.playwright-cli/
+.vercel/
+work/
+codexHackathon/
+
+# Supabase local runtime state (migrations, seed, and tests stay tracked)
+supabase/.branches/
+supabase/.temp/
+
+# Editor and operating-system files
+.DS_Store
+*.log

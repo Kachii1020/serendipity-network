@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "@serendipity/bundle-engine": ["packages/bundle-engine/src/index.ts"],
+      "@serendipity/contracts": ["packages/contracts/src/index.ts"],
+      "@serendipity/test-fixtures": ["packages/test-fixtures/src/index.ts"]
+    },
+    "types": ["node"]
+  },
+  "include": ["**/*.ts"]
+}

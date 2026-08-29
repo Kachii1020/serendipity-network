@@ -1,0 +1,25 @@
+:root {
+  --serendipity-canvas: #dceeff;
+  --serendipity-paper: #ffffff;
+  --serendipity-ink: #000000;
+  --serendipity-outline: #000000;
+  --serendipity-action: #5c4ade;
+  --serendipity-action-ink: #ffffff;
+  --serendipity-soft-lavender: #e9ccff;
+  --serendipity-focus: #5c4ade;
+  --serendipity-kiln: #55db9c;
+  --serendipity-nori: #ffd731;
+  --serendipity-loop: #fb8050;
+  --serendipity-status-neutral: #ffffff;
+  --serendipity-status-working: #e9ccff;
+  --serendipity-status-success: #c8f4dc;
+  --serendipity-status-warning: #fff0a8;
+  --serendipity-status-danger: #ffd2d2;
+  --serendipity-status-unknown: #e6e6e6;
+  --serendipity-control-min-height: 52px;
+  --serendipity-primary-min-height: 60px;
+  --serendipity-focus-width: 3px;
+  --serendipity-focus-offset: 2px;
+  --serendipity-card-radius: 28px;
+  --serendipity-pill-radius: 999px;
+}

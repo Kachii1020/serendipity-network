@@ -1,0 +1,51 @@
+{
+  "name": "serendipity-network",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "dev": "turbo run dev --parallel",
+    "dev:phase0": "node scripts/dev-phase0.mjs",
+    "db:lint": "supabase db lint --local --level error",
+    "db:reset": "supabase db reset --local",
+    "db:start": "supabase start",
+    "db:test": "supabase test db --local",
+    "demo:reset:production": "node scripts/demo-reset-production.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run",
+    "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
+    "test:phase0": "playwright test tests/phase0",
+    "test:phase0:headed": "playwright test tests/phase0 --headed",
+    "test:security": "node scripts/scan-public-assets.mjs && playwright test tests/security/security.spec.ts",
+    "test:visual": "playwright test tests/e2e/visual.spec.ts",
+    "test:provider-api:local": "node scripts/test-provider-api-local.mjs",
+    "typecheck": "turbo run typecheck",
+    "validate:env": "node scripts/validate-env.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^9.30.0",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.0",
+    "eslint": "^9.30.0",
+    "next": "^16.0.0",
+    "pg": "^8.16.0",
+    "prettier": "^3.6.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "supabase": "^2.0.0",
+    "tsx": "^4.20.0",
+    "turbo": "^2.5.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.35.0",
+    "vitest": "^3.2.0"
+  }
+}

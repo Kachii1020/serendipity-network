@@ -1,0 +1,89 @@
+{
+  "chromeVersion": "Google Chrome 151.0.7922.174",
+  "environment": "local-non-gating",
+  "executionEncodingCandidate": "json-string",
+  "exitCode": 0,
+  "hubOrigin": "http://localhost:3100",
+  "providerOrigins": ["http://localhost:3101", "http://localhost:3102"],
+  "reportParsed": true,
+  "run": 1,
+  "sanitized": true,
+  "tests": [
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-001 feature detection and P0-003 exact-origin frames"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-002 Strict Mode leaves one live Hub registration per name"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-005/007 discovery requests only exposed exact origins"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-004 missing iframe permission fails closed"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-006 omitted exposedTo does not fall back to wildcard"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-008 direct reads return envelopes and update iframe UI"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-009 in-memory holds are idempotent and visibly decrement once"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-010 nested Hub read executes both Provider tools"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-011 nested mutation occurs once across both Providers"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-012 Provider failures are normalized"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-013 timeout aborts bounded Provider work"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-014 iframe reload invalidates and rediscovers tools"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-015 duplicate name from wrong origin is ignored"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-016 read-only probe records accepted executeTool encodings"
+    },
+    {
+      "expectedStatus": "passed",
+      "outcome": "expected",
+      "title": "P0-015 security headers use origin isolation and exact policies"
+    }
+  ],
+  "timestamp": "2026-08-27T07:52:09.435Z"
+}

@@ -1,0 +1,94 @@
+.serendipity-button {
+  align-items: center;
+  background: var(--serendipity-paper);
+  border: 1px solid var(--serendipity-outline);
+  border-radius: var(--serendipity-pill-radius);
+  color: var(--serendipity-ink);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 750;
+  justify-content: center;
+  min-height: var(--serendipity-control-min-height);
+  padding: 0.75rem 1.5rem;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.serendipity-button[data-variant="primary"] {
+  background: var(--serendipity-action);
+  box-shadow: 3px 3px 0 var(--serendipity-outline);
+  color: var(--serendipity-action-ink);
+  min-height: var(--serendipity-primary-min-height);
+}
+
+.serendipity-button[data-variant="quiet"] {
+  background: transparent;
+  border-color: transparent;
+}
+
+.serendipity-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.serendipity-button:active:not(:disabled) {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+.serendipity-button:focus-visible,
+.serendipity-status:focus-visible {
+  outline: var(--serendipity-focus-width) solid var(--serendipity-focus);
+  outline-offset: var(--serendipity-focus-offset);
+}
+
+.serendipity-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.serendipity-status {
+  align-items: center;
+  background: var(--serendipity-status-neutral);
+  border: 1px solid var(--serendipity-outline);
+  border-radius: var(--serendipity-pill-radius);
+  color: var(--serendipity-ink);
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 700;
+  gap: 0.4rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.75rem;
+}
+
+.serendipity-status[data-tone="working"] {
+  background: var(--serendipity-status-working);
+}
+
+.serendipity-status[data-tone="success"] {
+  background: var(--serendipity-status-success);
+}
+
+.serendipity-status[data-tone="warning"] {
+  background: var(--serendipity-status-warning);
+}
+
+.serendipity-status[data-tone="danger"] {
+  background: var(--serendipity-status-danger);
+}
+
+.serendipity-status[data-tone="unknown"] {
+  background: var(--serendipity-status-unknown);
+}
+
+.serendipity-status__icon {
+  display: inline-grid;
+  place-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .serendipity-button {
+    transition: none;
+  }
+}
