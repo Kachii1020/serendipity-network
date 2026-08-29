@@ -1,0 +1,13 @@
+Planning a spontaneous evening usually means opening several venue pages, then comparing hours, prices, locations, and walking time by hand.
+
+Serendipity turns that work into one source-backed Shibuya plan. A person chooses a date, time window, reference budget, interests, and a walking limit. The result contains two or three real places. Every stop shows its address, published opening window, reference price, estimated walk, and official link.
+
+Nothing here pretends to be a live booking. The price covers only the listed admission or activity, and every important fact opens to its evidence and comparison date.
+
+WebMCP is useful because an AI assistant can collaborate on this same page without scraping the interface. The top-level page exposes five validated actions. The agent finds a plan, opens evidence for a specific place, and asks for a one-stop replacement.
+
+The replacement keeps the other stops fixed and visibly recalculates the reference total, walking burden, and downstream times. Saving is explicit, browser-local, and never contacts a venue.
+
+Humans and agents use the same controller, while unsupported requests return an honest no-result instead of unrelated filler.
+
+Serendipity is a verifiable plan you can act on—not another technical proof of concept.

@@ -17,6 +17,7 @@
     "db:start": "supabase start",
     "db:test": "supabase test db --local",
     "demo:reset:production": "node scripts/demo-reset-production.mjs",
+    "demo:record:v2": "node scripts/record-v2-demo.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",

@@ -88,5 +88,8 @@ not human usability evidence.
 - Public repository: <https://github.com/Kachii1020/serendipity-network> —
   public, default branch `main`, GitHub License API detects `MIT`.
 - Record and publish the public YouTube demo under three minutes.
+  The finished 72.95-second narrated MP4 and exact upload metadata are recorded
+  in [youtube-upload.md](youtube-upload.md); browser authentication is the only
+  blocker.
 - Run the official in-app Site Tools client when the account exposes it; Chrome
   WebMCP is already an allowed and production-verified path.

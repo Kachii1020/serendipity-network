@@ -113,6 +113,13 @@
   covered by the final code and regression suite.
 - Full evidence: `evidence/production-closure-2026-08-30.md`.
 
+T210 packaging update: the public repository is live at
+`https://github.com/Kachii1020/serendipity-network`, default `main`, with MIT
+detected by GitHub's License API. The 72.95-second English narrated demo is
+complete at `artifacts/submission/serendipity-v2-demo.mp4`; public YouTube
+upload remains open only because the available browser could not complete
+Google authentication. See `evidence/youtube-upload.md`.
+
 ## Stop-loss
 
 - If the four-hour source spike cannot prove rights and reference prices for a
