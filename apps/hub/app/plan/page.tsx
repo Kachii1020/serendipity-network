@@ -3,6 +3,7 @@ import {
   type PlannerIntentV2,
   type PlannerTag,
 } from "@serendipity/contracts/planner-v2";
+import { composeEveningPlan } from "@serendipity/bundle-engine/planner-v2";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
@@ -51,12 +52,28 @@ export default async function PlanPage({
     stopCount: "AUTO",
     totalBudgetYen: normalized.defaults.budget,
   };
+  const initialComposition = normalized.autoSearch
+    ? await composeEveningPlan({
+        asOf: new Date(),
+        dataPack: SHIBUYA_ACTIVE_PACK_V2,
+        intent,
+      })
+    : null;
+  const initialSearchData =
+    initialComposition?.ok === true
+      ? {
+          candidateSetId: initialComposition.plan.candidateSetId,
+          plan: initialComposition.plan,
+          warnings: initialComposition.warnings,
+        }
+      : undefined;
 
   return (
     <PlannerClient
-      autoSearch={normalized.autoSearch}
+      autoSearch={normalized.autoSearch && !initialSearchData}
       defaults={normalized.defaults}
       hubOrigin={process.env.NEXT_PUBLIC_HUB_ORIGIN ?? "http://localhost:3100"}
+      {...(initialSearchData ? { initialSearchData } : {})}
       initialIntent={intent}
       maxDate={normalized.maxDate}
       minDate={normalized.minDate}

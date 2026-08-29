@@ -142,6 +142,7 @@ export function PlannerClient({
   autoSearch,
   defaults,
   hubOrigin,
+  initialSearchData,
   initialIntent,
   maxDate,
   minDate,
@@ -150,15 +151,27 @@ export function PlannerClient({
   readonly autoSearch: boolean;
   readonly defaults: PlannerFormDefaults;
   readonly hubOrigin: string;
+  readonly initialSearchData?: SearchPlansDataV2;
   readonly initialIntent: PlannerIntentV2;
   readonly maxDate: string;
   readonly minDate: string;
   readonly packVersion: string;
 }) {
-  const [state, dispatch] = useReducer(plannerReducer, initialPlannerState);
+  const [state, dispatch] = useReducer(plannerReducer, {
+    ...initialPlannerState,
+    ...(initialSearchData
+      ? {
+          candidateSetId: initialSearchData.candidateSetId,
+          intent: initialIntent,
+          phase: "planned" as const,
+          plan: initialSearchData.plan,
+        }
+      : {}),
+  });
   const stateRef = useRef<PlannerState>(state);
   const operationLock = useRef(false);
   const autoSearchStarted = useRef(false);
+  const initialFocusDone = useRef(false);
   const [activities, setActivities] = useState<readonly PlannerActivity[]>([]);
   const [openEvidencePlaceId, setOpenEvidencePlaceId] = useState<string | null>(
     null,
@@ -176,6 +189,12 @@ export function PlannerClient({
       type: "SAVED_PLANS_LOADED",
     });
   }, []);
+
+  useEffect(() => {
+    if (!initialSearchData || initialFocusDone.current) return;
+    initialFocusDone.current = true;
+    focusTarget(".v2-plan-summary");
+  }, [initialSearchData]);
 
   const envelopeContext = useCallback(
     () => ({
@@ -660,10 +679,10 @@ export function PlannerClient({
   }, [hubOrigin, packVersion]);
 
   useEffect(() => {
-    if (!autoSearch || autoSearchStarted.current) return;
+    if (!autoSearch || initialSearchData || autoSearchStarted.current) return;
     autoSearchStarted.current = true;
     void find(initialIntent, "manual");
-  }, [autoSearch, find, initialIntent]);
+  }, [autoSearch, find, initialIntent, initialSearchData]);
 
   const plannerReference = useMemo(() => {
     if (!state.plan || !state.candidateSetId) return null;
