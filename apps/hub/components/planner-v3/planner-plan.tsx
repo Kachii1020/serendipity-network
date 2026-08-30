@@ -97,6 +97,7 @@ export function PlannerPlanV3({
   onSwap,
   openEvidencePlaceId,
   plan,
+  saveAnnouncement,
   saving,
   swapping,
   warnings,
@@ -108,6 +109,7 @@ export function PlannerPlanV3({
   readonly onSwap: (placeId: string, preference: SwapPreferenceV3) => void;
   readonly openEvidencePlaceId: string | null;
   readonly plan: EveningPlanV3;
+  readonly saveAnnouncement: string;
   readonly saving: boolean;
   readonly swapping: boolean;
   readonly warnings: readonly string[];
@@ -147,6 +149,14 @@ export function PlannerPlanV3({
           {time(plan.totals.startsAt)}–{time(plan.totals.endsAt)}
         </li>
       </ul>
+      <p className="v3-trust-note">
+        {plan.disclaimer} Walking times are coordinate estimates. Totals exclude
+        transport and any extras, tax, or service charges not listed by the
+        source.
+        {plan.totals.stopCount === 2
+          ? " This is a two-stop fallback because no third published-hours stop fit the selected time, budget, and walking limit."
+          : ""}
+      </p>
       {warnings.length > 0 ? (
         <p className="v3-warning" role="status">
           {warnings.join(" ")}
@@ -309,6 +319,9 @@ export function PlannerPlanV3({
         >
           {saving ? "Saving…" : "Save this plan"}
         </button>
+        <p aria-live="polite" className="v3-save-status" role="status">
+          {saveAnnouncement}
+        </p>
       </div>
       {changing ? (
         <ChangeStopDialog

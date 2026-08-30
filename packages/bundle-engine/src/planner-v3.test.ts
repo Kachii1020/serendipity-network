@@ -368,5 +368,20 @@ describe("planner v3 bundle engine", () => {
         asOf,
       }),
     ).toEqual({ ok: false, code: "STALE_PLAN" });
+
+    expect(
+      await swapEveningPlanStopV3({
+        schemaVersion: "3",
+        candidateSetId: initial.plan.candidateSetId,
+        planId: initial.plan.planId,
+        intent,
+        plan: initial.plan,
+        stopIndex: 0,
+        preference: "DIFFERENT_INTEREST",
+        dataPack: clean,
+        reviewedClaims: reviewedFor(clean),
+        asOf: new Date("2030-05-18T00:01:00+09:00"),
+      }),
+    ).toEqual({ ok: false, code: "STALE_PLAN" });
   });
 });

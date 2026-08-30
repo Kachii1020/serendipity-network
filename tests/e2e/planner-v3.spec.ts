@@ -174,6 +174,9 @@ test("PV3-UI-001 landing exposes useful choices without a dashboard wall", async
   await expect(
     page.getByRole("button", { name: /Build my Tokyo plan/ }),
   ).toBeVisible();
+  await expect(
+    page.getByText(/Site Tools let your AI compare hubs/),
+  ).toBeVisible();
   expect(await availableTools(page)).toEqual([]);
   const overflow = await page.evaluate(
     () =>
@@ -204,6 +207,9 @@ test("PV3-UI-002 manual route is full-width A-M-A with real menu pricing", async
     "open",
     "",
   );
+  await expect(
+    page.locator(".v3-adjust").first().locator(".v3-form"),
+  ).toBeHidden();
   const changeTrigger = page
     .getByRole("button", { name: "Change this stop" })
     .first();
@@ -214,6 +220,7 @@ test("PV3-UI-002 manual route is full-width A-M-A with real menu pricing", async
   await expect(changeTrigger).toBeFocused();
   const storageBefore = await page.evaluate(() => localStorage.length);
   await page.getByRole("button", { name: "Save this plan" }).click();
+  await expect(page.getByText("Plan saved in this browser.")).toBeVisible();
   await expect
     .poll(() => page.evaluate(() => localStorage.length))
     .toBeGreaterThan(storageBefore);
@@ -224,6 +231,39 @@ test("PV3-UI-002 manual route is full-width A-M-A with real menu pricing", async
     /priceRange|currentOpeningHours|googleMapsUri|attributions/,
   );
   await expectNoMaterialAxeViolations(page);
+});
+
+test("PV3-UI-003 honest two-stop fallback explains the reduction and fills the result width", async ({
+  page,
+}) => {
+  const params = new URLSearchParams({
+    area: "shinjuku",
+    auto: "1",
+    budget: "4000",
+    date: serviceDate(),
+    end: "22:30",
+    interest: "SURPRISE",
+    meal: "1",
+    party: "3",
+    start: "17:30",
+    walk: "20",
+  });
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await page.goto(`/v3/plan?${params}`);
+  await expect(
+    page.getByRole("heading", { name: "Your Shinjuku night" }),
+  ).toBeVisible();
+  await expect(page.locator(".v3-stop")).toHaveCount(2);
+  await expect(page.locator(".v3-trust-note")).toContainText(
+    "two-stop fallback",
+  );
+  const widths = await page.locator(".v3-route").evaluate((route) => ({
+    cards: [...route.querySelectorAll<HTMLElement>(".v3-stop")].map(
+      (card) => card.getBoundingClientRect().width,
+    ),
+    route: route.getBoundingClientRect().width,
+  }));
+  expect(widths.cards.every((width) => width >= widths.route * 0.4)).toBe(true);
 });
 
 test("PV3-ST-001 exact five tools coordinate find, evidence, meal swap, save, delete", async ({

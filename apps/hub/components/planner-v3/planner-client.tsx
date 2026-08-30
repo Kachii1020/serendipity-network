@@ -172,6 +172,7 @@ export function PlannerClientV3({
   >("checking");
   const [activities, setActivities] = useState<readonly ActivityV3[]>([]);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [saveAnnouncement, setSaveAnnouncement] = useState("");
   const [openEvidencePlaceId, setOpenEvidencePlaceId] = useState<string | null>(
     null,
   );
@@ -283,6 +284,7 @@ export function PlannerClientV3({
       }
       lock.current = true;
       setOpenEvidencePlaceId(null);
+      setSaveAnnouncement("");
       projectIntent(intent);
       dispatch({ intent, type: "SEARCH_STARTED" });
       let result: PlannerEnvelopeV3<SearchPlansDataV3>;
@@ -527,6 +529,7 @@ export function PlannerClientV3({
       }
       lock.current = true;
       setOpenEvidencePlaceId(null);
+      setSaveAnnouncement("");
       dispatch({ type: "SWAP_STARTED" });
       const request: SwapPlanInputV3 = {
         candidateSetId: current.candidateSetId,
@@ -619,6 +622,7 @@ export function PlannerClientV3({
         return result;
       }
       lock.current = true;
+      setSaveAnnouncement("");
       dispatch({ type: "SAVE_STARTED" });
       type SaveResult = PlannerEnvelopeV3<{
         savedAt: string;
@@ -726,6 +730,11 @@ export function PlannerClientV3({
             );
         if (stored.ok) {
           dispatch({ records: stored.records, type: "SAVE_SUCCEEDED" });
+          setSaveAnnouncement(
+            stored.status === "ALREADY_SAVED"
+              ? "This plan is already saved in this browser."
+              : "Plan saved in this browser.",
+          );
         } else {
           dispatch({
             error: publicError(
@@ -969,6 +978,7 @@ export function PlannerClientV3({
             }
             openEvidencePlaceId={openEvidencePlaceId}
             plan={state.plan}
+            saveAnnouncement={saveAnnouncement}
             saving={state.storagePending}
             swapping={state.phase === "swapping"}
             warnings={state.warnings}

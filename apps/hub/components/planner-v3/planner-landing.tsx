@@ -32,6 +32,10 @@ export function PlannerLandingV3({
             Pick Shibuya, Shinjuku, or Ikebukuro. Get an activity, an optional
             meal, and a final stop from published hours and official prices.
           </p>
+          <p className="v3-agent-note">
+            Site Tools let your AI compare hubs, inspect official menu evidence,
+            change one stop, and save the same visible plan.
+          </p>
         </div>
         <PlannerFormV3
           defaults={defaults}

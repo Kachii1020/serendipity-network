@@ -575,6 +575,9 @@ export const swapEveningPlanStopV3 = async (
     return { ok: false, code: "VALIDATION_ERROR" };
   }
   const asOf = input.asOf ?? new Date();
+  if (!validatePlannerIntentV3(input.intent, { now: asOf }).ok) {
+    return { ok: false, code: "STALE_PLAN" };
+  }
   const gate = validateActiveAreaDataPackV3(
     input.dataPack,
     input.reviewedClaims,
