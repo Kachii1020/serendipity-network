@@ -13,6 +13,7 @@ import {
 import { expect, test, type Page } from "@playwright/test";
 
 const fixedTime = new Date("2030-05-17T09:00:00Z");
+const v3FixedTime = new Date("2026-08-31T00:00:00Z");
 let bundle: BundleSummary;
 
 test.beforeAll(async () => {
@@ -50,6 +51,72 @@ async function stabilize(page: Page) {
   await page.addStyleTag({
     content:
       "nextjs-portal,[data-next-badge-root]{display:none!important}*{caret-color:transparent!important}",
+  });
+}
+
+async function stabilizeV3(page: Page, path = "/v3") {
+  await page.clock.install({ time: v3FixedTime });
+  await page.goto(path);
+  await page.addStyleTag({
+    content:
+      "nextjs-portal,[data-next-badge-root]{display:none!important}*{caret-color:transparent!important}",
+  });
+  await page.evaluate(() => document.fonts.ready);
+}
+
+const v3PlanPath =
+  "/v3/plan?auto=1&area=ikebukuro&party=3&budget=4000&date=2026-08-31&start=17%3A30&end=22%3A30&interest=CALM_QUIET&meal=1&walk=20";
+
+for (const viewport of [
+  { height: 900, name: "desktop", width: 1440 },
+  { height: 844, name: "mobile", width: 390 },
+]) {
+  test(`V3-VIS-006 v3 landing ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await stabilizeV3(page);
+    await expect(
+      page.getByRole("heading", { name: "A whole Tokyo night." }),
+    ).toBeVisible();
+    await expect(page).toHaveScreenshot(`v3-landing-${viewport.name}.png`, {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.01,
+    });
+  });
+
+  test(`V3-VIS-007 v3 result ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await stabilizeV3(page, v3PlanPath);
+    await expect(
+      page.getByRole("heading", { name: "Your Ikebukuro night" }),
+    ).toBeVisible();
+    await expect(page).toHaveScreenshot(`v3-result-${viewport.name}.png`, {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.01,
+    });
+  });
+}
+
+for (const viewport of [
+  { height: 900, name: "desktop", width: 1440 },
+  { height: 844, name: "mobile", width: 390 },
+]) {
+  test(`V3-VIS-008 v3 progress ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.route("**/api/v3/plans/search", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1_000));
+      await route.continue();
+    });
+    await stabilizeV3(page, "/v3/plan");
+    await page.locator(".v3-adjust summary").first().click();
+    await page.getByRole("button", { name: /Build my Tokyo plan/ }).click();
+    await page.waitForTimeout(520);
+    await expect(page.locator(".v3-progress")).toContainText(
+      "Balancing stops & walking time",
+    );
+    await expect(page).toHaveScreenshot(`v3-progress-${viewport.name}.png`, {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.01,
+    });
   });
 }
 

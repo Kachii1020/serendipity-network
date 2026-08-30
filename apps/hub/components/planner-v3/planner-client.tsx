@@ -49,9 +49,11 @@ import {
   plannerBusyV3,
   plannerReducerV3,
   type PlannerStateV3,
+  type PlannerTransportV3,
 } from "./planner-machine";
 import type { PlannerFormDefaultsV3 } from "./planner-options";
 import { PlannerPlanV3 } from "./planner-plan";
+import { PlannerProgressV3 } from "./planner-progress";
 import {
   normalizePlannerQueryV3,
   plannerFormDefaultsFromIntentV3,
@@ -66,13 +68,38 @@ import {
   type SavedPlanRecordV3,
 } from "./planner-storage";
 
-type TransportV3 = "manual" | "site-tool";
 type ActivityV3 = Readonly<{
   completedAt: string;
+  correlationId: string;
+  durationMs: number;
   name: PlannerV3ToolName;
   outcome: "error" | "success";
-  transport: TransportV3;
+  transport: PlannerTransportV3;
 }>;
+
+const SEARCH_PRESENTATION_MS = 700;
+
+const waitForSearchPresentation = (
+  startedAt: number,
+  signal?: AbortSignal,
+): Promise<boolean> => {
+  const remaining = Math.max(
+    0,
+    SEARCH_PRESENTATION_MS - (performance.now() - startedAt),
+  );
+  if (signal?.aborted) return Promise.resolve(false);
+  return new Promise((resolve) => {
+    const timer = globalThis.setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve(true);
+    }, remaining);
+    const onAbort = () => {
+      globalThis.clearTimeout(timer);
+      resolve(false);
+    };
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+};
 
 const record = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -235,13 +262,16 @@ export function PlannerClientV3({
   const recordActivity = useCallback(
     (
       name: PlannerV3ToolName,
-      transport: TransportV3,
+      transport: PlannerTransportV3,
       result: PlannerEnvelopeV3<unknown>,
+      startedAt: number,
     ) => {
       setActivities((current) =>
         [
           {
             completedAt: result.meta.completedAt,
+            correlationId: result.meta.correlationId,
+            durationMs: Math.max(0, Math.round(performance.now() - startedAt)),
             name,
             outcome: result.ok ? ("success" as const) : ("error" as const),
             transport,
@@ -266,9 +296,10 @@ export function PlannerClientV3({
   const find = useCallback(
     async (
       intent: PlannerIntentV3,
-      transport: TransportV3,
+      transport: PlannerTransportV3,
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV3<SearchPlansDataV3>> => {
+      const startedAt = performance.now();
       const current = stateRef.current;
       if (
         signal?.aborted ||
@@ -279,14 +310,20 @@ export function PlannerClientV3({
         const result = failure(
           publicError("CANCELLED", "Another planner action is active.", true),
         );
-        recordActivity("find_evening_plan", transport, result);
+        recordActivity("find_evening_plan", transport, result, startedAt);
         return result;
       }
       lock.current = true;
       setOpenEvidencePlaceId(null);
       setSaveAnnouncement("");
       projectIntent(intent);
-      dispatch({ intent, type: "SEARCH_STARTED" });
+      dispatch({
+        intent,
+        startedAt: Date.now(),
+        transport,
+        type: "SEARCH_STARTED",
+      });
+      focus(".v3-progress");
       let result: PlannerEnvelopeV3<SearchPlansDataV3>;
       try {
         const response = await fetch("/api/v3/plans/search", {
@@ -316,6 +353,15 @@ export function PlannerClientV3({
               true,
             ),
           );
+        const presentable = result.ok || result.error.code === "NO_VALID_PLAN";
+        if (presentable) {
+          const completed = await waitForSearchPresentation(startedAt, signal);
+          if (!completed) {
+            result = failure(
+              publicError("CANCELLED", "The request was cancelled.", true),
+            );
+          }
+        }
       } catch {
         result = failure(
           publicError(
@@ -348,7 +394,7 @@ export function PlannerClientV3({
         });
         focus(current.plan ? ".v3-result-title" : ".v3-empty");
       }
-      recordActivity("find_evening_plan", transport, result);
+      recordActivity("find_evening_plan", transport, result, startedAt);
       return result;
     },
     [failure, projectIntent, recordActivity],
@@ -416,9 +462,10 @@ export function PlannerClientV3({
   const showEvidence = useCallback(
     async (
       input: ShowPlaceEvidenceToolInputV3,
-      transport: TransportV3,
+      transport: PlannerTransportV3,
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV3<PlaceEvidenceDataV3>> => {
+      const startedAt = performance.now();
       const current = stateRef.current;
       const stop = current.plan?.stops.find(
         ({ place }) => place.placeId === input.placeId,
@@ -444,7 +491,7 @@ export function PlannerClientV3({
             signal?.aborted || lock.current || plannerBusyV3(current),
           ),
         );
-        recordActivity("show_place_evidence", transport, result);
+        recordActivity("show_place_evidence", transport, result, startedAt);
         return result;
       }
 
@@ -494,7 +541,7 @@ export function PlannerClientV3({
       } else if (stillCurrent) {
         dispatch({ error: result.error, type: "INLINE_ERROR" });
       }
-      recordActivity("show_place_evidence", transport, result);
+      recordActivity("show_place_evidence", transport, result, startedAt);
       return result;
     },
     [envelope, failure, loadEvidence, recordActivity],
@@ -503,9 +550,10 @@ export function PlannerClientV3({
   const swap = useCallback(
     async (
       input: SwapPlanStopToolInputV3,
-      transport: TransportV3,
+      transport: PlannerTransportV3,
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV3<SwapPlanDataV3>> => {
+      const startedAt = performance.now();
       const current = stateRef.current;
       const stopIndex = current.plan?.stops.findIndex(
         ({ place }) => place.placeId === input.targetPlaceId,
@@ -524,7 +572,7 @@ export function PlannerClientV3({
         const result = failure(
           publicError("STALE_PLAN", "That stop is not current."),
         );
-        recordActivity("swap_plan_stop", transport, result);
+        recordActivity("swap_plan_stop", transport, result, startedAt);
         return result;
       }
       lock.current = true;
@@ -588,7 +636,7 @@ export function PlannerClientV3({
       } else {
         dispatch({ error: result.error, type: "SWAP_FAILED" });
       }
-      recordActivity("swap_plan_stop", transport, result);
+      recordActivity("swap_plan_stop", transport, result, startedAt);
       return result;
     },
     [failure, recordActivity],
@@ -597,7 +645,7 @@ export function PlannerClientV3({
   const save = useCallback(
     async (
       input: SavePlanToolInputV3,
-      transport: TransportV3,
+      transport: PlannerTransportV3,
       signal?: AbortSignal,
     ): Promise<
       PlannerEnvelopeV3<{
@@ -606,6 +654,7 @@ export function PlannerClientV3({
         status: string;
       }>
     > => {
+      const startedAt = performance.now();
       const current = stateRef.current;
       if (
         signal?.aborted ||
@@ -618,7 +667,7 @@ export function PlannerClientV3({
         const result = failure(
           publicError("STALE_PLAN", "Only the current plan can be saved."),
         );
-        recordActivity("save_plan", transport, result);
+        recordActivity("save_plan", transport, result, startedAt);
         return result;
       }
       lock.current = true;
@@ -756,7 +805,7 @@ export function PlannerClientV3({
         return result;
       } finally {
         lock.current = false;
-        if (result) recordActivity("save_plan", transport, result);
+        if (result) recordActivity("save_plan", transport, result, startedAt);
       }
     },
     [envelope, failure, loadEvidence, recordActivity],
@@ -765,14 +814,15 @@ export function PlannerClientV3({
   const deleteSaved = useCallback(
     (
       input: DeleteSavedPlanToolInputV3,
-      transport: TransportV3,
+      transport: PlannerTransportV3,
       signal?: AbortSignal,
     ): PlannerEnvelopeV3<{ deleted: boolean; savedPlanId: string }> => {
+      const startedAt = performance.now();
       if (signal?.aborted || lock.current) {
         const result = failure(
           publicError("CANCELLED", "Another action is active.", true),
         );
-        recordActivity("delete_saved_plan", transport, result);
+        recordActivity("delete_saved_plan", transport, result, startedAt);
         return result;
       }
       const stored = deletePlanSnapshotV3(localStorage, input.planId);
@@ -786,7 +836,7 @@ export function PlannerClientV3({
           );
       if (stored.ok)
         dispatch({ records: stored.records, type: "DELETE_SUCCEEDED" });
-      recordActivity("delete_saved_plan", transport, result);
+      recordActivity("delete_saved_plan", transport, result, startedAt);
       return result;
     },
     [envelope, failure, recordActivity],
@@ -929,123 +979,138 @@ export function PlannerClientV3({
         </Link>
         <span className="v3-mode">
           {connection === "connected"
-            ? "Agent tools connected"
+            ? "AI tools connected"
             : connection === "connecting" || connection === "checking"
               ? "Connecting tools…"
-              : "Manual controls"}
+              : "Planner ready"}
         </span>
       </header>
       <main className="v3-result-main" id="v3-result">
-        <details className="v3-adjust">
-          <summary>Adjust plan</summary>
-          <PlannerFormV3
-            defaults={formDefaults}
-            earliestStartToday={earliestStartToday}
-            error={formError}
-            key={plannerSearchParamsFromDefaultsV3(formDefaults).toString()}
-            maxDate={maxDate}
-            minDate={minDate}
-            onSubmit={submit}
-          />
-        </details>
-        {state.error && state.plan ? (
-          <p className="v3-warning" role="alert">
-            Previous verified plan kept. {state.error.message}
-          </p>
-        ) : null}
-        {state.plan && state.phase !== "searching" ? (
-          <PlannerPlanV3
-            enrichmentByPlace={enrichmentByPlace}
-            evidenceByPlace={state.evidenceByPlace}
-            onEvidence={(placeId, open) => {
-              if (!open) {
-                setOpenEvidencePlaceId((current) =>
-                  current === placeId ? null : current,
-                );
-                return;
-              }
-              if (openEvidencePlaceId === placeId) return;
-              if (!reference || !state.plan) return;
-              void showEvidence(
-                { ...reference, area: state.plan.intent.area, placeId },
-                "manual",
-              );
-            }}
-            onSave={() => reference && void save(reference, "manual")}
-            onSwap={(targetPlaceId, preference) =>
-              reference &&
-              void swap({ ...reference, preference, targetPlaceId }, "manual")
-            }
-            openEvidencePlaceId={openEvidencePlaceId}
-            plan={state.plan}
-            saveAnnouncement={saveAnnouncement}
-            saving={state.storagePending}
-            swapping={state.phase === "swapping"}
-            warnings={state.warnings}
+        {state.phase === "searching" &&
+        state.searchPresentation &&
+        state.pendingIntent ? (
+          <PlannerProgressV3
+            intent={state.pendingIntent}
+            transport={state.searchPresentation.transport}
           />
         ) : (
-          <section className="v3-empty" tabIndex={-1}>
-            <h1>
-              {state.phase === "searching"
-                ? "Building your Tokyo night…"
-                : state.phase === "no_results"
-                  ? "Nothing honest fits yet."
-                  : state.phase === "error"
-                    ? "The planner paused."
-                    : "Choose a hub. Build the night."}
-            </h1>
-            <p>
-              {state.error?.message ??
-                "Adjust the plan above. Meal routes use published official menu prices."}
-            </p>
-          </section>
+          <>
+            <details className="v3-adjust">
+              <summary>Adjust plan</summary>
+              <PlannerFormV3
+                defaults={formDefaults}
+                earliestStartToday={earliestStartToday}
+                error={formError}
+                key={plannerSearchParamsFromDefaultsV3(formDefaults).toString()}
+                maxDate={maxDate}
+                minDate={minDate}
+                onSubmit={submit}
+              />
+            </details>
+            {state.error && state.plan ? (
+              <p className="v3-warning" role="alert">
+                Previous verified plan kept. {state.error.message}
+              </p>
+            ) : null}
+            {state.plan && state.phase !== "searching" ? (
+              <PlannerPlanV3
+                enrichmentByPlace={enrichmentByPlace}
+                evidenceByPlace={state.evidenceByPlace}
+                onEvidence={(placeId, open) => {
+                  if (!open) {
+                    setOpenEvidencePlaceId((current) =>
+                      current === placeId ? null : current,
+                    );
+                    return;
+                  }
+                  if (openEvidencePlaceId === placeId) return;
+                  if (!reference || !state.plan) return;
+                  void showEvidence(
+                    { ...reference, area: state.plan.intent.area, placeId },
+                    "manual",
+                  );
+                }}
+                onSave={() => reference && void save(reference, "manual")}
+                onSwap={(targetPlaceId, preference) =>
+                  reference &&
+                  void swap(
+                    { ...reference, preference, targetPlaceId },
+                    "manual",
+                  )
+                }
+                openEvidencePlaceId={openEvidencePlaceId}
+                plan={state.plan}
+                saveAnnouncement={saveAnnouncement}
+                saving={state.storagePending}
+                swapping={state.phase === "swapping"}
+                warnings={state.warnings}
+              />
+            ) : (
+              <section className="v3-empty" tabIndex={-1}>
+                <h1>
+                  {state.phase === "searching"
+                    ? "Building your Tokyo night…"
+                    : state.phase === "no_results"
+                      ? "Nothing honest fits yet."
+                      : state.phase === "error"
+                        ? "The planner paused."
+                        : "Choose a hub. Build the night."}
+                </h1>
+                <p>
+                  {state.error?.message ??
+                    "Adjust the plan above. Meal routes use published official menu prices."}
+                </p>
+              </section>
+            )}
+            <details className="v3-adjust v3-secondary">
+              <summary>Saved plans ({state.savedPlans.length})</summary>
+              {state.storageCorrupt ? (
+                <p role="alert">Some saved data was ignored safely.</p>
+              ) : null}
+              <ul>
+                {state.savedPlans.map((saved) => (
+                  <li key={saved.savedPlanId}>
+                    {saved.itinerary.stops
+                      .map(({ place }) => place.name)
+                      .join(" → ")}{" "}
+                    <button
+                      disabled={plannerBusyV3(state)}
+                      onClick={() => void find(saved.intent, "manual")}
+                      type="button"
+                    >
+                      Open &amp; refresh
+                    </button>{" "}
+                    <button
+                      onClick={() => setPendingDelete(saved.savedPlanId)}
+                      type="button"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
+            <details className="v3-adjust v3-secondary">
+              <summary>AI tool activity ({activities.length})</summary>
+              <ul aria-label="Planner action activity">
+                {activities.map((activity, index) => (
+                  <li key={`${activity.completedAt}-${activity.name}-${index}`}>
+                    {activity.name} ·{" "}
+                    {activity.transport === "site-tool"
+                      ? "AI tool"
+                      : "Manual control"}{" "}
+                    · {activity.outcome} · {activity.durationMs}ms ·{" "}
+                    <code>{activity.correlationId.slice(0, 8)}</code>
+                  </li>
+                ))}
+              </ul>
+              <p>
+                Exactly {PLANNER_V3_TOOL_NAMES.length} planner tools share these
+                visible actions.
+              </p>
+            </details>
+          </>
         )}
-        <details className="v3-adjust">
-          <summary>Saved plans ({state.savedPlans.length})</summary>
-          {state.storageCorrupt ? (
-            <p role="alert">Some saved data was ignored safely.</p>
-          ) : null}
-          <ul>
-            {state.savedPlans.map((saved) => (
-              <li key={saved.savedPlanId}>
-                {saved.itinerary.stops
-                  .map(({ place }) => place.name)
-                  .join(" → ")}{" "}
-                <button
-                  disabled={plannerBusyV3(state)}
-                  onClick={() => void find(saved.intent, "manual")}
-                  type="button"
-                >
-                  Open &amp; refresh
-                </button>{" "}
-                <button
-                  onClick={() => setPendingDelete(saved.savedPlanId)}
-                  type="button"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        </details>
-        <details className="v3-adjust">
-          <summary>AI tool activity ({activities.length})</summary>
-          <ul aria-label="Planner action activity">
-            {activities.map((activity, index) => (
-              <li key={`${activity.completedAt}-${activity.name}-${index}`}>
-                {activity.name} ·{" "}
-                {activity.transport === "site-tool"
-                  ? "AI tool"
-                  : "Manual control"}{" "}
-                · {activity.outcome}
-              </li>
-            ))}
-          </ul>
-          <p>
-            Exactly {PLANNER_V3_TOOL_NAMES.length} planner tools share these
-            visible actions.
-          </p>
-        </details>
       </main>
       {pendingDelete ? (
         <DecisionDialog

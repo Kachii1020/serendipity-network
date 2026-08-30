@@ -149,166 +149,181 @@ export function PlannerPlanV3({
           {time(plan.totals.startsAt)}–{time(plan.totals.endsAt)}
         </li>
       </ul>
-      <p className="v3-trust-note">
-        {plan.disclaimer} Walking is coordinate-estimated; totals exclude
-        transport and unlisted extras, taxes, or service charges.
-        {plan.totals.stopCount === 2
-          ? " Two-stop fallback: no third published-hours stop fit the selected constraints."
-          : ""}
-      </p>
+      <div className="v3-trust-block">
+        <p className="v3-trust-note">{plan.disclaimer}</p>
+        {plan.totals.stopCount === 2 ? (
+          <p className="v3-fallback-note">
+            Two-stop fallback: no third published-hours stop fit the selected
+            constraints.
+          </p>
+        ) : null}
+        <details className="v3-trust-details">
+          <summary>Estimate details</summary>
+          <p>
+            Walking is coordinate-estimated. Totals exclude transport and
+            unlisted extras, taxes, or service charges.
+          </p>
+        </details>
+      </div>
       {warnings.length > 0 ? (
         <p className="v3-warning" role="status">
           {warnings.join(" ")}
         </p>
       ) : null}
-      <ol className="v3-route" data-count={plan.stops.length}>
-        {plan.stops.map((stop, index) => {
-          const evidence = evidenceByPlace[stop.place.placeId];
-          const google = enrichmentByPlace[stop.place.placeId];
-          const claims = evidence
-            ? Object.values(evidence.claims).filter(
-                (claim): claim is EvidenceClaimV3 => claim !== null,
-              )
-            : [];
-          return (
-            <li key={stop.place.placeId}>
-              <article
-                className="v3-stop"
-                id={`v3-place-${stop.place.placeId}`}
-                tabIndex={-1}
-              >
-                <p className="v3-stop__kicker">
-                  {String(index + 1).padStart(2, "0")} · {stop.place.role}
-                </p>
-                <h2>{stop.place.name}</h2>
-                <p className="v3-stop__summary">{stop.place.summary}</p>
-                <div className="v3-stop__facts">
-                  <span>
-                    {time(stop.startsAt)}–{time(stop.endsAt)}
-                  </span>
-                  <span>
-                    {stopPrice(
-                      stop.cost.perPersonMinYen,
-                      stop.cost.perPersonMaxYen,
-                    )}
-                  </span>
-                  <span>{stop.place.address}</span>
-                </div>
-                <p className="v3-stop__reason">{stop.whyThisStop}</p>
-                <div className="v3-stop__actions">
-                  <button
-                    disabled={swapping}
-                    onClick={(event) => {
-                      changeTriggerRef.current = event.currentTarget;
-                      setChangePlaceId(stop.place.placeId);
-                    }}
-                    type="button"
-                  >
-                    Change this stop
-                  </button>
-                  <a
-                    href={stop.place.officialUrl}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    Check official site ↗
-                  </a>
-                  <details
-                    className="v3-evidence"
-                    data-evidence-place-id={stop.place.placeId}
-                    id={`v3-evidence-${stop.place.placeId}`}
-                    open={openEvidencePlaceId === stop.place.placeId}
-                    tabIndex={-1}
-                  >
-                    <summary
-                      onClick={(event) => {
-                        event.preventDefault();
-                        onEvidence(
-                          stop.place.placeId,
-                          openEvidencePlaceId !== stop.place.placeId,
-                        );
-                      }}
-                    >
-                      Sources & hours
-                    </summary>
-                    <div>
-                      <h3>Sources for {stop.place.name}</h3>
-                      <p>{stop.openingFit}</p>
-                      <p>{stop.price.label}</p>
-                      {evidence ? (
-                        <ul className="v3-evidence-list">
-                          {claims.map((claim) => (
-                            <li key={claim.kind}>
-                              <strong>{claim.kind.replaceAll("_", " ")}</strong>
-                              <span>{claim.value}</span>
-                              <span>{claim.sourceTitle}</span>
-                              <span>
-                                {claim.publisher} · checked{" "}
-                                {claim.checkedAt.slice(0, 10)}
-                              </span>
-                              <a
-                                href={claim.sourceUrl}
-                                rel="noopener noreferrer"
-                                target="_blank"
-                              >
-                                {claim.kind === "MENU"
-                                  ? "Open official menu ↗"
-                                  : `Open ${claim.publisher} source ↗`}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>Open to load official evidence.</p>
+      <div className="v3-route-shell" data-count={plan.stops.length}>
+        <span aria-hidden="true" className="v3-route-line" />
+        <ol className="v3-route" data-count={plan.stops.length}>
+          {plan.stops.map((stop, index) => {
+            const evidence = evidenceByPlace[stop.place.placeId];
+            const google = enrichmentByPlace[stop.place.placeId];
+            const claims = evidence
+              ? Object.values(evidence.claims).filter(
+                  (claim): claim is EvidenceClaimV3 => claim !== null,
+                )
+              : [];
+            return (
+              <li key={stop.place.placeId}>
+                <span aria-hidden="true" className="v3-route-node" />
+                <article
+                  className="v3-stop"
+                  id={`v3-place-${stop.place.placeId}`}
+                  tabIndex={-1}
+                >
+                  <p className="v3-stop__kicker">
+                    {String(index + 1).padStart(2, "0")} · {stop.place.role}
+                  </p>
+                  <h2>{stop.place.name}</h2>
+                  <p className="v3-stop__summary">{stop.place.summary}</p>
+                  <div className="v3-stop__facts">
+                    <span>
+                      {time(stop.startsAt)}–{time(stop.endsAt)}
+                    </span>
+                    <span>
+                      {stopPrice(
+                        stop.cost.perPersonMinYen,
+                        stop.cost.perPersonMaxYen,
                       )}
-                      {google ? (
-                        <div
-                          aria-label="Google Maps attribution"
-                          className="v3-google-attribution"
-                        >
-                          <strong className="v3-google-brand" translate="no">
-                            Google Maps
-                          </strong>
-                          <span>
-                            {google.openNow === false
-                              ? "Google lists this place as closed for your planned time."
-                              : "Transient place context—check again before you go."}
-                          </span>
-                          {google.googleMapsUri ? (
-                            <a
-                              href={google.googleMapsUri}
-                              rel="noopener noreferrer"
-                              target="_blank"
-                            >
-                              View on Google Maps ↗
-                            </a>
-                          ) : null}
-                          {google.attributions.map((attribution) =>
-                            attribution.uri ? (
+                    </span>
+                    <span>{stop.place.address}</span>
+                  </div>
+                  <p className="v3-stop__reason">{stop.whyThisStop}</p>
+                  <div className="v3-stop__actions">
+                    <button
+                      disabled={swapping}
+                      onClick={(event) => {
+                        changeTriggerRef.current = event.currentTarget;
+                        setChangePlaceId(stop.place.placeId);
+                      }}
+                      type="button"
+                    >
+                      Change this stop
+                    </button>
+                    <a
+                      href={stop.place.officialUrl}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Check official site ↗
+                    </a>
+                    <details
+                      className="v3-evidence"
+                      data-evidence-place-id={stop.place.placeId}
+                      id={`v3-evidence-${stop.place.placeId}`}
+                      open={openEvidencePlaceId === stop.place.placeId}
+                      tabIndex={-1}
+                    >
+                      <summary
+                        onClick={(event) => {
+                          event.preventDefault();
+                          onEvidence(
+                            stop.place.placeId,
+                            openEvidencePlaceId !== stop.place.placeId,
+                          );
+                        }}
+                      >
+                        Sources & hours
+                      </summary>
+                      <div>
+                        <h3>Sources for {stop.place.name}</h3>
+                        <p>{stop.openingFit}</p>
+                        <p>{stop.price.label}</p>
+                        {evidence ? (
+                          <ul className="v3-evidence-list">
+                            {claims.map((claim) => (
+                              <li key={claim.kind}>
+                                <strong>
+                                  {claim.kind.replaceAll("_", " ")}
+                                </strong>
+                                <span>{claim.value}</span>
+                                <span>{claim.sourceTitle}</span>
+                                <span>
+                                  {claim.publisher} · checked{" "}
+                                  {claim.checkedAt.slice(0, 10)}
+                                </span>
+                                <a
+                                  href={claim.sourceUrl}
+                                  rel="noopener noreferrer"
+                                  target="_blank"
+                                >
+                                  {claim.kind === "MENU"
+                                    ? "Open official menu ↗"
+                                    : `Open ${claim.publisher} source ↗`}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p>Open to load official evidence.</p>
+                        )}
+                        {google ? (
+                          <div
+                            aria-label="Google Maps attribution"
+                            className="v3-google-attribution"
+                          >
+                            <strong className="v3-google-brand" translate="no">
+                              Google Maps
+                            </strong>
+                            <span>
+                              {google.openNow === false
+                                ? "Google lists this place as closed for your planned time."
+                                : "Transient place context—check again before you go."}
+                            </span>
+                            {google.googleMapsUri ? (
                               <a
-                                href={attribution.uri}
-                                key={attribution.provider}
+                                href={google.googleMapsUri}
                                 rel="noopener noreferrer"
                                 target="_blank"
                               >
-                                Data: {attribution.provider}
+                                View on Google Maps ↗
                               </a>
-                            ) : (
-                              <span key={attribution.provider}>
-                                Data: {attribution.provider}
-                              </span>
-                            ),
-                          )}
-                        </div>
-                      ) : null}
-                    </div>
-                  </details>
-                </div>
-              </article>
-            </li>
-          );
-        })}
-      </ol>
+                            ) : null}
+                            {google.attributions.map((attribution) =>
+                              attribution.uri ? (
+                                <a
+                                  href={attribution.uri}
+                                  key={attribution.provider}
+                                  rel="noopener noreferrer"
+                                  target="_blank"
+                                >
+                                  Data: {attribution.provider}
+                                </a>
+                              ) : (
+                                <span key={attribution.provider}>
+                                  Data: {attribution.provider}
+                                </span>
+                              ),
+                            )}
+                          </div>
+                        ) : null}
+                      </div>
+                    </details>
+                  </div>
+                </article>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
       <div className="v3-save">
         <button
           className="v3-primary"

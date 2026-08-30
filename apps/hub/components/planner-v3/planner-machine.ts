@@ -11,6 +11,13 @@ import type { SavedPlanRecordV3 } from "./planner-storage";
 export type PlannerPhaseV3 =
   "error" | "idle" | "no_results" | "planned" | "searching" | "swapping";
 
+export type PlannerTransportV3 = "manual" | "site-tool";
+
+export type SearchPresentationV3 = Readonly<{
+  startedAt: number;
+  transport: PlannerTransportV3;
+}>;
+
 export type PlannerStateV3 = Readonly<{
   candidateSetId: string | null;
   error: PlannerPublicErrorV3 | null;
@@ -21,6 +28,7 @@ export type PlannerStateV3 = Readonly<{
   phase: PlannerPhaseV3;
   plan: EveningPlanV3 | null;
   savedPlans: readonly SavedPlanRecordV3[];
+  searchPresentation: SearchPresentationV3 | null;
   storageCorrupt: boolean;
   storagePending: boolean;
   warnings: readonly string[];
@@ -36,6 +44,7 @@ export const initialPlannerStateV3: PlannerStateV3 = {
   phase: "idle",
   plan: null,
   savedPlans: [],
+  searchPresentation: null,
   storageCorrupt: false,
   storagePending: false,
   warnings: [],
@@ -47,7 +56,12 @@ export type PlannerEventV3 =
       records: readonly SavedPlanRecordV3[];
       corrupt: boolean;
     }>
-  | Readonly<{ type: "SEARCH_STARTED"; intent: PlannerIntentV3 }>
+  | Readonly<{
+      type: "SEARCH_STARTED";
+      intent: PlannerIntentV3;
+      startedAt: number;
+      transport: PlannerTransportV3;
+    }>
   | Readonly<{
       type: "SEARCH_SUCCEEDED";
       plan: EveningPlanV3;
@@ -92,6 +106,10 @@ export const plannerReducerV3 = (
         error: null,
         pendingIntent: event.intent,
         phase: "searching",
+        searchPresentation: {
+          startedAt: event.startedAt,
+          transport: event.transport,
+        },
       };
     case "SEARCH_SUCCEEDED":
       return {
@@ -104,6 +122,7 @@ export const plannerReducerV3 = (
         pendingIntent: null,
         phase: "planned",
         plan: event.plan,
+        searchPresentation: null,
         warnings: event.warnings,
       };
     case "SEARCH_EMPTY":
@@ -114,6 +133,7 @@ export const plannerReducerV3 = (
             error: event.error,
             pendingIntent: null,
             phase: "planned",
+            searchPresentation: null,
           }
         : {
             ...state,
@@ -121,6 +141,7 @@ export const plannerReducerV3 = (
             intent: state.pendingIntent,
             pendingIntent: null,
             phase: event.type === "SEARCH_EMPTY" ? "no_results" : "error",
+            searchPresentation: null,
           };
     case "SWAP_STARTED":
       return state.phase === "planned"

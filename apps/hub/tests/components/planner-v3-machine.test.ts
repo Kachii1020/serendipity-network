@@ -23,7 +23,13 @@ describe("planner v3 state machine", () => {
     };
     const searching = plannerReducerV3(planned, {
       intent: { ...intent, partySize: 3 },
+      startedAt: 1_000,
+      transport: "site-tool",
       type: "SEARCH_STARTED",
+    });
+    expect(searching.searchPresentation).toEqual({
+      startedAt: 1_000,
+      transport: "site-tool",
     });
     const failed = plannerReducerV3(searching, {
       error: {
@@ -33,7 +39,12 @@ describe("planner v3 state machine", () => {
       },
       type: "SEARCH_EMPTY",
     });
-    expect(failed).toMatchObject({ phase: "planned", plan, intent });
+    expect(failed).toMatchObject({
+      phase: "planned",
+      plan,
+      intent,
+      searchPresentation: null,
+    });
   });
 
   it("ignores evidence from another area or pack", () => {

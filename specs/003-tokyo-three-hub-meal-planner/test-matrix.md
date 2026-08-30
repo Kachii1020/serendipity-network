@@ -144,6 +144,13 @@ the preset matrix.
 | V3-A11Y-001 | axe in idle/search/result/swap/evidence/no-result/error/saved/delete states | Serious/critical 0                                                                             | SC-308                        |
 | V3-A11Y-002 | Keyboard-only full journey                                                  | Logical focus/order, dialog trap/restore, disclosures, external links                          | FR-320–FR-323, SC-308         |
 | V3-A11Y-003 | Search/swap/evidence/save announcements                                     | Exact target focus; save aria-live only; no decorative announcements                           | FR-320–FR-323                 |
+| V3-VIS-003  | Interest layout at 1440/768/390                                             | Exact 6×1, 3×2, 2×3 geometry; equal heights; no orphan row                                     | FR-331, SC-313                |
+| V3-VIS-004  | Two- and three-stop connector geometry                                      | Line and node centres within 1px vertical/2px endpoint tolerance                               | FR-332, SC-314                |
+| V3-VIS-005  | Focus and card-bound geometry                                               | Purple result/stop focus; no native blue; actions/separators contained; resting rotation none  | FR-332–FR-333, SC-317         |
+| V3-PROG-001 | Fast manual success and no-result                                           | Planner-labelled 3-stage presentation visible 650–900ms before projection                      | FR-334, SC-315                |
+| V3-PROG-002 | Delayed response beyond 700ms                                               | Routing stage remains pending; no completion claim until response                              | FR-334, SC-315                |
+| V3-PROG-003 | Validation, abort, timeout, and unsafe response                             | Immediate safe failure; no artificial minimum delay; stable-plan rules preserved               | FR-335, SC-315                |
+| V3-PROG-004 | Site Tool search and reduced-motion manual/tool paths                       | Exact transport label; no manual AI claim; no reduced-motion bar/pulse/fade                    | FR-334–FR-335, SC-316         |
 
 ## Security, regression, deployment, and rollback
 
@@ -176,3 +183,4 @@ the preset matrix.
 | FR-324            | V3-STO-001–006, V3-UX-009                                   |
 | FR-325–FR-328     | V3-API-001–003, V3-TOOL-001–006, V3-RACE-001–003            |
 | FR-329–FR-330     | V3-COPY-001, V3-REG-001–002, V3-DEP-001–005, V3-RBK-001–002 |
+| FR-331–FR-335     | V3-VIS-003–005, V3-PROG-001–004, V3-A11Y-001–003            |

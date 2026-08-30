@@ -248,6 +248,22 @@ v2. See `evidence/rc-status-2026-08-30.md` for the claim boundary.
       attribution or explicit flag-off fallback, no-live-availability boundary,
       and saved-plan sanitization — final submission packaging only after T332.
 
+## UI completion follow-up
+
+- [x] **T335** [US1] Add failing geometry and focus regressions for exact
+      interest columns, contained card actions, no resting rotation, purple
+      programmatic focus, and connected 2/3-stop timelines — verifies
+      FR-331–FR-333 via V3-VIS-003–005.
+- [x] **T336** [US1] Implement aligned visual tokens, explicit route line/node
+      elements, deterministic responsive grids, contained action footer, and
+      custom result/stop focus in the v3 components and stylesheet — pass T335.
+- [x] **T337** [US1] Add the 700ms shared search presentation, transport-aware
+      progress source, reduced-motion behavior, correlation/duration activity,
+      and fast-failure semantics — verifies FR-334–FR-335 via V3-PROG-001–004.
+- [ ] **T338** Run focused and full UI/a11y/visual/security/reliability gates,
+      deploy a Google-OFF immutable preview, and preserve v2/current-v3 rollback
+      IDs for user review — closes SC-313–SC-318 without production promotion.
+
 ## Six-day critical path
 
 | Day | Required exit                                                               |

@@ -206,6 +206,26 @@ forced-colours/reduced-motion where they reduce legibility. Mobile is one
 column; desktop is one full-width result flow, never a persistent form/result
 50:50 dashboard.
 
+### UI completion follow-up
+
+Remove resting rotation from every functional control, summary, stamp, and
+route card. Retain the sticker identity with consistent 2px borders, 4px
+shadows, colour, and 16–20px radii. Use deterministic interest grids of 6, 3,
+and 2 columns at the specified breakpoints. Replace pseudo-element route nodes
+with testable decorative DOM elements whose centres derive from plan count.
+
+The shared `find` controller starts the real request and a 700ms presentation
+clock together. `SEARCH_STARTED` carries transport and start time. The progress
+component advances at 220ms and 470ms, stays pending after 700ms if the request
+is unfinished, and commits success or no-result only after both request and
+presentation complete. Abort, validation, and transport failure bypass the
+minimum. Reduced motion retains text and timing but disables bar/pulse/fade.
+
+Extend internal activity projection with correlation ID and measured duration;
+do not change public REST or Site Tool schemas. The progress source is `Planner`
+for visible controls and `AI tool · find_evening_plan` only for actual Site Tool
+execution.
+
 ### Storage
 
 Create a v3 serializer independent of v2. The persisted type intentionally
@@ -267,19 +287,21 @@ Stop-loss:
 | FR-324        | Independent v3 storage serializer                           | V3-STO, V3-SEC           |
 | FR-325–FR-328 | Shared controller, exact five tools, races, exact envelopes | V3-API, V3-TOOL, V3-RACE |
 | FR-329–FR-330 | Honest copy, parallel release, rollback                     | V3-COPY, V3-DEP, V3-RBK  |
+| FR-331–FR-335 | Deterministic geometry and truthful search presentation     | V3-VIS, V3-PROG, V3-A11Y |
 
 ## Decisions and rejected alternatives
 
-| Decision           | Chosen approach                                | Rejected alternative and reason                                                     |
-| ------------------ | ---------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Geography          | Three audited hubs behind a closed enum        | Free-text Tokyo search needs an unbounded licensed data source                      |
-| Meal pricing       | Official per-person menu range controls budget | Google/Tabelog averages are not a stable or permitted hard-price ledger             |
-| Google persistence | Place ID only; request-scoped content          | Local or server cache risks policy violation and stale claims                       |
-| Google failure     | Degrade to official-source plan                | Blocking the core plan would make an optional integration a single point of failure |
-| UI architecture    | Separate v3 components; full-width result      | Version flags inside dense v2 split UI preserve the wrong information model         |
-| WebMCP             | Same five names and shared controller          | More tools or tool-only behavior weakens parity and judge comprehension             |
-| Release            | Parallel preview and promote exact deployment  | Editing production in place removes the known-safe rollback path                    |
-| Tabelog            | Excluded from v3                               | Scraping, copying, or ambiguous outbound use adds rights risk without core value    |
+| Decision           | Chosen approach                                | Rejected alternative and reason                                                        |
+| ------------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Geography          | Three audited hubs behind a closed enum        | Free-text Tokyo search needs an unbounded licensed data source                         |
+| Meal pricing       | Official per-person menu range controls budget | Google/Tabelog averages are not a stable or permitted hard-price ledger                |
+| Google persistence | Place ID only; request-scoped content          | Local or server cache risks policy violation and stale claims                          |
+| Google failure     | Degrade to official-source plan                | Blocking the core plan would make an optional integration a single point of failure    |
+| UI architecture    | Aligned sticker tokens and full-width result   | Random rotation and heavy treatment on every control read as construction defects      |
+| Search feedback    | 700ms truthful staged presentation             | No minimum flickers; 1.2s theatrical delay makes a fast planner feel artificially slow |
+| WebMCP             | Same five names and shared controller          | More tools or tool-only behavior weakens parity and judge comprehension                |
+| Release            | Parallel preview and promote exact deployment  | Editing production in place removes the known-safe rollback path                       |
+| Tabelog            | Excluded from v3                               | Scraping, copying, or ambiguous outbound use adds rights risk without core value       |
 
 ## Governance check
 

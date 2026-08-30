@@ -286,10 +286,10 @@ intent, plan, disclosures, and storage state as the visible controls.
 - **FR-321**: The summary MUST be at most 35 words and each stop's collapsed
   descriptive copy at most 45 words. Detailed hours, source reasoning, menu
   evidence, and Google attribution belong in labelled disclosures.
-- **FR-322**: The production visual language MUST preserve the approved
-  generated design's colourful ticket/sticker hierarchy, asymmetry, small
-  rotations, and activity/meal distinction without reintroducing Kiln, Nori,
-  Loop, Provider strips, or fake status.
+- **FR-322**: The production visual language MUST preserve the colourful
+  ticket/sticker hierarchy and activity/meal distinction through colour,
+  borders, shadows, and radius only. Functional controls, summaries, stamps,
+  and route cards MUST have no resting rotation.
 - **FR-323**: The UI MUST expose one primary `Save this plan` CTA, one
   `Change this stop` action per stop that opens a preference dialog, direct
   user-initiated official links, and an explicit delete confirmation. It MUST
@@ -323,6 +323,22 @@ live availability. Check each official site before you go.` It MUST also say
   moves v2 to `/legacy/source-planner`, preserves `/legacy/network-demo` and
   Provider/Supabase deployments unchanged, and retains
   `dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6` as the immediate rollback target.
+- **FR-331**: Interest choices MUST render as exactly 6 columns at widths of
+  at least 1100px, 3 columns at 600–1099px, and 2 columns below 600px.
+- **FR-332**: The route connector and nodes MUST share one geometric centre
+  system for both 2-stop and 3-stop plans. Card actions and separators MUST
+  remain inside the card border without protruding lines.
+- **FR-333**: Programmatic result and changed-stop focus MUST use intentional
+  purple focus treatment and MUST NOT expose the browser's default blue
+  outline. Keyboard focus on interactive controls remains visibly distinct.
+- **FR-334**: An accepted search MUST show a full-width, truthful progress
+  presentation for at least 700ms while the real request runs. It MUST present
+  validation, published-hours/menu matching, and route/walking composition,
+  distinguish `Planner` from `AI tool · find_evening_plan`, and never imply
+  live web or inventory search.
+- **FR-335**: Search cancellation, validation failure, and transport errors
+  MUST bypass the minimum presentation delay. Reduced-motion users MUST receive
+  the same textual progress without movement, pulse, or fade.
 
 ## Key entities
 
@@ -376,6 +392,20 @@ live availability. Check each official site before you go.` It MUST also say
 - **SC-312**: A product-reality audit scores at least 85/100 with no dimension
   below 70%; any failure keeps v2 production in place or triggers the recorded
   v2 rollback.
+- **SC-313**: At 1440px, 768px, and 390px the interest grid is respectively
+  6×1, 3×2, and 2×3 with equal-height controls and no orphan row.
+- **SC-314**: Route line/node centres differ by at most 1px vertically and 2px
+  at the first/last horizontal endpoints for both 2-stop and 3-stop plans.
+- **SC-315**: Fast successful and honest no-result searches show progress for
+  650–900ms; slower requests remain in a truthful pending state until their
+  actual response arrives, and errors/cancellation surface immediately.
+- **SC-316**: Manual progress never claims an AI tool; Site Tool progress shows
+  exactly `find_evening_plan`. Reduced-motion progress has no active animation.
+- **SC-317**: No functional or data card has a resting rotation, no separator
+  or action exceeds its card bounds, and result focus uses the purple design
+  token instead of the native blue outline.
+- **SC-318**: The UI repair preserves `pnpm check`, all 8 builds, security and
+  source gates, exact-five parity, and the v3 20/20 read-only reliability gate.
 
 ## Assumptions and dependencies
 
