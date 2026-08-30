@@ -150,11 +150,10 @@ export function PlannerPlanV3({
         </li>
       </ul>
       <p className="v3-trust-note">
-        {plan.disclaimer} Walking times are coordinate estimates. Totals exclude
-        transport and any extras, tax, or service charges not listed by the
-        source.
+        {plan.disclaimer} Walking is coordinate-estimated; totals exclude
+        transport and unlisted extras, taxes, or service charges.
         {plan.totals.stopCount === 2
-          ? " This is a two-stop fallback because no third published-hours stop fit the selected time, budget, and walking limit."
+          ? " Two-stop fallback: no third published-hours stop fit the selected constraints."
           : ""}
       </p>
       {warnings.length > 0 ? (

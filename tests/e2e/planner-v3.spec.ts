@@ -255,7 +255,7 @@ test("PV3-UI-003 honest two-stop fallback explains the reduction and fills the r
   ).toBeVisible();
   await expect(page.locator(".v3-stop")).toHaveCount(2);
   await expect(page.locator(".v3-trust-note")).toContainText(
-    "two-stop fallback",
+    /two-stop fallback/i,
   );
   const widths = await page.locator(".v3-route").evaluate((route) => ({
     cards: [...route.querySelectorAll<HTMLElement>(".v3-stop")].map(
@@ -383,6 +383,14 @@ test("PV3-A11Y-001 mobile first views and 200/400% text reflow without clipped i
   });
   expect(firstViewport.bottom).toBeGreaterThan(0);
   expect(firstViewport.top).toBeLessThan(firstViewport.height);
+  const firstFactsViewport = await firstStop
+    .locator(".v3-stop__facts")
+    .evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return { bottom: bounds.bottom, height: innerHeight, top: bounds.top };
+    });
+  expect(firstFactsViewport.bottom).toBeGreaterThan(0);
+  expect(firstFactsViewport.top).toBeLessThan(firstFactsViewport.height);
   await expectNoMaterialAxeViolations(page);
   await expectInternalReflow(page, 200);
   await expectInternalReflow(page, 400);
