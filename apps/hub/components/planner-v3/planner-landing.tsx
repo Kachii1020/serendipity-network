@@ -29,8 +29,9 @@ export function PlannerLandingV3({
         <div className="v3-landing__intro">
           <h1>A whole Tokyo night.</h1>
           <p>
-            Pick Shibuya, Shinjuku, or Ikebukuro. Get an activity, an optional
-            meal, and a final stop from published hours and official prices.
+            Pick Shibuya, Shinjuku, or Ikebukuro. Get two or three stops from
+            published hours and official prices: an activity, an optional meal,
+            and a final stop when it honestly fits.
           </p>
           <p className="v3-agent-note">
             Site Tools let your AI compare hubs, inspect official menu evidence,
