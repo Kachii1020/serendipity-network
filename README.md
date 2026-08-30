@@ -17,8 +17,8 @@ v3 is an implementation candidate, not the production product yet.
   <https://serendipity-phase0-hub.vercel.app>
 - **Current production planner (v2):**
   <https://serendipity-phase0-hub.vercel.app/plan>
-- **Early v3 preview (outdated, protected, not final evidence):**
-  <https://serendipity-phase0-ob3ohcdl6-circle-connect123.vercel.app/v3>
+- **Current v3 review preview (protected, Google OFF):**
+  <https://serendipity-phase0-1llyy24wx-circle-connect123.vercel.app/v3>
 - **Public source:**
   <https://github.com/Kachii1020/serendipity-network>
 
@@ -56,8 +56,7 @@ pnpm --filter @serendipity/hub dev
 
 Open <http://localhost:3100/v3>. A representative path is:
 
-1. Choose **Shinjuku**, **3 adults**, **¥4,000 per person**, and keep the meal
-   enabled.
+1. Keep **Shibuya**, **1 adult**, **¥4,000 per person**, and the meal enabled.
 2. Build the plan and inspect the full-width route, official menu basis, and
    group estimate.
 3. Change one stop, open its sources, and save the refreshed plan locally.
