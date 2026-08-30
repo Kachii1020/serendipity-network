@@ -26,6 +26,12 @@ const time = (value: string): string =>
     timeZone: "Asia/Tokyo",
   }).format(new Date(value));
 
+const stopPrice = (minimum: number, maximum: number): string => {
+  if (minimum === 0 && maximum === 0) return "Free";
+  if (minimum === maximum) return `${yen(maximum)} / person`;
+  return `${yen(minimum)}–${yen(maximum)} / person`;
+};
+
 function ChangeStopDialog({
   onChoose,
   onClose,
@@ -128,7 +134,10 @@ export function PlannerPlanV3({
       </section>
       <ul aria-label="Plan summary" className="v3-stat-grid">
         <li className="v3-stat">{plan.totals.stopCount} stops</li>
-        <li className="v3-stat">{plan.intent.partySize} adults</li>
+        <li className="v3-stat">
+          {plan.intent.partySize}{" "}
+          {plan.intent.partySize === 1 ? "adult" : "adults"}
+        </li>
         <li className="v3-stat">
           {yen(plan.totals.perPersonMaxYen)} / person ·{" "}
           {yen(plan.totals.estimatedGroupMaxYen)} group estimate
@@ -169,8 +178,10 @@ export function PlannerPlanV3({
                     {time(stop.startsAt)}–{time(stop.endsAt)}
                   </span>
                   <span>
-                    {yen(stop.cost.perPersonMinYen)}–
-                    {yen(stop.cost.perPersonMaxYen)} / person
+                    {stopPrice(
+                      stop.cost.perPersonMinYen,
+                      stop.cost.perPersonMaxYen,
+                    )}
                   </span>
                   <span>{stop.place.address}</span>
                 </div>
