@@ -260,7 +260,7 @@ v2. See `evidence/rc-status-2026-08-30.md` for the claim boundary.
 - [x] **T337** [US1] Add the 700ms shared search presentation, transport-aware
       progress source, reduced-motion behavior, correlation/duration activity,
       and fast-failure semantics — verifies FR-334–FR-335 via V3-PROG-001–004.
-- [ ] **T338** Run focused and full UI/a11y/visual/security/reliability gates,
+- [x] **T338** Run focused and full UI/a11y/visual/security/reliability gates,
       deploy a Google-OFF immutable preview, and preserve v2/current-v3 rollback
       IDs for user review — closes SC-313–SC-318 without production promotion.
 

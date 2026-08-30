@@ -38,6 +38,13 @@
 
 REST paths, v3 envelopes, area packs, engine ranking, storage schema, and the
 exact five Site Tool names/inputs/outputs are unchanged. Google remains OFF.
-Production v2 and preview deployment `dpl_9kcpSUzfEsAq9KD4f7gkR1cFGfCA`
-remain rollback anchors. T338 stays open until the new immutable preview is
-deployed and replayed.
+Production v2 and prior preview deployment `dpl_9kcpSUzfEsAq9KD4f7gkR1cFGfCA`
+remain rollback anchors.
+
+Google-OFF preview `dpl_FiAgEWBxQhbymhFvRZu5z6vp21Ko` is READY in `hnd1` at
+<https://serendipity-phase0-cg3ymnih0-circle-connect123.vercel.app/v3> from
+application commit `5c8e263`. A signed-in browser observed the manual progress
+panel, then the result in 1,237ms with no warning/error log. The deployed
+2-stop route had exact line/node centres, contained actions, zero resting card
+rotation, purple result focus, and zero horizontal overflow. T338 is closed;
+production promotion remains explicitly out of scope for this slice.
