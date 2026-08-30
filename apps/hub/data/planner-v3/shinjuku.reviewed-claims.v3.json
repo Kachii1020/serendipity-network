@@ -1,0 +1,690 @@
+{
+  "1.0.0": {
+    "schemaVersion": "3",
+    "packVersion": "1.0.0",
+    "area": "shinjuku",
+    "pack": {
+      "schemaVersion": "3",
+      "packVersion": "1.0.0",
+      "status": "ACTIVE",
+      "area": "shinjuku",
+      "generatedAt": "2026-08-30T12:00:00+09:00",
+      "validThrough": "2026-09-12T23:59:59+09:00",
+      "dataLicense": {
+        "licenseId": "MIXED-SEE-SOURCES",
+        "licenseUrl": "https://github.com/Kachii1020/serendipity-network/blob/main/DATA-LICENSE.md",
+        "attribution": "Open coordinates retain their stated terms. Official pages and menus are cited as factual references only; no source prose, images, reviews, ratings, or logos are redistributed."
+      },
+      "station": {
+        "name": "Shinjuku Station",
+        "coordinates": {
+          "latitude": 35.69083333333333,
+          "longitude": 139.70055555555555
+        },
+        "sourceIds": ["wikidata-shinjuku-station"]
+      },
+      "sources": [
+        {
+          "sourceId": "wikidata-shinjuku-station",
+          "title": "Shinjuku Station (Q801447)",
+          "publisher": "Wikidata",
+          "sourceKind": "OPEN_DATASET",
+          "url": "https://www.wikidata.org/wiki/Q801447",
+          "checkedAt": "2026-08-30T10:20:00+09:00",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC0-1.0",
+            "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "attribution": "Wikidata contributors (CC0)"
+          }
+        },
+        {
+          "sourceId": "tokyo-tmg-observatory",
+          "title": "Tokyo Metropolitan Government No.1 Building observatories",
+          "publisher": "Tokyo Convention & Visitors Bureau",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://www.gotokyo.org/en/spot/74/index.html",
+          "checkedAt": "2026-08-30T10:21:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Official Tokyo travel guide; factual reference only"
+          },
+          "notes": "Publishes free entry, address, 09:30-22:00 hours, last entry, and recurring South Observatory closures."
+        },
+        {
+          "sourceId": "environment-shinjuku-gyoen",
+          "title": "Shinjuku Gyoen admission information",
+          "publisher": "Ministry of the Environment, Government of Japan",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://policies.env.go.jp/national-garden/shinjukugyoen/english/guide/information/",
+          "checkedAt": "2026-08-30T10:22:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Ministry of the Environment official garden guide; factual reference only"
+          }
+        },
+        {
+          "sourceId": "tokyo-toy-museum",
+          "title": "Tokyo Toy Museum visitor information",
+          "publisher": "Japan Good Toy Association",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://art-play.or.jp/ttm/en/",
+          "checkedAt": "2026-08-30T10:23:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Tokyo Toy Museum official visitor page; factual reference only"
+          },
+          "notes": "Publishes the address, 10:00-16:00 hours, Thursday closure, and ¥1,100 online / ¥1,300 counter adult admission."
+        },
+        {
+          "sourceId": "shinjuku-copabowl-about",
+          "title": "Shinjuku Copabowl store information",
+          "publisher": "Humax Entertainment Inc.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://copa-shinjuku.com/en/about/",
+          "checkedAt": "2026-08-30T10:25:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Shinjuku Copabowl official site; factual reference only"
+          }
+        },
+        {
+          "sourceId": "shinjuku-copabowl-prices",
+          "title": "Shinjuku Copabowl bowling packs",
+          "publisher": "Humax Entertainment Inc.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://copa-shinjuku.com/bowling/",
+          "checkedAt": "2026-08-30T10:26:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "PUBLIC_ACCESS"],
+            "attribution": "Shinjuku Copabowl official bowling page; factual reference only"
+          },
+          "notes": "Publishes adult three-game pack prices; rental shoes and extras are excluded from the planner range."
+        },
+        {
+          "sourceId": "ootoya-shinjuku-east-store",
+          "title": "Ootoya Shinjuku East Exit Chuo-dori store",
+          "publisher": "Ootoya Holdings Co., Ltd.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://store.ootoya.com/detail/27230/",
+          "checkedAt": "2026-08-30T10:27:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Ootoya official store page; factual reference only"
+          },
+          "notes": "The official store page embeds its Google Place ID and geo coordinates."
+        },
+        {
+          "sourceId": "ootoya-grand-menu",
+          "title": "Ootoya grand menu",
+          "publisher": "Ootoya Holdings Co., Ltd.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://www.ootoya.com/menu",
+          "checkedAt": "2026-08-30T10:28:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "Ootoya official menu; factual reference only"
+          },
+          "notes": "Budget range uses currently published metropolitan-area set-meal prices; store offerings may vary."
+        },
+        {
+          "sourceId": "torikizoku-shinjuku-otakibashi-store",
+          "title": "Torikizoku Shinjuku Otakibashi-dori store",
+          "publisher": "Torikizoku Co., Ltd.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://en.map.torikizoku.co.jp/store/734",
+          "checkedAt": "2026-08-30T10:29:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Torikizoku official store page; factual reference only"
+          },
+          "notes": "The official store page embeds its Google Place ID and geo coordinates."
+        },
+        {
+          "sourceId": "torikizoku-menu",
+          "title": "Torikizoku menu and uniform price",
+          "publisher": "Torikizoku Co., Ltd.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://map.torikizoku.co.jp/",
+          "checkedAt": "2026-08-30T10:30:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "Torikizoku official menu and store directory; factual reference only"
+          },
+          "notes": "The official directory states ¥390 including tax per item. Planner range transparently represents two to five items, not a fixed course."
+        },
+        {
+          "sourceId": "ichiran-shinjuku-store",
+          "title": "ICHIRAN Shinjuku Central East Exit store information",
+          "publisher": "ICHIRAN Inc.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://en.ichiran.com/shop/tokyo/shinjuku/",
+          "checkedAt": "2026-08-30T10:31:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "ICHIRAN official store page; factual reference only"
+          },
+          "notes": "The official page publishes 24-hour operation and an official map coordinate. Its next temporary closure begins outside this pack horizon."
+        },
+        {
+          "sourceId": "ichiran-shinjuku-menu",
+          "title": "ICHIRAN Shinjuku Central East Exit store menu",
+          "publisher": "ICHIRAN Inc.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://en.ichiran.com/shop/tokyo/shinjuku/",
+          "checkedAt": "2026-08-30T10:31:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "ICHIRAN official store menu; factual reference only"
+          },
+          "notes": "Publishes Classic Tonkotsu Ramen at ¥1,180 before the stated late-night surcharge; planner routes end before 22:00 for this stop."
+        }
+      ],
+      "places": [
+        {
+          "placeId": "tmg-south-observatory",
+          "role": "ACTIVITY",
+          "name": "Tokyo Metropolitan Government South Observatory",
+          "summary": "See Tokyo light up from the free 45th-floor observatory, with last entry at 21:30.",
+          "category": "public-space",
+          "address": "Tokyo Metropolitan Government Building No. 1, 2-8-1 Nishi-Shinjuku, Shinjuku City, Tokyo",
+          "coordinates": {
+            "latitude": 35.689634,
+            "longitude": 139.692101
+          },
+          "tags": ["outdoors", "quiet", "lively"],
+          "officialUrl": "https://www.gotokyo.org/en/spot/74/index.html",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 50,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "09:30",
+              "closes": "22:00"
+            }
+          ],
+          "dateExceptions": [
+            {
+              "date": "2026-09-01",
+              "closed": true,
+              "note": "Published first-Tuesday South Observatory closure"
+            }
+          ],
+          "price": {
+            "kind": "FREE",
+            "minYen": 0,
+            "maxYen": 0,
+            "label": "Published free admission"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "tokyo-tmg-observatory",
+              "checkedAt": "2026-08-30T10:21:00+09:00"
+            },
+            "address": {
+              "sourceId": "tokyo-tmg-observatory",
+              "checkedAt": "2026-08-30T10:21:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "tokyo-tmg-observatory",
+              "checkedAt": "2026-08-30T10:21:00+09:00"
+            },
+            "hours": {
+              "sourceId": "tokyo-tmg-observatory",
+              "checkedAt": "2026-08-30T10:21:00+09:00"
+            },
+            "price": {
+              "sourceId": "tokyo-tmg-observatory",
+              "checkedAt": "2026-08-30T10:21:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "tokyo-tmg-observatory",
+              "checkedAt": "2026-08-30T10:21:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "tokyo-tmg-observatory",
+              "checkedAt": "2026-08-30T10:21:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "shinjuku-gyoen",
+          "role": "ACTIVITY",
+          "name": "Shinjuku Gyoen National Garden",
+          "summary": "Take an early-evening garden walk through contrasting Japanese and Western landscapes.",
+          "category": "park",
+          "address": "11 Naito-machi, Shinjuku City, Tokyo",
+          "coordinates": {
+            "latitude": 35.685176,
+            "longitude": 139.710052
+          },
+          "tags": ["outdoors", "quiet", "heritage"],
+          "officialUrl": "https://policies.env.go.jp/national-garden/shinjukugyoen/english/guide/information/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 60,
+          "weeklyHours": [
+            {
+              "days": [0, 2, 3, 4, 5, 6],
+              "opens": "09:00",
+              "closes": "18:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 500,
+            "maxYen": 500,
+            "label": "Published adult admission"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "environment-shinjuku-gyoen",
+              "checkedAt": "2026-08-30T10:22:00+09:00"
+            },
+            "address": {
+              "sourceId": "environment-shinjuku-gyoen",
+              "checkedAt": "2026-08-30T10:22:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "environment-shinjuku-gyoen",
+              "checkedAt": "2026-08-30T10:22:00+09:00"
+            },
+            "hours": {
+              "sourceId": "environment-shinjuku-gyoen",
+              "checkedAt": "2026-08-30T10:22:00+09:00"
+            },
+            "price": {
+              "sourceId": "environment-shinjuku-gyoen",
+              "checkedAt": "2026-08-30T10:22:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "environment-shinjuku-gyoen",
+              "checkedAt": "2026-08-30T10:22:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "environment-shinjuku-gyoen",
+              "checkedAt": "2026-08-30T10:22:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "tokyo-toy-museum",
+          "role": "ACTIVITY",
+          "name": "Tokyo Toy Museum",
+          "summary": "Play with analogue toys from Japan and abroad inside a converted elementary school.",
+          "category": "museum",
+          "address": "Yotsuya Hiroba, 4-20 Yotsuya, Shinjuku City, Tokyo",
+          "coordinates": {
+            "latitude": 35.688154,
+            "longitude": 139.720164
+          },
+          "tags": ["hands-on", "art", "quiet"],
+          "officialUrl": "https://art-play.or.jp/ttm/en/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 75,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 5, 6],
+              "opens": "10:00",
+              "closes": "16:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 1100,
+            "maxYen": 1300,
+            "label": "Published adult online-to-counter admission range"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "tokyo-toy-museum",
+              "checkedAt": "2026-08-30T10:23:00+09:00"
+            },
+            "address": {
+              "sourceId": "tokyo-toy-museum",
+              "checkedAt": "2026-08-30T10:23:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "tokyo-toy-museum",
+              "checkedAt": "2026-08-30T10:23:00+09:00"
+            },
+            "hours": {
+              "sourceId": "tokyo-toy-museum",
+              "checkedAt": "2026-08-30T10:23:00+09:00"
+            },
+            "price": {
+              "sourceId": "tokyo-toy-museum",
+              "checkedAt": "2026-08-30T10:23:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "tokyo-toy-museum",
+              "checkedAt": "2026-08-30T10:23:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "tokyo-toy-museum",
+              "checkedAt": "2026-08-30T10:23:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "shinjuku-copabowl",
+          "role": "ACTIVITY",
+          "name": "Shinjuku Copabowl",
+          "summary": "Play three games in a neon-lit Kabukicho bowling alley open late every day.",
+          "category": "experience",
+          "address": "Humax Pavilion Shinjuku Kabukicho 3F-4F, 1-20-1 Kabukicho, Shinjuku City, Tokyo",
+          "coordinates": {
+            "latitude": 35.695472,
+            "longitude": 139.701563
+          },
+          "tags": ["hands-on", "lively"],
+          "officialUrl": "https://copa-shinjuku.com/en/about/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 75,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "11:00",
+              "closes": "23:30"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 2450,
+            "maxYen": 2900,
+            "label": "Published adult three-game pack; shoe rental and extras excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "shinjuku-copabowl-about",
+              "checkedAt": "2026-08-30T10:25:00+09:00"
+            },
+            "address": {
+              "sourceId": "shinjuku-copabowl-about",
+              "checkedAt": "2026-08-30T10:25:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "shinjuku-copabowl-about",
+              "checkedAt": "2026-08-30T10:25:00+09:00"
+            },
+            "hours": {
+              "sourceId": "shinjuku-copabowl-about",
+              "checkedAt": "2026-08-30T10:25:00+09:00"
+            },
+            "price": {
+              "sourceId": "shinjuku-copabowl-prices",
+              "checkedAt": "2026-08-30T10:26:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "shinjuku-copabowl-about",
+              "checkedAt": "2026-08-30T10:25:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "shinjuku-copabowl-about",
+              "checkedAt": "2026-08-30T10:25:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "ootoya-shinjuku-east",
+          "role": "MEAL",
+          "name": "Ootoya Shinjuku East Exit Chuo-dori",
+          "summary": "Choose a Japanese set meal two minutes from Shinjuku Station at a published metropolitan menu price.",
+          "category": "restaurant",
+          "address": "Peace Building 2F, 3-34-11 Shinjuku, Shinjuku City, Tokyo",
+          "coordinates": {
+            "latitude": 35.6905567,
+            "longitude": 139.7027954
+          },
+          "tags": ["food", "quiet"],
+          "officialUrl": "https://store.ootoya.com/detail/27230/",
+          "googlePlaceId": "ChIJd-mrX9qMGGARsgwCXEXM4Iw",
+          "recommendedVisitMinutes": 60,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "10:00",
+              "closes": "23:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 930,
+            "maxYen": 1790,
+            "label": "Published metropolitan-area set-meal range; drinks and extras excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "ootoya-shinjuku-east-store",
+              "checkedAt": "2026-08-30T10:27:00+09:00"
+            },
+            "address": {
+              "sourceId": "ootoya-shinjuku-east-store",
+              "checkedAt": "2026-08-30T10:27:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "ootoya-shinjuku-east-store",
+              "checkedAt": "2026-08-30T10:27:00+09:00"
+            },
+            "hours": {
+              "sourceId": "ootoya-shinjuku-east-store",
+              "checkedAt": "2026-08-30T10:27:00+09:00"
+            },
+            "price": {
+              "sourceId": "ootoya-grand-menu",
+              "checkedAt": "2026-08-30T10:28:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "ootoya-shinjuku-east-store",
+              "checkedAt": "2026-08-30T10:27:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "ootoya-shinjuku-east-store",
+              "checkedAt": "2026-08-30T10:27:00+09:00"
+            },
+            "menu": {
+              "sourceId": "ootoya-grand-menu",
+              "checkedAt": "2026-08-30T10:28:00+09:00"
+            }
+          }
+        },
+        {
+          "placeId": "torikizoku-shinjuku-otakibashi",
+          "role": "MEAL",
+          "name": "Torikizoku Shinjuku Otakibashi-dori",
+          "summary": "Build a casual yakitori meal from a uniform-price menu near Shinjuku West Exit.",
+          "category": "restaurant",
+          "address": "Otakibashi Pacifica Building 2F, 7-10-18 Nishi-Shinjuku, Shinjuku City, Tokyo",
+          "coordinates": {
+            "latitude": 35.69446266,
+            "longitude": 139.6986463
+          },
+          "tags": ["food", "drinks", "lively"],
+          "officialUrl": "https://en.map.torikizoku.co.jp/store/734",
+          "googlePlaceId": "ChIJTTNJ5faNGGARbjLMGb9ADOs",
+          "recommendedVisitMinutes": 70,
+          "weeklyHours": [
+            {
+              "days": [1, 2, 3, 4, 5],
+              "opens": "17:00",
+              "closes": "23:59"
+            },
+            {
+              "days": [0, 6],
+              "opens": "16:00",
+              "closes": "23:59"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 780,
+            "maxYen": 1950,
+            "label": "Two to five published ¥390 items; actual order determines total"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "torikizoku-shinjuku-otakibashi-store",
+              "checkedAt": "2026-08-30T10:29:00+09:00"
+            },
+            "address": {
+              "sourceId": "torikizoku-shinjuku-otakibashi-store",
+              "checkedAt": "2026-08-30T10:29:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "torikizoku-shinjuku-otakibashi-store",
+              "checkedAt": "2026-08-30T10:29:00+09:00"
+            },
+            "hours": {
+              "sourceId": "torikizoku-shinjuku-otakibashi-store",
+              "checkedAt": "2026-08-30T10:29:00+09:00"
+            },
+            "price": {
+              "sourceId": "torikizoku-menu",
+              "checkedAt": "2026-08-30T10:30:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "torikizoku-shinjuku-otakibashi-store",
+              "checkedAt": "2026-08-30T10:29:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "torikizoku-shinjuku-otakibashi-store",
+              "checkedAt": "2026-08-30T10:29:00+09:00"
+            },
+            "menu": {
+              "sourceId": "torikizoku-menu",
+              "checkedAt": "2026-08-30T10:30:00+09:00"
+            }
+          }
+        },
+        {
+          "placeId": "ichiran-shinjuku-central-east",
+          "role": "MEAL",
+          "name": "ICHIRAN Shinjuku Central East Exit",
+          "summary": "Order a focused bowl of tonkotsu ramen three minutes from Shinjuku Station.",
+          "category": "restaurant",
+          "address": "Peace Building B1F, 3-34-11 Shinjuku, Shinjuku City, Tokyo",
+          "coordinates": {
+            "latitude": 35.6905377,
+            "longitude": 139.7028162
+          },
+          "tags": ["food", "quiet"],
+          "officialUrl": "https://en.ichiran.com/shop/tokyo/shinjuku/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 50,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "00:00",
+              "closes": "22:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 1180,
+            "maxYen": 1180,
+            "label": "Published Classic Tonkotsu Ramen price before 22:00; extras excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "ichiran-shinjuku-store",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            },
+            "address": {
+              "sourceId": "ichiran-shinjuku-store",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "ichiran-shinjuku-store",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            },
+            "hours": {
+              "sourceId": "ichiran-shinjuku-store",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            },
+            "price": {
+              "sourceId": "ichiran-shinjuku-menu",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "ichiran-shinjuku-store",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "ichiran-shinjuku-store",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            },
+            "menu": {
+              "sourceId": "ichiran-shinjuku-menu",
+              "checkedAt": "2026-08-30T10:31:00+09:00"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

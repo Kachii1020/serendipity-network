@@ -1,0 +1,693 @@
+{
+  "1.0.0": {
+    "schemaVersion": "3",
+    "packVersion": "1.0.0",
+    "area": "ikebukuro",
+    "pack": {
+      "schemaVersion": "3",
+      "packVersion": "1.0.0",
+      "status": "ACTIVE",
+      "area": "ikebukuro",
+      "generatedAt": "2026-08-30T12:00:00+09:00",
+      "validThrough": "2026-09-12T23:59:59+09:00",
+      "dataLicense": {
+        "licenseId": "MIXED-SEE-SOURCES",
+        "licenseUrl": "https://github.com/Kachii1020/serendipity-network/blob/main/DATA-LICENSE.md",
+        "attribution": "Open coordinates retain their stated terms. Official pages and menus are cited as factual references only; no source prose, images, reviews, ratings, or logos are redistributed."
+      },
+      "station": {
+        "name": "Ikebukuro Station",
+        "coordinates": {
+          "latitude": 35.73027777777778,
+          "longitude": 139.71138888888888
+        },
+        "sourceIds": ["wikidata-ikebukuro-station"]
+      },
+      "sources": [
+        {
+          "sourceId": "wikidata-ikebukuro-station",
+          "title": "Ikebukuro Station (Q173919)",
+          "publisher": "Wikidata",
+          "sourceKind": "OPEN_DATASET",
+          "url": "https://www.wikidata.org/wiki/Q173919",
+          "checkedAt": "2026-08-30T10:40:00+09:00",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC0-1.0",
+            "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "attribution": "Wikidata contributors (CC0)"
+          }
+        },
+        {
+          "sourceId": "sunshine-observatory-tickets",
+          "title": "Sunshine 60 Observatory Tenbou-Park tickets and hours",
+          "publisher": "Sunshine City Corporation",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://sunshinecity.jp/en/observatory/ticket/",
+          "checkedAt": "2026-08-30T10:41:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Sunshine City official observatory page; factual reference only"
+          },
+          "notes": "Publishes current hours and the ¥700-¥1,200 adult date-band range; timed entry may be required on busy dates."
+        },
+        {
+          "sourceId": "sunshine-observatory-faq",
+          "title": "Sunshine 60 Observatory operating FAQ",
+          "publisher": "Sunshine City Corporation",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://sunshinecity.jp/en/observatory/information/faq.html",
+          "checkedAt": "2026-08-30T10:41:30+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["HOURS", "PUBLIC_ACCESS"],
+            "attribution": "Sunshine City official observatory FAQ; factual reference only"
+          },
+          "notes": "The pack uses the published general 11:00-21:00 window rather than extending dynamic same-day hours across the horizon."
+        },
+        {
+          "sourceId": "sunshine-aquarium-tickets",
+          "title": "Sunshine Aquarium business hours, fees and tickets",
+          "publisher": "Sunshine City Corporation",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://sunshinecity.jp/en/aquarium/ticket/",
+          "checkedAt": "2026-08-30T10:42:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Sunshine City official aquarium page; factual reference only"
+          },
+          "notes": "Publishes the August 2026 schedule and ¥2,600-¥3,200 adult price band; timed entry may be required. The pack uses a conservative 10:00-18:00 subset and still requires an official-site check."
+        },
+        {
+          "sourceId": "animate-ikebukuro-store",
+          "title": "animate Ikebukuro Flagship Store",
+          "publisher": "animate Co., Ltd.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://www.animate.co.jp/en/shop/ikebukuro/",
+          "checkedAt": "2026-08-30T10:43:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "animate official store page; factual reference only"
+          },
+          "notes": "The planner budgets store entry at ¥0; merchandise and ticketed events are excluded."
+        },
+        {
+          "sourceId": "bandai-cross-store-tokyo",
+          "title": "Bandai Namco Cross Store Tokyo",
+          "publisher": "Bandai Namco Experience Inc.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://bandainamco-am.co.jp/crossstore/store/crossstore_tokyo/?first=all",
+          "checkedAt": "2026-08-30T10:44:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Bandai Namco official store page; factual reference only"
+          },
+          "notes": "The planner budgets store entry at ¥0; games, merchandise and special content are excluded."
+        },
+        {
+          "sourceId": "ootoya-ikebukuro-east-store",
+          "title": "Ootoya Ikebukuro East Exit store",
+          "publisher": "Ootoya Holdings Co., Ltd.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://store.ootoya.com/detail/27186/",
+          "checkedAt": "2026-08-30T10:45:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Ootoya official store page; factual reference only"
+          },
+          "notes": "The official store page embeds its Google Place ID and geo coordinates."
+        },
+        {
+          "sourceId": "ootoya-grand-menu",
+          "title": "Ootoya grand menu",
+          "publisher": "Ootoya Holdings Co., Ltd.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://www.ootoya.com/menu",
+          "checkedAt": "2026-08-30T10:46:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "Ootoya official menu; factual reference only"
+          },
+          "notes": "Budget range uses currently published metropolitan-area set-meal prices; store offerings may vary."
+        },
+        {
+          "sourceId": "torikizoku-ikebukuro-east-store",
+          "title": "Torikizoku Ikebukuro East Exit store",
+          "publisher": "Torikizoku Co., Ltd.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://en.map.torikizoku.co.jp/detail/226/",
+          "checkedAt": "2026-08-30T10:47:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Torikizoku official store page; factual reference only"
+          },
+          "notes": "The official store page embeds its Google Place ID and geo coordinates."
+        },
+        {
+          "sourceId": "torikizoku-menu",
+          "title": "Torikizoku menu and uniform price",
+          "publisher": "Torikizoku Co., Ltd.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://map.torikizoku.co.jp/",
+          "checkedAt": "2026-08-30T10:48:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "Torikizoku official menu and store directory; factual reference only"
+          },
+          "notes": "The official directory states ¥390 including tax per item. Planner range transparently represents two to five items, not a fixed course."
+        },
+        {
+          "sourceId": "ichiran-ikebukuro-store",
+          "title": "ICHIRAN Ikebukuro store information",
+          "publisher": "ICHIRAN Inc.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://en.ichiran.com/shop/tokyo/ikebukuro/",
+          "checkedAt": "2026-08-30T10:49:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "ICHIRAN official store page; factual reference only"
+          },
+          "notes": "The official page publishes 09:30-22:45 operation from July 13 and an official map coordinate. No Place ID is asserted."
+        },
+        {
+          "sourceId": "ichiran-ikebukuro-menu",
+          "title": "ICHIRAN Ikebukuro store menu",
+          "publisher": "ICHIRAN Inc.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://en.ichiran.com/shop/tokyo/ikebukuro/",
+          "checkedAt": "2026-08-30T10:49:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "ICHIRAN official store menu; factual reference only"
+          },
+          "notes": "Publishes Classic Tonkotsu Ramen at ¥1,180; toppings, extra noodles and drinks are excluded."
+        }
+      ],
+      "places": [
+        {
+          "placeId": "sunshine-60-observatory",
+          "role": "ACTIVITY",
+          "name": "Sunshine 60 Observatory Tenbou-Park",
+          "summary": "Watch the city shift into night from a relaxed indoor sky park 251 metres above Ikebukuro.",
+          "category": "public-space",
+          "address": "Sunshine 60 Building 60F, 3-1 Higashi-Ikebukuro, Toshima City, Tokyo",
+          "coordinates": {
+            "latitude": 35.729042,
+            "longitude": 139.718244
+          },
+          "tags": ["outdoors", "quiet", "lively"],
+          "officialUrl": "https://sunshinecity.jp/en/observatory/ticket/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 50,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "11:00",
+              "closes": "21:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 700,
+            "maxYen": 1200,
+            "label": "Published adult date-band range; verify the date category"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "sunshine-observatory-tickets",
+              "checkedAt": "2026-08-30T10:41:00+09:00"
+            },
+            "address": {
+              "sourceId": "sunshine-observatory-tickets",
+              "checkedAt": "2026-08-30T10:41:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "sunshine-observatory-tickets",
+              "checkedAt": "2026-08-30T10:41:00+09:00"
+            },
+            "hours": {
+              "sourceId": "sunshine-observatory-faq",
+              "checkedAt": "2026-08-30T10:41:30+09:00"
+            },
+            "price": {
+              "sourceId": "sunshine-observatory-tickets",
+              "checkedAt": "2026-08-30T10:41:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "sunshine-observatory-faq",
+              "checkedAt": "2026-08-30T10:41:30+09:00"
+            },
+            "officialLink": {
+              "sourceId": "sunshine-observatory-tickets",
+              "checkedAt": "2026-08-30T10:41:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "sunshine-aquarium",
+          "role": "ACTIVITY",
+          "name": "Sunshine Aquarium",
+          "summary": "Spend an hour with rooftop marine exhibits before the final evening admission window.",
+          "category": "museum",
+          "address": "World Import Mart Building Rooftop, 3-1 Higashi-Ikebukuro, Toshima City, Tokyo",
+          "coordinates": {
+            "latitude": 35.728901,
+            "longitude": 139.720079
+          },
+          "tags": ["science", "quiet", "hands-on"],
+          "officialUrl": "https://sunshinecity.jp/en/aquarium/ticket/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 60,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "10:00",
+              "closes": "18:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 2600,
+            "maxYen": 3200,
+            "label": "Published adult date-band range; verify the date category"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "sunshine-aquarium-tickets",
+              "checkedAt": "2026-08-30T10:42:00+09:00"
+            },
+            "address": {
+              "sourceId": "sunshine-aquarium-tickets",
+              "checkedAt": "2026-08-30T10:42:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "sunshine-aquarium-tickets",
+              "checkedAt": "2026-08-30T10:42:00+09:00"
+            },
+            "hours": {
+              "sourceId": "sunshine-aquarium-tickets",
+              "checkedAt": "2026-08-30T10:42:00+09:00"
+            },
+            "price": {
+              "sourceId": "sunshine-aquarium-tickets",
+              "checkedAt": "2026-08-30T10:42:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "sunshine-aquarium-tickets",
+              "checkedAt": "2026-08-30T10:42:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "sunshine-aquarium-tickets",
+              "checkedAt": "2026-08-30T10:42:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "animate-ikebukuro",
+          "role": "ACTIVITY",
+          "name": "animate Ikebukuro Flagship Store",
+          "summary": "Browse nine floors of manga, anime, exhibitions, and character culture at the flagship shop.",
+          "category": "experience",
+          "address": "1-20-7 Higashi-Ikebukuro, Toshima City, Tokyo",
+          "coordinates": {
+            "latitude": 35.732083,
+            "longitude": 139.715225
+          },
+          "tags": ["art", "books", "lively"],
+          "officialUrl": "https://www.animate.co.jp/en/shop/ikebukuro/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 45,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "10:00",
+              "closes": "21:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "FREE",
+            "minYen": 0,
+            "maxYen": 0,
+            "label": "Store entry is free; merchandise and ticketed events excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "animate-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:43:00+09:00"
+            },
+            "address": {
+              "sourceId": "animate-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:43:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "animate-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:43:00+09:00"
+            },
+            "hours": {
+              "sourceId": "animate-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:43:00+09:00"
+            },
+            "price": {
+              "sourceId": "animate-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:43:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "animate-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:43:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "animate-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:43:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "bandai-namco-cross-store-tokyo",
+          "role": "ACTIVITY",
+          "name": "Bandai Namco Cross Store Tokyo",
+          "summary": "Explore a large hands-on character and game showcase inside Sunshine City.",
+          "category": "experience",
+          "address": "Sunshine City World Import Mart Building 3F, 3-1-3 Higashi-Ikebukuro, Toshima City, Tokyo",
+          "coordinates": {
+            "latitude": 35.728914,
+            "longitude": 139.719785
+          },
+          "tags": ["hands-on", "lively", "art"],
+          "officialUrl": "https://bandainamco-am.co.jp/crossstore/store/crossstore_tokyo/?first=all",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 45,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "10:00",
+              "closes": "21:00"
+            }
+          ],
+          "dateExceptions": [
+            {
+              "date": "2026-08-31",
+              "closed": true,
+              "note": "Official notice lists partial store-hour changes; fail closed for the whole stop"
+            },
+            {
+              "date": "2026-09-03",
+              "closed": true,
+              "note": "Official notice lists partial shop suspension; fail closed for the whole stop"
+            }
+          ],
+          "price": {
+            "kind": "FREE",
+            "minYen": 0,
+            "maxYen": 0,
+            "label": "Store entry is free; games, merchandise and ticketed content excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "bandai-cross-store-tokyo",
+              "checkedAt": "2026-08-30T10:44:00+09:00"
+            },
+            "address": {
+              "sourceId": "bandai-cross-store-tokyo",
+              "checkedAt": "2026-08-30T10:44:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "bandai-cross-store-tokyo",
+              "checkedAt": "2026-08-30T10:44:00+09:00"
+            },
+            "hours": {
+              "sourceId": "bandai-cross-store-tokyo",
+              "checkedAt": "2026-08-30T10:44:00+09:00"
+            },
+            "price": {
+              "sourceId": "bandai-cross-store-tokyo",
+              "checkedAt": "2026-08-30T10:44:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "bandai-cross-store-tokyo",
+              "checkedAt": "2026-08-30T10:44:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "bandai-cross-store-tokyo",
+              "checkedAt": "2026-08-30T10:44:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "ootoya-ikebukuro-east",
+          "role": "MEAL",
+          "name": "Ootoya Ikebukuro East Exit",
+          "summary": "Choose a Japanese set meal near the station at a clearly published metropolitan menu price.",
+          "category": "restaurant",
+          "address": "Shinshinen Building 1F, 1-1-10 Higashi-Ikebukuro, Toshima City, Tokyo",
+          "coordinates": {
+            "latitude": 35.7301396,
+            "longitude": 139.7135763
+          },
+          "tags": ["food", "quiet"],
+          "officialUrl": "https://store.ootoya.com/detail/27186/",
+          "googlePlaceId": "ChIJd9H0yGeNGGAR4Kdkj0taOzY",
+          "recommendedVisitMinutes": 60,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "07:00",
+              "closes": "23:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 930,
+            "maxYen": 1790,
+            "label": "Published metropolitan-area set-meal range; drinks and extras excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "ootoya-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:45:00+09:00"
+            },
+            "address": {
+              "sourceId": "ootoya-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:45:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "ootoya-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:45:00+09:00"
+            },
+            "hours": {
+              "sourceId": "ootoya-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:45:00+09:00"
+            },
+            "price": {
+              "sourceId": "ootoya-grand-menu",
+              "checkedAt": "2026-08-30T10:46:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "ootoya-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:45:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "ootoya-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:45:00+09:00"
+            },
+            "menu": {
+              "sourceId": "ootoya-grand-menu",
+              "checkedAt": "2026-08-30T10:46:00+09:00"
+            }
+          }
+        },
+        {
+          "placeId": "torikizoku-ikebukuro-east",
+          "role": "MEAL",
+          "name": "Torikizoku Ikebukuro East Exit",
+          "summary": "Build a casual yakitori meal from a uniform-price menu one minute from Exit 43.",
+          "category": "restaurant",
+          "address": "Ichigo Ikebukuro Ekimae Building 11F, 1-23-6 Minami-Ikebukuro, Toshima City, Tokyo",
+          "coordinates": {
+            "latitude": 35.7290919,
+            "longitude": 139.7127468
+          },
+          "tags": ["food", "drinks", "lively"],
+          "officialUrl": "https://en.map.torikizoku.co.jp/detail/226/",
+          "googlePlaceId": "ChIJaU0z52eNGGARwUaGfZWQc5A",
+          "recommendedVisitMinutes": 70,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "16:00",
+              "closes": "23:59"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 780,
+            "maxYen": 1950,
+            "label": "Two to five published ¥390 items; actual order determines total"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "torikizoku-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:47:00+09:00"
+            },
+            "address": {
+              "sourceId": "torikizoku-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:47:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "torikizoku-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:47:00+09:00"
+            },
+            "hours": {
+              "sourceId": "torikizoku-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:47:00+09:00"
+            },
+            "price": {
+              "sourceId": "torikizoku-menu",
+              "checkedAt": "2026-08-30T10:48:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "torikizoku-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:47:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "torikizoku-ikebukuro-east-store",
+              "checkedAt": "2026-08-30T10:47:00+09:00"
+            },
+            "menu": {
+              "sourceId": "torikizoku-menu",
+              "checkedAt": "2026-08-30T10:48:00+09:00"
+            }
+          }
+        },
+        {
+          "placeId": "ichiran-ikebukuro",
+          "role": "MEAL",
+          "name": "ICHIRAN Ikebukuro",
+          "summary": "Order a focused bowl of tonkotsu ramen near Ikebukuro's east-side entertainment district.",
+          "category": "restaurant",
+          "address": "1-39-11 Higashi-Ikebukuro, Toshima City, Tokyo",
+          "coordinates": {
+            "latitude": 35.7325115,
+            "longitude": 139.7141577
+          },
+          "tags": ["food", "quiet"],
+          "officialUrl": "https://en.ichiran.com/shop/tokyo/ikebukuro/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 50,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "09:30",
+              "closes": "22:45"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 1180,
+            "maxYen": 1180,
+            "label": "Published Classic Tonkotsu Ramen price; extras excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "ichiran-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            },
+            "address": {
+              "sourceId": "ichiran-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "ichiran-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            },
+            "hours": {
+              "sourceId": "ichiran-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            },
+            "price": {
+              "sourceId": "ichiran-ikebukuro-menu",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "ichiran-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "ichiran-ikebukuro-store",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            },
+            "menu": {
+              "sourceId": "ichiran-ikebukuro-menu",
+              "checkedAt": "2026-08-30T10:49:00+09:00"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

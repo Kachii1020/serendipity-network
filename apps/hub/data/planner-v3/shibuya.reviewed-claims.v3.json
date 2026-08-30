@@ -1,0 +1,740 @@
+{
+  "1.0.0": {
+    "schemaVersion": "3",
+    "packVersion": "1.0.0",
+    "area": "shibuya",
+    "pack": {
+      "schemaVersion": "3",
+      "packVersion": "1.0.0",
+      "status": "ACTIVE",
+      "area": "shibuya",
+      "generatedAt": "2026-08-30T12:00:00+09:00",
+      "validThrough": "2026-09-12T23:59:59+09:00",
+      "dataLicense": {
+        "licenseId": "MIXED-SEE-SOURCES",
+        "licenseUrl": "https://github.com/Kachii1020/serendipity-network/blob/main/DATA-LICENSE.md",
+        "attribution": "Open coordinates retain their stated terms. Official pages and menus are cited as factual references only; no source prose, images, reviews, ratings, or logos are redistributed."
+      },
+      "station": {
+        "name": "Shibuya Station",
+        "coordinates": {
+          "latitude": 35.65861111111111,
+          "longitude": 139.70138888888889
+        },
+        "sourceIds": ["wikidata-shibuya-station"]
+      },
+      "sources": [
+        {
+          "sourceId": "wikidata-shibuya-station",
+          "title": "Shibuya Station (Q428811)",
+          "publisher": "Wikidata",
+          "sourceKind": "OPEN_DATASET",
+          "url": "https://www.wikidata.org/wiki/Q428811",
+          "checkedAt": "2026-08-30T10:00:00+09:00",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC0-1.0",
+            "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "attribution": "Wikidata contributors (CC0)"
+          },
+          "notes": "Coordinate anchor for the route origin."
+        },
+        {
+          "sourceId": "shibuya-city-asakura",
+          "title": "Important Cultural Property: Former Asakura Residence",
+          "publisher": "Shibuya City",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+          "checkedAt": "2026-08-30T10:01:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Shibuya City official facility page; factual reference only"
+          }
+        },
+        {
+          "sourceId": "wikidata-asakura",
+          "title": "Kyu Asakura House (Q16944532)",
+          "publisher": "Wikidata",
+          "sourceKind": "OPEN_DATASET",
+          "url": "https://www.wikidata.org/wiki/Q16944532",
+          "checkedAt": "2026-08-30T10:02:00+09:00",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC0-1.0",
+            "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "attribution": "Wikidata contributors (CC0)"
+          }
+        },
+        {
+          "sourceId": "shibuya-city-puppet-gallery",
+          "title": "Kihachiro Kawamoto Puppet Gallery",
+          "publisher": "Shibuya City",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+          "checkedAt": "2026-08-30T10:03:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Shibuya City official facility page; factual reference only"
+          }
+        },
+        {
+          "sourceId": "wikidata-shibuya-hikarie",
+          "title": "Shibuya Hikarie (Q11561670)",
+          "publisher": "Wikidata",
+          "sourceKind": "OPEN_DATASET",
+          "url": "https://www.wikidata.org/wiki/Q11561670",
+          "checkedAt": "2026-08-30T10:04:00+09:00",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC0-1.0",
+            "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "attribution": "Wikidata contributors (CC0)"
+          }
+        },
+        {
+          "sourceId": "shibuya-city-botanical-center",
+          "title": "Shibuya City Botanical Garden Fureai",
+          "publisher": "Shibuya City",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+          "checkedAt": "2026-08-30T10:05:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "HOURS",
+              "PRICE",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Shibuya City official facility page; factual reference only"
+          }
+        },
+        {
+          "sourceId": "wikidata-botanical-center",
+          "title": "Shibuya City Botanical Garden Fureai (Q110215017)",
+          "publisher": "Wikidata",
+          "sourceKind": "OPEN_DATASET",
+          "url": "https://www.wikidata.org/wiki/Q110215017",
+          "checkedAt": "2026-08-30T10:06:00+09:00",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC0-1.0",
+            "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "attribution": "Wikidata contributors (CC0)"
+          }
+        },
+        {
+          "sourceId": "shibuya-library-central",
+          "title": "Shibuya Central Library",
+          "publisher": "Shibuya City Library",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+          "checkedAt": "2026-08-30T10:07:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["IDENTITY", "ADDRESS", "HOURS", "PUBLIC_ACCESS"],
+            "attribution": "Shibuya City Library official facility page; factual reference only"
+          }
+        },
+        {
+          "sourceId": "tokyo-open-shibuya-libraries",
+          "title": "Shibuya public libraries information",
+          "publisher": "Shibuya City via Tokyo Open Data Catalog",
+          "sourceKind": "OPEN_DATASET",
+          "url": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_library.csv",
+          "checkedAt": "2026-08-30T10:08:00+09:00",
+          "usage": {
+            "mode": "OPEN_LICENSE",
+            "licenseId": "CC-BY-4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+            "attribution": "Shibuya City, Tokyo Open Data Catalog (CC BY 4.0)"
+          }
+        },
+        {
+          "sourceId": "tokyo-public-library-free-use",
+          "title": "Scope of public library users",
+          "publisher": "Tokyo Metropolitan Government",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/1000",
+          "checkedAt": "2026-08-30T10:09:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "PUBLIC_ACCESS"],
+            "attribution": "Tokyo Metropolitan Government official document; factual reference only"
+          }
+        },
+        {
+          "sourceId": "ootoya-shibuya-dogenzaka-store",
+          "title": "Ootoya Shibuya Dogenzaka store",
+          "publisher": "Ootoya Holdings Co., Ltd.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://store.ootoya.com/detail/142928/",
+          "checkedAt": "2026-08-30T10:10:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Ootoya official store page; factual reference only"
+          },
+          "notes": "The official store page embeds its Google Place ID and geo coordinates."
+        },
+        {
+          "sourceId": "ootoya-grand-menu",
+          "title": "Ootoya grand menu",
+          "publisher": "Ootoya Holdings Co., Ltd.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://www.ootoya.com/menu",
+          "checkedAt": "2026-08-30T10:11:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "Ootoya official menu; factual reference only"
+          },
+          "notes": "Budget range uses currently published metropolitan-area set-meal prices; store offerings may vary."
+        },
+        {
+          "sourceId": "torikizoku-shibuya-center-store",
+          "title": "Torikizoku Shibuya Center-gai store",
+          "publisher": "Torikizoku Co., Ltd.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://map.torikizoku.co.jp/detail/390/",
+          "checkedAt": "2026-08-30T10:12:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "Torikizoku official store page; factual reference only"
+          },
+          "notes": "The official store page embeds its Google Place ID and geo coordinates."
+        },
+        {
+          "sourceId": "torikizoku-menu",
+          "title": "Torikizoku menu and uniform price",
+          "publisher": "Torikizoku Co., Ltd.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://map.torikizoku.co.jp/",
+          "checkedAt": "2026-08-30T10:13:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "Torikizoku official menu and store directory; factual reference only"
+          },
+          "notes": "The official directory states ¥390 including tax per item. Planner range transparently represents two to five items, not a fixed course."
+        },
+        {
+          "sourceId": "ichiran-shibuya-store",
+          "title": "ICHIRAN Shibuya store information",
+          "publisher": "ICHIRAN Inc.",
+          "sourceKind": "OFFICIAL_SITE",
+          "url": "https://en.ichiran.com/shop/tokyo/shibuya/",
+          "checkedAt": "2026-08-30T10:14:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": [
+              "IDENTITY",
+              "ADDRESS",
+              "COORDINATES",
+              "HOURS",
+              "PUBLIC_ACCESS"
+            ],
+            "attribution": "ICHIRAN official store page; factual reference only"
+          },
+          "notes": "The official page publishes 24-hour operation and an official map coordinate. No Place ID is asserted."
+        },
+        {
+          "sourceId": "ichiran-shibuya-menu",
+          "title": "ICHIRAN Shibuya store menu",
+          "publisher": "ICHIRAN Inc.",
+          "sourceKind": "OFFICIAL_MENU",
+          "url": "https://en.ichiran.com/shop/tokyo/shibuya/",
+          "checkedAt": "2026-08-30T10:14:00+09:00",
+          "usage": {
+            "mode": "OFFICIAL_FACT_REFERENCE",
+            "factScope": ["PRICE", "MENU"],
+            "attribution": "ICHIRAN official store menu; factual reference only"
+          },
+          "notes": "Publishes Classic Tonkotsu Ramen at ¥1,180; toppings, extra noodles and drinks are excluded."
+        }
+      ],
+      "places": [
+        {
+          "placeId": "kyu-asakura-house",
+          "role": "ACTIVITY",
+          "name": "Former Asakura Residence",
+          "summary": "Walk through a preserved Taisho-era residence and garden near Daikanyama.",
+          "category": "heritage",
+          "address": "29-20 Sarugakucho, Shibuya City, Tokyo",
+          "coordinates": {
+            "latitude": 35.64748889,
+            "longitude": 139.700925
+          },
+          "tags": ["art", "heritage", "quiet", "outdoors"],
+          "officialUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/asakura/asakura_00004.html",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 50,
+          "weeklyHours": [
+            {
+              "days": [0, 2, 3, 4, 5, 6],
+              "opens": "10:00",
+              "closes": "18:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 500,
+            "maxYen": 500,
+            "label": "Published general adult admission"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "shibuya-city-asakura",
+              "checkedAt": "2026-08-30T10:01:00+09:00"
+            },
+            "address": {
+              "sourceId": "shibuya-city-asakura",
+              "checkedAt": "2026-08-30T10:01:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "wikidata-asakura",
+              "checkedAt": "2026-08-30T10:02:00+09:00"
+            },
+            "hours": {
+              "sourceId": "shibuya-city-asakura",
+              "checkedAt": "2026-08-30T10:01:00+09:00"
+            },
+            "price": {
+              "sourceId": "shibuya-city-asakura",
+              "checkedAt": "2026-08-30T10:01:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "shibuya-city-asakura",
+              "checkedAt": "2026-08-30T10:01:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "shibuya-city-asakura",
+              "checkedAt": "2026-08-30T10:01:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "kawamoto-puppet-gallery",
+          "role": "ACTIVITY",
+          "name": "Kihachiro Kawamoto Puppet Gallery",
+          "summary": "See expressive stop-motion puppets inside Shibuya Hikarie.",
+          "category": "gallery",
+          "address": "Shibuya Hikarie 8F, 2-21-1 Shibuya, Shibuya City, Tokyo",
+          "coordinates": {
+            "latitude": 35.6589,
+            "longitude": 139.703
+          },
+          "tags": ["art", "heritage", "quiet"],
+          "officialUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/gallery.html",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 40,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "11:00",
+              "closes": "19:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "FREE",
+            "minYen": 0,
+            "maxYen": 0,
+            "label": "Published free admission"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "shibuya-city-puppet-gallery",
+              "checkedAt": "2026-08-30T10:03:00+09:00"
+            },
+            "address": {
+              "sourceId": "shibuya-city-puppet-gallery",
+              "checkedAt": "2026-08-30T10:03:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "wikidata-shibuya-hikarie",
+              "checkedAt": "2026-08-30T10:04:00+09:00"
+            },
+            "hours": {
+              "sourceId": "shibuya-city-puppet-gallery",
+              "checkedAt": "2026-08-30T10:03:00+09:00"
+            },
+            "price": {
+              "sourceId": "shibuya-city-puppet-gallery",
+              "checkedAt": "2026-08-30T10:03:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "shibuya-city-puppet-gallery",
+              "checkedAt": "2026-08-30T10:03:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "shibuya-city-puppet-gallery",
+              "checkedAt": "2026-08-30T10:03:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "shibuya-botanical-center",
+          "role": "ACTIVITY",
+          "name": "Shibuya City Botanical Garden Fureai",
+          "summary": "Slow down among tropical plants in a compact city greenhouse open into the evening.",
+          "category": "botanical",
+          "address": "2-25-37 Higashi, Shibuya City, Tokyo",
+          "coordinates": {
+            "latitude": 35.653333333333336,
+            "longitude": 139.70777777777778
+          },
+          "tags": ["outdoors", "quiet", "hands-on", "science"],
+          "officialUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/bunka-shisetsu/bunka-shisetsu/fureai.html",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 45,
+          "weeklyHours": [
+            {
+              "days": [0, 2, 3, 4, 5, 6],
+              "opens": "10:00",
+              "closes": "21:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 100,
+            "maxYen": 100,
+            "label": "Published general admission"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "shibuya-city-botanical-center",
+              "checkedAt": "2026-08-30T10:05:00+09:00"
+            },
+            "address": {
+              "sourceId": "shibuya-city-botanical-center",
+              "checkedAt": "2026-08-30T10:05:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "wikidata-botanical-center",
+              "checkedAt": "2026-08-30T10:06:00+09:00"
+            },
+            "hours": {
+              "sourceId": "shibuya-city-botanical-center",
+              "checkedAt": "2026-08-30T10:05:00+09:00"
+            },
+            "price": {
+              "sourceId": "shibuya-city-botanical-center",
+              "checkedAt": "2026-08-30T10:05:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "shibuya-city-botanical-center",
+              "checkedAt": "2026-08-30T10:05:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "shibuya-city-botanical-center",
+              "checkedAt": "2026-08-30T10:05:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "shibuya-central-library",
+          "role": "ACTIVITY",
+          "name": "Shibuya Central Library",
+          "summary": "Take a quiet reading break near Harajuku with late weekday and Saturday hours.",
+          "category": "library",
+          "address": "1-4-1 Jingumae, Shibuya City, Tokyo",
+          "coordinates": {
+            "latitude": 35.672452,
+            "longitude": 139.706176
+          },
+          "tags": ["books", "quiet"],
+          "officialUrl": "https://www.lib.city.shibuya.tokyo.jp/library/central/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 45,
+          "weeklyHours": [
+            {
+              "days": [2, 3, 4, 5, 6],
+              "opens": "09:00",
+              "closes": "21:00"
+            },
+            {
+              "days": [0, 1],
+              "opens": "09:00",
+              "closes": "18:00"
+            }
+          ],
+          "dateExceptions": [
+            {
+              "date": "2026-09-07",
+              "closed": true,
+              "note": "Published first-Monday closure"
+            }
+          ],
+          "price": {
+            "kind": "FREE",
+            "minYen": 0,
+            "maxYen": 0,
+            "label": "Free on-site public-library use; borrowing and copying excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "shibuya-library-central",
+              "checkedAt": "2026-08-30T10:07:00+09:00"
+            },
+            "address": {
+              "sourceId": "shibuya-library-central",
+              "checkedAt": "2026-08-30T10:07:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "tokyo-open-shibuya-libraries",
+              "checkedAt": "2026-08-30T10:08:00+09:00"
+            },
+            "hours": {
+              "sourceId": "shibuya-library-central",
+              "checkedAt": "2026-08-30T10:07:00+09:00"
+            },
+            "price": {
+              "sourceId": "tokyo-public-library-free-use",
+              "checkedAt": "2026-08-30T10:09:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "shibuya-library-central",
+              "checkedAt": "2026-08-30T10:07:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "shibuya-library-central",
+              "checkedAt": "2026-08-30T10:07:00+09:00"
+            },
+            "menu": null
+          }
+        },
+        {
+          "placeId": "ootoya-shibuya-dogenzaka",
+          "role": "MEAL",
+          "name": "Ootoya Shibuya Dogenzaka",
+          "summary": "Choose a Japanese set meal with rice, soup, and a clearly published metropolitan menu price.",
+          "category": "restaurant",
+          "address": "2-6-11 Dogenzaka, Shibuya City, Tokyo",
+          "coordinates": {
+            "latitude": 35.65899,
+            "longitude": 139.6985
+          },
+          "tags": ["food", "quiet"],
+          "officialUrl": "https://store.ootoya.com/detail/142928/",
+          "googlePlaceId": "ChIJIe3FWJmLGGARy0tGUGC_EdE",
+          "recommendedVisitMinutes": 60,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "10:00",
+              "closes": "23:00"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 930,
+            "maxYen": 1790,
+            "label": "Published metropolitan-area set-meal range; drinks and extras excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "ootoya-shibuya-dogenzaka-store",
+              "checkedAt": "2026-08-30T10:10:00+09:00"
+            },
+            "address": {
+              "sourceId": "ootoya-shibuya-dogenzaka-store",
+              "checkedAt": "2026-08-30T10:10:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "ootoya-shibuya-dogenzaka-store",
+              "checkedAt": "2026-08-30T10:10:00+09:00"
+            },
+            "hours": {
+              "sourceId": "ootoya-shibuya-dogenzaka-store",
+              "checkedAt": "2026-08-30T10:10:00+09:00"
+            },
+            "price": {
+              "sourceId": "ootoya-grand-menu",
+              "checkedAt": "2026-08-30T10:11:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "ootoya-shibuya-dogenzaka-store",
+              "checkedAt": "2026-08-30T10:10:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "ootoya-shibuya-dogenzaka-store",
+              "checkedAt": "2026-08-30T10:10:00+09:00"
+            },
+            "menu": {
+              "sourceId": "ootoya-grand-menu",
+              "checkedAt": "2026-08-30T10:11:00+09:00"
+            }
+          }
+        },
+        {
+          "placeId": "torikizoku-shibuya-center",
+          "role": "MEAL",
+          "name": "Torikizoku Shibuya Center-gai",
+          "summary": "Build a casual yakitori meal from a uniform-price menu in central Shibuya.",
+          "category": "restaurant",
+          "address": "Center Building 4F, 25-5 Udagawacho, Shibuya City, Tokyo",
+          "coordinates": {
+            "latitude": 35.6604051,
+            "longitude": 139.6989069
+          },
+          "tags": ["food", "drinks", "lively"],
+          "officialUrl": "https://map.torikizoku.co.jp/detail/390/",
+          "googlePlaceId": "ChIJ1agNS6iMGGARCRNqyFvjQRM",
+          "recommendedVisitMinutes": 70,
+          "weeklyHours": [
+            {
+              "days": [1, 2, 3, 4, 5],
+              "opens": "14:00",
+              "closes": "23:59"
+            },
+            {
+              "days": [0, 6],
+              "opens": "13:00",
+              "closes": "23:59"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 780,
+            "maxYen": 1950,
+            "label": "Two to five published ¥390 items; actual order determines total"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "torikizoku-shibuya-center-store",
+              "checkedAt": "2026-08-30T10:12:00+09:00"
+            },
+            "address": {
+              "sourceId": "torikizoku-shibuya-center-store",
+              "checkedAt": "2026-08-30T10:12:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "torikizoku-shibuya-center-store",
+              "checkedAt": "2026-08-30T10:12:00+09:00"
+            },
+            "hours": {
+              "sourceId": "torikizoku-shibuya-center-store",
+              "checkedAt": "2026-08-30T10:12:00+09:00"
+            },
+            "price": {
+              "sourceId": "torikizoku-menu",
+              "checkedAt": "2026-08-30T10:13:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "torikizoku-shibuya-center-store",
+              "checkedAt": "2026-08-30T10:12:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "torikizoku-shibuya-center-store",
+              "checkedAt": "2026-08-30T10:12:00+09:00"
+            },
+            "menu": {
+              "sourceId": "torikizoku-menu",
+              "checkedAt": "2026-08-30T10:13:00+09:00"
+            }
+          }
+        },
+        {
+          "placeId": "ichiran-shibuya",
+          "role": "MEAL",
+          "name": "ICHIRAN Shibuya",
+          "summary": "Order a focused bowl of tonkotsu ramen at a counter three minutes from Shibuya Station.",
+          "category": "restaurant",
+          "address": "B1F, 1-22-7 Jinnan, Shibuya City, Tokyo",
+          "coordinates": {
+            "latitude": 35.6611273,
+            "longitude": 139.7010453
+          },
+          "tags": ["food", "quiet"],
+          "officialUrl": "https://en.ichiran.com/shop/tokyo/shibuya/",
+          "googlePlaceId": null,
+          "recommendedVisitMinutes": 50,
+          "weeklyHours": [
+            {
+              "days": [0, 1, 2, 3, 4, 5, 6],
+              "opens": "00:00",
+              "closes": "23:59"
+            }
+          ],
+          "dateExceptions": [],
+          "price": {
+            "kind": "PER_PERSON",
+            "minYen": 1180,
+            "maxYen": 1180,
+            "label": "Published Classic Tonkotsu Ramen price; extras excluded"
+          },
+          "evidence": {
+            "identity": {
+              "sourceId": "ichiran-shibuya-store",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            },
+            "address": {
+              "sourceId": "ichiran-shibuya-store",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            },
+            "coordinates": {
+              "sourceId": "ichiran-shibuya-store",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            },
+            "hours": {
+              "sourceId": "ichiran-shibuya-store",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            },
+            "price": {
+              "sourceId": "ichiran-shibuya-menu",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            },
+            "publicAccess": {
+              "sourceId": "ichiran-shibuya-store",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            },
+            "officialLink": {
+              "sourceId": "ichiran-shibuya-store",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            },
+            "menu": {
+              "sourceId": "ichiran-shibuya-menu",
+              "checkedAt": "2026-08-30T10:14:00+09:00"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -8,6 +8,8 @@
     "./hash": "./src/hash.ts",
     "./planner-v2": "./src/planner-v2.ts",
     "./planner-v2-shared": "./src/planner-v2-shared.ts",
+    "./planner-v3": "./src/planner-v3.ts",
+    "./planner-v3-shared": "./src/planner-v3-shared.ts",
     "./public-safety": "./src/public-safety.ts"
   },
   "scripts": {

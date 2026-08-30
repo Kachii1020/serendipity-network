@@ -204,12 +204,24 @@ test("SEC-013 public Site Tool schemas and search result expose no token or cred
 test("PV2-SEC-001 source-backed planner exposes only safe IDs, evidence, and HTTPS handoffs", async ({
   page,
 }) => {
-  const date = new Intl.DateTimeFormat("en-CA", {
+  const now = new Date();
+  const tokyoParts = new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
+    hour: "2-digit",
+    hourCycle: "h23",
+    minute: "2-digit",
     month: "2-digit",
     timeZone: "Asia/Tokyo",
     year: "numeric",
-  }).format(new Date());
+  }).formatToParts(now);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(tokyoParts.find((candidate) => candidate.type === type)?.value);
+  const dayOffset = part("hour") * 60 + part("minute") >= 17 * 60 ? 1 : 0;
+  const date = new Date(
+    Date.UTC(part("year"), part("month") - 1, part("day") + dayOffset),
+  )
+    .toISOString()
+    .slice(0, 10);
   const intent = {
     area: "shibuya",
     endAt: `${date}T22:00:00+09:00`,

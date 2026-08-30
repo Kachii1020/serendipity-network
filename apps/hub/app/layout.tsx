@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import "./marketing.css";
 import "./planner-v2.css";
+import "./planner-v3.css";
 import "@serendipity/ui/tokens.css";
 import "@serendipity/ui/primitives.css";
 

@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./planner-v2": "./src/planner-v2.ts"
+    "./planner-v2": "./src/planner-v2.ts",
+    "./planner-v3": "./src/planner-v3.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

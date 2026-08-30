@@ -1,113 +1,50 @@
 # Serendipity
 
-Serendipity turns a free afternoon or evening in Shibuya into one route a
-person can actually inspect and follow. Choose a date, time window, reference
-budget, interests, and walking limit. The planner returns two or three real
-places with published hours, reference prices, coordinate-based walking
-estimates, field-level evidence, and official links.
+Serendipity v3 builds a source-backed Tokyo plan for one to three adults. Pick
+Shibuya, Shinjuku, or Ikebukuro; choose a time window, per-person budget,
+interest, and whether to include a meal. The planner combines two or three real
+places, uses official menu prices for the budget, calculates a group estimate,
+and links every stop back to published evidence.
 
-It does **not** claim live availability, complete a booking, or contact a venue.
-Every result says so before the user saves or leaves the site.
+It does **not** claim live seats, make a reservation, guarantee a final bill, or
+contact a venue. Users must check each official site before they go.
 
-**Live product:** <https://serendipity-phase0-hub.vercel.app>
+## Release status
 
-**Planner and judged Site Tools:**
-<https://serendipity-phase0-hub.vercel.app/plan>
+v3 is an implementation candidate, not the production product yet.
 
-**Public source:** <https://github.com/Kachii1020/serendipity-network>
+- **Current production (v2):**
+  <https://serendipity-phase0-hub.vercel.app>
+- **Current production planner (v2):**
+  <https://serendipity-phase0-hub.vercel.app/plan>
+- **Early v3 preview (outdated, protected, not final evidence):**
+  <https://serendipity-phase0-ob3ohcdl6-circle-connect123.vercel.app/v3>
+- **Public source:**
+  <https://github.com/Kachii1020/serendipity-network>
 
-## 30-second judge path
+The fixed production URL remains on v2 until one immutable v3 candidate passes
+the complete browser/reflow/security/source gate, real supported-client Site
+Tools verification, rollback rehearsal, and production reliability run. The
+recorded v2 rollback deployment is `dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6`.
 
-1. Open the [planner](https://serendipity-phase0-hub.vercel.app/plan).
-2. In a WebMCP-enabled browser, ask:
-   **“I am solo at Shibuya Station from 13:00 to 22:00. Keep it under ¥8,000;
-   I want art, something hands-on, somewhere lively, and somewhere quiet. Build
-   one plan and show the price source for the first stop.”**
-3. The agent calls `find_evening_plan`; the same page renders one sourced
-   two- or three-stop route. `show_place_evidence` opens the cited identity,
-   address, coordinates, hours, price, public-access, official-link, and
-   schedule-calendar evidence.
-4. Ask **“Swap the last stop for a different interest, then save the plan.”**
-   `swap_plan_stop` changes one stop and visibly summarizes price, walking, and
-   downstream-time changes. `save_plan` stores a bounded snapshot in this
-   browser only.
+## What is implemented in v3
 
-Without WebMCP, the visible controls run the same validated controller. The
-small `Manual controls` label is a capability status, not a claim that an agent
-ran.
+- Three ACTIVE area packs: Shibuya, Shinjuku, and Ikebukuro.
+- Four activities and three official-menu meals per area.
+- Party sizes 1–3, per-person budgets, six interests, meal on/off, and walking
+  limits.
+- `Activity → Meal → Activity` routes with honest two-stop fallback; meal-off
+  routes contain activities only.
+- Full-width route output with per-person and group price estimates, walking,
+  reasons, official links, evidence, same-role stop replacement, and local save.
+- Parallel v3 contracts, deterministic composition, stateless search/swap/
+  evidence APIs, and exactly five Site Tools sharing the visible controller.
 
-## What the result means
+Restaurant budget decisions use official menus. Transport, optional orders,
+taxes or fees not shown by the source, and live availability are excluded.
+Walking is a coordinate estimate, not turn-by-turn navigation.
 
-- **Places are real:** the ACTIVE Shibuya pack contains nine municipal or
-  public heritage, gallery, library, botanical, and science locations.
-- **Sources are explicit:** every identity, address, hours, price, coordinate,
-  and official link is backed by licensed open data or a field-scoped factual
-  reference to an official page. The ACTIVE pack must exactly match its
-  versioned reviewed claims, including source metadata/usage and root data
-  license. No source prose or media is copied.
-- **Prices are references:** only the listed admission or activity is counted.
-  Transport, food, optional purchases, and live inventory are excluded.
-- **Walking is an estimate:** licensed coordinates are converted using a 1.25
-  route factor, 75 metres per minute, rounded up to five minutes. It is not
-  turn-by-turn navigation.
-- **Freshness is bounded:** a reviewed pack covers at most 60 Tokyo calendar
-  days and expires before any required hours/price source becomes 60 days old.
-  After 14 days the result asks users to recheck sources; search, swap,
-  evidence, and server-rendered results fail closed after `validThrough`.
-- **No filler:** when interests are supplied, every stop must match at least one
-  of them. Otherwise the planner returns an honest no-result.
-
-The initial pack deliberately excludes private commercial venues whose reuse
-rights, trademark permission, current price, or schedule could not be defended
-within the hackathon window.
-
-## WebMCP surface
-
-The top-level `/plan` document registers exactly five tools:
-
-| Tool                  | Effect           | Purpose                                                   |
-| --------------------- | ---------------- | --------------------------------------------------------- |
-| `find_evening_plan`   | Read-only        | Compose the best current source-backed route.             |
-| `show_place_evidence` | Read-only        | Reveal the claims and sources behind one stop.            |
-| `swap_plan_stop`      | Read-only        | Replace exactly one stop while retaining all constraints. |
-| `save_plan`           | Browser mutation | Save a validated plan and evidence snapshot locally.      |
-| `delete_saved_plan`   | Browser mutation | Idempotently remove one local snapshot.                   |
-
-Human controls and Site Tools call the same five controller methods. Tool
-wrappers only validate input, current state, output safety, and size. They do not
-contain a second copy of the planning rules.
-
-```text
-human form or top-level Site Tool
-  -> shared PlannerClient controller and operation lock
-    -> v2 search / swap / evidence route
-      -> validated, versioned Shibuya source pack
-      -> deterministic 3-stop, then 2-stop composer
-    -> the same visible plan, evidence, swap summary, or local save state
-```
-
-Search and swap are stateless on the server. A swap carries the current public
-plan snapshot; the engine deterministically reconstructs and rejects any stale
-or modified snapshot before replacing one stop. No runtime scraping, map API,
-Provider call, Supabase query, account, or PII is involved in v2.
-
-## Repository map
-
-```text
-apps/hub/                         Product UI, v2 APIs, Site Tools, source pack
-packages/contracts/planner-v2     Parallel schema v2; v1 contracts unchanged
-packages/bundle-engine/planner-v2 Deterministic 2–3 stop composition and swap
-packages/webmcp/                  Tool registration and lifecycle adapter
-specs/002-source-backed-evening-planner/ Product, data, test, and task contract
-tests/e2e/planner-v2.spec.ts       Product/WebMCP/mobile/accessibility journey
-```
-
-The original distributed reservation network remains available, unlinked and
-`noindex`, at `/legacy/network-demo`; its Phase 0 harness remains at `/phase0`.
-Its Provider apps, Supabase schema, compensation logic, and reliability evidence
-were not deleted or relabeled as the new consumer product.
-
-## Run locally
+## Try v3 locally
 
 Requirements: Node.js 22.13 or newer and pnpm 11.19.0. CI and production use
 Node.js 24.
@@ -117,75 +54,129 @@ pnpm install --frozen-lockfile
 pnpm --filter @serendipity/hub dev
 ```
 
-Open <http://localhost:3100>. The v2 planner needs no credentials, database, or
-external API. To run the archived four-origin reservation demo as well, start
-its documented local Supabase environment and use `pnpm dev:phase0`.
+Open <http://localhost:3100/v3>. A representative path is:
+
+1. Choose **Shinjuku**, **3 adults**, **¥4,000 per person**, and keep the meal
+   enabled.
+2. Build the plan and inspect the full-width route, official menu basis, and
+   group estimate.
+3. Change one stop, open its sources, and save the refreshed plan locally.
+
+The same path works through visible controls when Site Tools are unavailable.
+Automated exact-five registration is green; the final 3/3 run in a real
+supported Site Tools client remains a release gate.
+
+## WebMCP surface
+
+Only the v3 planner document registers tools. The landing page registers none.
+
+| Tool                  | Effect           | Purpose                                              |
+| --------------------- | ---------------- | ---------------------------------------------------- |
+| `find_evening_plan`   | Read-only        | Compose and render one plan for a validated intent.  |
+| `show_place_evidence` | Read-only        | Open the published evidence behind a current stop.   |
+| `swap_plan_stop`      | Read-only        | Replace one stop with another stop of the same role. |
+| `save_plan`           | Browser mutation | Save a bounded official-evidence snapshot locally.   |
+| `delete_saved_plan`   | Browser mutation | Idempotently delete one local snapshot.              |
+
+Tool wrappers validate input, current state, output, and size. Business logic
+stays in the same controller used by the UI.
+
+```text
+visible controls or one of five Site Tools
+  -> shared v3 controller and operation lock
+    -> v3 search / swap / evidence API
+      -> reviewed area registry
+      -> deterministic meal-aware composer
+      -> optional request-scoped Google boundary
+    -> the same visible route, evidence, swap, or local save state
+```
+
+## Google mode
+
+Google Places enrichment is optional and currently **off** because no approved,
+restricted production key is configured. Official-menu planning works without
+it. The adapter accepts only pre-reviewed Place IDs, requests a bounded field
+set, times out without retry, and discards upstream responses after creating a
+safe request-scoped signal.
+
+Google response content is not stored in the source pack, reviewed ledger, or
+localStorage. Google-on policy, attribution, quota, security, and production
+evidence remain open and do not block an official-source-only release.
+
+Six of nine meals currently have an authoritative pre-reviewed Place ID. The
+three remaining meals skip enrichment rather than guessing an ID; the
+specification's non-null-ID wording must be reconciled before the final RC.
+
+## Data and evidence
+
+Pack `1.0.0` contains 21 places and 40 source records. The recorded pack gate
+passed 9/9 source-audit regressions, 4/4 typed pack tests, 36/36 live source
+URLs, and the `3 areas × party 1/3 × meal on/off` engine matrix, 12/12. No
+Tabelog data, reviews, ratings, venue photos, or copied descriptions are used.
+
+Detailed source decisions are in
+[`specs/003-tokyo-three-hub-meal-planner/evidence/source-pack-1.0.0-ledger.md`](specs/003-tokyo-three-hub-meal-planner/evidence/source-pack-1.0.0-ledger.md).
+The current claim boundary is in
+[`specs/003-tokyo-three-hub-meal-planner/evidence/rc-status-2026-08-30.md`](specs/003-tokyo-three-hub-meal-planner/evidence/rc-status-2026-08-30.md).
+
+## Repository map
+
+```text
+apps/hub/app/v3/                    v3 landing and full-width planner routes
+apps/hub/app/api/v3/                search, swap, and evidence endpoints
+apps/hub/components/planner-v3/     form, controller, result, and local storage
+apps/hub/data/planner-v3/           three reviewed ACTIVE area packs
+apps/hub/lib/planner-v3/            registry, boundary, runtime, Google adapter
+apps/hub/lib/tools/planner-v3-tools.ts  exact-five Site Tool definitions
+packages/contracts/src/planner-v3*  parallel v3 schemas and validators
+packages/bundle-engine/src/planner-v3* deterministic composer and replacement
+specs/003-tokyo-three-hub-meal-planner/ product, data, tests, tasks, evidence
+tests/e2e/planner-v3.spec.ts         focused browser and WebMCP journeys
+```
+
+The v2 source planner and original distributed reservation network remain
+preserved. Provider apps and the Supabase schema are unchanged.
 
 ## Verify
 
 ```bash
-pnpm audit:sources       # rights, evidence references, HTTPS, ACTIVE pack
-pnpm run audit:sources -- --check-urls # release-time live URL health
-pnpm test:v2             # contracts, pack, engine, APIs, tools, state, storage
-pnpm test:v2:browser     # UI, exact five tools, a11y, mobile, 400% reflow
-pnpm test:v2:release     # 20 sequential read-only canonical searches
-pnpm test:security       # public assets, headers, legacy and v2 runtime safety
-pnpm check               # format, lint, 8 typechecks, all unit/integration tests
-pnpm build               # all eight workspace builds
+pnpm audit:sources:v3   # reviewed pack, official menu, rights, drift
+pnpm test:v3            # contracts, engine, data, runtime, tools, state, storage
+pnpm test:v3:browser    # focused UI, exact-five, accessibility, mobile/reflow
+pnpm test:v3:release    # 20 sequential read-only searches against APP_BASE_URL
+pnpm check              # format, lint, eight typechecks, all unit/integration
+pnpm build              # all eight workspace builds
 ```
 
-The archived v1 browser gates remain executable:
-
-```bash
-pnpm test:phase0
-pnpm test:a11y
-pnpm test:visual
-```
+The final RC gate is still pending after the latest UI/reflow corrections. Do
+not treat an earlier green count or the early preview as production evidence.
 
 ## Safety and privacy
 
-- Tool and API inputs are exact-schema validated; request bodies are capped at
-  16 KiB and public results at 64 KiB.
-- External URLs are predeclared HTTPS sources. The server accepts no arbitrary
-  URL and performs no runtime external fetch.
-- Public envelopes contain bounded correlations and normalized errors, never
-  tokens, cookies, credentials, raw HTML, or hidden instructions.
-- Saved plans are explicit, local-only, capped at ten records and 256 KiB, and
-  contain only the normalized intent, public plan, public evidence, and save
-  time. Unreadable corrupt bytes are preserved; readable partial corruption
-  keeps valid records and is repaired only by an explicit save/delete.
-- Search and swap fail closed under concurrent or stale operations. A failed
-  evidence, swap, save, or delete never removes the displayed plan.
-- Official links require an explicit user click and use `noopener noreferrer`.
+- Requests are exact-schema validated and bounded; responses use normalized v3
+  envelopes and `Cache-Control: no-store`.
+- Runtime external calls cannot accept a user-provided host or Place ID.
+- Public data contains no credentials, raw HTML, ratings, reviews, PII, or live
+  availability claims.
+- Saved plans use `serendipity.saved-itineraries.v3`, cap records and bytes, and
+  contain only intent, immutable official plan/evidence snapshots, reviewed
+  Google Place IDs, and save time.
+- Official pages require an explicit click and use safe external-link behavior.
 
 ## Data and code licenses
 
-Code is released under the [MIT License](LICENSE). The curated source pack and
-its attribution obligations are documented separately in
-[DATA-LICENSE.md](DATA-LICENSE.md). The app uses original text summaries and no
-third-party venue photos or logos.
+Code is released under the [MIT License](LICENSE). Source-pack attribution and
+usage limits are documented in [DATA-LICENSE.md](DATA-LICENSE.md). All venue
+summaries are original and the app ships no third-party venue photos or logos.
 
 ## Known limits
 
-- Shibuya only; solo only; dates from today through seven days ahead.
-- Published recurring, holiday, and daily-calendar closures are materialized
-  only inside the pack's audited horizon (currently through 2026-10-28).
-  Same-day disruptions remain possible, so users must recheck each official
-  page before travelling.
-- Coordinate walking estimates do not account for crossings, construction,
-  accessibility, stairs, or station exits.
-- The initial rights-clear pack is strongest for culture, books, quiet, and
-  hands-on interests. Unsupported music, food, coffee, or shopping
-  requests return no-result rather than unrelated recommendations.
-- Browser support for draft Site Tools varies. The manual UI remains fully
-  functional and labels that mode honestly.
-
-## Submission status
-
-The public GitHub repository, dated history, GitHub-detected MIT license, and
-an earlier v2 Vercel deployment are present. The current pack 1.3.0 release
-candidate has green focused, build, browser, accessibility, and security gates;
-its final post-documentation `pnpm check`, immutable preview, production
-promotion, supported-client Site Tools verification, and updated public demo
-remain open. Results from the earlier deployment are not counted as evidence
-for this candidate.
+- Only Shibuya, Shinjuku, and Ikebukuro are supported.
+- Party size changes group-price arithmetic; it does not claim that seats are
+  available for that group.
+- Published hours and menu prices can change. Users must recheck official pages.
+- Coordinate walking estimates omit station exits, construction, stairs, and
+  accessibility conditions.
+- Google enrichment stays off until its separate operational gate is approved.
+- Reservations, payments, free-form destinations, map navigation, scraping,
+  and live seat checks are out of scope.
