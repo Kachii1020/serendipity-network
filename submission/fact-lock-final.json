@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lockedAt": "2026-09-01T14:14:59+09:00",
+  "lockedAt": "2026-09-01T14:32:57+09:00",
   "project": {
     "name": "Serendipity",
     "liveUrl": "https://serendipity-phase0-hub.vercel.app",
@@ -9,10 +9,10 @@
     "license": "MIT"
   },
   "production": {
-    "deploymentId": "dpl_D78wsbtVJqCnCxy1HxSXkKR3JLzH",
+    "deploymentId": "dpl_F66xuSv6HMpdthhMqHrs3NDgJn8W",
     "region": "hnd1",
     "googlePlacesEnabled": false,
-    "rollbackDeploymentId": "dpl_97KgepTTGC78xp14v6cQw97NeAfi"
+    "rollbackDeploymentId": "dpl_D78wsbtVJqCnCxy1HxSXkKR3JLzH"
   },
   "data": {
     "areas": ["shibuya", "shinjuku", "ikebukuro"],
@@ -42,7 +42,7 @@
   },
   "verification": {
     "repository": {
-      "tests": "388/388",
+      "tests": "389/389",
       "typechecks": "8/8",
       "builds": "8/8",
       "sourceAudit": "20/20",
@@ -52,16 +52,19 @@
     "productionSearch": {
       "runs": 20,
       "passed": 20,
-      "p50Ms": 54,
-      "p95Ms": 90,
-      "maxMs": 590,
+      "p50Ms": 47,
+      "p95Ms": 432,
+      "maxMs": 519,
       "uniqueCorrelations": 20
     },
     "noResultRecovery": {
       "fixture": "Shibuya, 3 adults, 17:30–19:30, ¥2,000/person, meal, Lively, 5-minute walks",
       "initialOutcome": "NO_VALID_PLAN",
-      "visibleRecovery": "Surprise me + 30-minute walks",
+      "visibleRecovery": "Try the closest available plan — Try again with Surprise me + 30-minute walks",
       "recoveredOutcome": "2-stop Shibuya route",
+      "verifiedBeforeProjection": true,
+      "adjustPlanOpened": true,
+      "firstEditableFocused": true,
       "desktopOverflow": 0,
       "mobileOverflow": 0,
       "browserWarningsOrErrors": 0
