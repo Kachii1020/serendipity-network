@@ -405,18 +405,61 @@ test("V3-PROG-002B honest no-result keeps the minimum presentation", async ({
       },
     });
   });
+  await page.route("**/api/v3/plans/recovery", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      json: {
+        data: {
+          buttonLabel: "Try again with Surprise me + 30-minute walks",
+          changes: ["INTEREST_SURPRISE", "WALK_30"],
+          intent: {
+            area: "shibuya",
+            budgetPerPersonYen: 4000,
+            endAt: `${serviceDate()}T22:30:00+09:00`,
+            excludedTags: [],
+            includeMeal: true,
+            interestPreset: "SURPRISE",
+            maxWalkMinutesPerLeg: 30,
+            partySize: 1,
+            schemaVersion: "3",
+            startAt: `${serviceDate()}T17:30:00+09:00`,
+          },
+          verified: {
+            candidateSetId: "verified-candidate-set",
+            planId: "verified-plan-id",
+            stopCount: 3,
+          },
+        },
+        meta: {
+          area: "shibuya",
+          completedAt: "2026-08-31T09:00:00.000Z",
+          correlationId: "recovery-correlation",
+          origin: "http://localhost:3100",
+          packVersion: "1.0.0",
+        },
+        ok: true,
+        schemaVersion: "3",
+      },
+    }),
+  );
   await page.goto("/v3/plan");
   await page.locator(".v3-adjust summary").first().click();
+  await page.locator("input[name='date']").fill(serviceDate());
+  await page.getByText("Lively", { exact: true }).click();
+  await page.getByText("Walking & exclusions", { exact: true }).click();
+  await page.getByLabel("Maximum walk between stops").selectOption("5");
   const startedAt = Date.now();
   await page.getByRole("button", { name: /Build my Tokyo plan/ }).click();
   await expect(
     page.getByRole("heading", { name: "No exact route for these choices." }),
   ).toBeVisible();
   expect(Date.now() - startedAt).toBeGreaterThanOrEqual(1_950);
-  await expect(page.locator(".v3-adjust").first()).not.toHaveAttribute(
-    "open",
-    "",
-  );
+  await expect(page.locator(".v3-adjust").first()).toHaveAttribute("open", "");
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.activeElement?.getAttribute("name")),
+    )
+    .toBe("area");
   const recoveryViewport = await page
     .locator(".v3-empty")
     .evaluate((element) => {
@@ -428,7 +471,7 @@ test("V3-PROG-002B honest no-result keeps the minimum presentation", async ({
   expect(recoveryViewport.bottom).toBeGreaterThan(0);
   expect(recoveryViewport.top).toBeLessThan(recoveryViewport.height);
   await expect(page.locator(".v3-empty")).toContainText(
-    "Shibuya1 adult¥4,000 / person17:30–22:30Meal includedSurprise me",
+    "Shibuya1 adult¥4,000 / person17:30–22:30Meal includedLively",
   );
   const focusStyle = await page.locator(".v3-empty").evaluate((element) => {
     const style = getComputedStyle(element);
@@ -436,9 +479,29 @@ test("V3-PROG-002B honest no-result keeps the minimum presentation", async ({
   });
   expect(focusStyle.boxShadow).toContain("101, 75, 230");
   expect(focusStyle.outline).toBe("none");
-  await page
-    .getByRole("button", { name: "Try Surprise me + 30-minute walks" })
-    .click();
+  const recovery = page.getByRole("button", {
+    name: /Try the closest available plan.*Surprise me.*30-minute walks/,
+  });
+  await expect(recovery).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "No exact route for these choices." }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Edit these choices" }).click();
+  const firstEditableViewport = await page
+    .locator(".v3-adjust")
+    .first()
+    .evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return { bottom: bounds.bottom, height: innerHeight, top: bounds.top };
+    });
+  expect(firstEditableViewport.bottom).toBeGreaterThan(0);
+  expect(firstEditableViewport.top).toBeLessThan(firstEditableViewport.height);
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.activeElement?.getAttribute("name")),
+    )
+    .toBe("area");
+  await recovery.click();
   await expect(
     page.getByRole("heading", { name: "Your Shibuya night" }),
   ).toBeVisible();

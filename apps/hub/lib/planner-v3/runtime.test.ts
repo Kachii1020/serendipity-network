@@ -60,6 +60,43 @@ describe("planner v3 runtime", () => {
     expect(googleLookup).toHaveBeenCalledTimes(3);
   });
 
+  it("verifies recovery candidates cumulatively and returns only the first feasible intent", async () => {
+    const runtime = new PlannerV3Runtime({
+      clock,
+      googleLookup: ({ placeId }) => Promise.resolve(googleResult(placeId)),
+    });
+    const strict: PlannerIntentV3 = {
+      ...intent("shibuya"),
+      budgetPerPersonYen: 2_000,
+      endAt: "2026-08-30T19:30:00+09:00",
+      interestPreset: "LIVELY",
+      maxWalkMinutesPerLeg: 5,
+      partySize: 3,
+      startAt: "2026-08-30T17:30:00+09:00",
+    };
+    expect(await runtime.search(strict)).toMatchObject({
+      error: { code: "NO_VALID_PLAN" },
+      ok: false,
+    });
+
+    const recovered = await runtime.recovery(strict);
+    expect(recovered).toMatchObject({
+      data: {
+        buttonLabel: "Try again with Surprise me + 30-minute walks",
+        changes: ["INTEREST_SURPRISE", "WALK_30"],
+        intent: {
+          budgetPerPersonYen: 2_000,
+          endAt: strict.endAt,
+          includeMeal: true,
+          interestPreset: "SURPRISE",
+          maxWalkMinutesPerLeg: 30,
+        },
+        verified: { stopCount: 2 },
+      },
+      ok: true,
+    });
+  });
+
   it("calls Google only for a selected predeclared meal ID and keeps it nonblocking", async () => {
     const googleLookup = vi.fn(
       (request: { allowedPlaceIds: ReadonlySet<string>; placeId: string }) => {

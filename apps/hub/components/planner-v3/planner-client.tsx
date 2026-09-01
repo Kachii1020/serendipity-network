@@ -42,6 +42,10 @@ import {
   type ShowPlaceEvidenceToolInputV3,
   type SwapPlanStopToolInputV3,
 } from "../../lib/tools/planner-v3-tools";
+import {
+  validatePlannerRecoveryDataV3,
+  type PlannerRecoveryDataV3,
+} from "../../lib/planner-v3/recovery-contract";
 import { DecisionDialog } from "../product/decision-dialog";
 import { PlannerFormV3 } from "./planner-form";
 import {
@@ -215,6 +219,10 @@ export function PlannerClientV3({
   const [saveAnnouncement, setSaveAnnouncement] = useState("");
   const [interactionReady, setInteractionReady] = useState(false);
   const [adjustOpen, setAdjustOpen] = useState(false);
+  const [recoveryChecking, setRecoveryChecking] = useState(false);
+  const [recoverySuggestion, setRecoverySuggestion] =
+    useState<PlannerRecoveryDataV3 | null>(null);
+  const recoveryEpoch = useRef(0);
   const [openEvidencePlaceId, setOpenEvidencePlaceId] = useState<string | null>(
     null,
   );
@@ -222,30 +230,31 @@ export function PlannerClientV3({
   useEffect(() => setInteractionReady(true), []);
 
   useEffect(() => {
-    if (
-      state.phase === "planned" ||
-      state.phase === "no_results" ||
-      state.phase === "error"
-    ) {
+    if (state.phase === "planned" || state.phase === "error") {
       setAdjustOpen(false);
+    } else if (state.phase === "no_results") {
+      setAdjustOpen(true);
     }
   }, [state.phase]);
 
   useEffect(() => {
     if (
-      adjustOpen ||
+      !adjustOpen ||
       state.plan ||
       (state.phase !== "no_results" && state.phase !== "error")
     ) {
       return;
     }
-    const frame = requestAnimationFrame(() => {
-      const target =
+    const timer = globalThis.setTimeout(() => {
+      const firstInput = globalThis.document.querySelector<HTMLInputElement>(
+        '.v3-adjust input[name="area"]:checked',
+      );
+      const recovery =
         globalThis.document.querySelector<HTMLElement>(".v3-empty");
-      target?.focus({ preventScroll: true });
-      target?.scrollIntoView({ block: "start", behavior: "auto" });
-    });
-    return () => cancelAnimationFrame(frame);
+      firstInput?.focus({ preventScroll: true });
+      recovery?.scrollIntoView({ block: "start", behavior: "auto" });
+    }, 50);
+    return () => globalThis.clearTimeout(timer);
   }, [adjustOpen, state.phase, state.plan]);
 
   useEffect(() => {
@@ -340,6 +349,35 @@ export function PlannerClientV3({
     [plannerPath],
   );
 
+  const loadRecovery = useCallback(
+    async (original: PlannerIntentV3, epoch: number) => {
+      if (epoch !== recoveryEpoch.current) return;
+      setRecoveryChecking(true);
+      try {
+        const response = await fetch("/api/v3/plans/recovery", {
+          body: JSON.stringify(original),
+          headers: { "content-type": "application/json" },
+          method: "POST",
+        });
+        const result = await responseEnvelope(
+          response,
+          (value, meta): value is PlannerRecoveryDataV3 =>
+            record(meta) &&
+            meta.area === original.area &&
+            typeof meta.packVersion === "string" &&
+            validatePlannerRecoveryDataV3(value, original, original.area),
+        );
+        if (epoch !== recoveryEpoch.current) return;
+        setRecoverySuggestion(result?.ok ? result.data : null);
+      } catch {
+        if (epoch === recoveryEpoch.current) setRecoverySuggestion(null);
+      } finally {
+        if (epoch === recoveryEpoch.current) setRecoveryChecking(false);
+      }
+    },
+    [],
+  );
+
   const find = useCallback(
     async (
       intent: PlannerIntentV3,
@@ -347,6 +385,9 @@ export function PlannerClientV3({
       signal?: AbortSignal,
     ): Promise<PlannerEnvelopeV3<SearchPlansDataV3>> => {
       const startedAt = performance.now();
+      const currentRecoveryEpoch = ++recoveryEpoch.current;
+      setRecoverySuggestion(null);
+      setRecoveryChecking(false);
       const current = stateRef.current;
       if (
         signal?.aborted ||
@@ -440,11 +481,14 @@ export function PlannerClientV3({
               : "SEARCH_FAILED",
         });
         focus(current.plan ? ".v3-result-title" : ".v3-empty");
+        if (result.error.code === "NO_VALID_PLAN" && !current.plan) {
+          void loadRecovery(intent, currentRecoveryEpoch);
+        }
       }
       recordActivity("find_evening_plan", transport, result, startedAt);
       return result;
     },
-    [failure, projectIntent, recordActivity],
+    [failure, loadRecovery, projectIntent, recordActivity],
   );
 
   const loadEvidence = useCallback(
@@ -1014,21 +1058,6 @@ export function PlannerClientV3({
   const enrichmentByPlace = Object.fromEntries(
     state.googleSignals.map((signal) => [signal.placeId, signal]),
   );
-  const recoveryIntent =
-    state.phase === "no_results" && state.intent
-      ? {
-          ...state.intent,
-          excludedTags: [],
-          interestPreset: "SURPRISE" as const,
-          maxWalkMinutesPerLeg: 30,
-        }
-      : null;
-  const canBroaden = Boolean(
-    recoveryIntent &&
-    (state.intent?.interestPreset !== "SURPRISE" ||
-      state.intent.maxWalkMinutesPerLeg !== 30 ||
-      state.intent.excludedTags.length > 0),
-  );
   const interestLabel = state.intent
     ? (INTEREST_OPTIONS.find(
         ({ value }) => value === state.intent?.interestPreset,
@@ -1157,25 +1186,37 @@ export function PlannerClientV3({
                       route that satisfies every selected constraint.
                     </p>
                     <div className="v3-empty__actions">
-                      {canBroaden && recoveryIntent ? (
+                      {recoveryChecking ? (
+                        <p aria-live="polite" role="status">
+                          Checking the closest honest alternative…
+                        </p>
+                      ) : null}
+                      {recoverySuggestion ? (
                         <button
                           className="v3-empty__primary"
-                          onClick={() => void find(recoveryIntent, "manual")}
+                          onClick={() =>
+                            void find(recoverySuggestion.intent, "manual")
+                          }
                           type="button"
                         >
-                          Try Surprise me + 30-minute walks
+                          <strong>Try the closest available plan</strong>
+                          <span>{recoverySuggestion.buttonLabel}</span>
                         </button>
                       ) : null}
                       <button
                         onClick={() => {
                           setAdjustOpen(true);
                           requestAnimationFrame(() => {
-                            const target =
-                              globalThis.document.querySelector<HTMLElement>(
-                                ".v3-adjust summary",
+                            const input =
+                              globalThis.document.querySelector<HTMLInputElement>(
+                                '.v3-adjust input[name="area"]:checked',
                               );
-                            target?.focus({ preventScroll: true });
-                            target?.scrollIntoView({
+                            const panel =
+                              globalThis.document.querySelector<HTMLElement>(
+                                ".v3-adjust",
+                              );
+                            input?.focus({ preventScroll: true });
+                            panel?.scrollIntoView({
                               block: "start",
                               behavior: "auto",
                             });

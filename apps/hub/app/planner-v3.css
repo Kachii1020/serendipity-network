@@ -934,7 +934,9 @@
   background: rgb(255 255 255 / 70%);
   border: 2px solid var(--v3-ink);
   border-radius: 22px;
-  box-shadow: 5px 6px 0 rgb(17 17 17 / 65%);
+  box-shadow:
+    inset 4px 0 0 var(--v3-purple),
+    5px 6px 0 rgb(17 17 17 / 65%);
   margin: 1rem 0 2rem;
   max-width: 62rem;
   padding: clamp(1.5rem, 4vw, 2.75rem);
@@ -945,7 +947,7 @@
 }
 
 .v3-empty--recovery h1 {
-  font-size: clamp(2.75rem, 6vw, 5.25rem);
+  font-size: clamp(2.75rem, 5vw, 4rem);
   max-width: 14ch;
 }
 
@@ -994,8 +996,23 @@
 }
 
 .v3-empty__actions .v3-empty__primary {
+  align-items: flex-start;
   background: var(--v3-purple);
   color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.v3-empty__primary span {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.v3-empty__actions [role="status"] {
+  flex-basis: 100%;
+  margin: 0;
 }
 
 .v3-footer {

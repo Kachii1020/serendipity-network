@@ -28,6 +28,10 @@ import {
   type AreaRegistryEntryV3,
   type AreaRegistryV3,
 } from "./area-registry";
+import type {
+  PlannerRecoveryChangeV3,
+  PlannerRecoveryDataV3,
+} from "./recovery-contract";
 
 export type PlannerV3OperationResult<T> =
   | Readonly<{ ok: true; data: T; area: PlannerAreaV3; packVersion: string }>
@@ -200,6 +204,32 @@ const filteredEntry = (
   return { ...entry, pack, reviewedClaims };
 };
 
+const endPlusOneHour = (intent: PlannerIntentV3): string | null => {
+  const endMinutes =
+    Number(intent.endAt.slice(11, 13)) * 60 +
+    Number(intent.endAt.slice(14, 16));
+  const next = endMinutes + 60;
+  if (next > 23 * 60 + 30) return null;
+  const hours = String(Math.floor(next / 60)).padStart(2, "0");
+  const minutes = String(next % 60).padStart(2, "0");
+  return `${intent.endAt.slice(0, 10)}T${hours}:${minutes}:00+09:00`;
+};
+
+const recoveryLabel = (
+  changes: readonly PlannerRecoveryChangeV3[],
+  intent: PlannerIntentV3,
+): string => {
+  const labels = changes.map((change) => {
+    if (change === "INTEREST_SURPRISE") return "Surprise me";
+    if (change === "WALK_30") return "30-minute walks";
+    if (change === "END_PLUS_60") {
+      return `end at ${intent.endAt.slice(11, 16)}`;
+    }
+    return "activities only";
+  });
+  return `Try again with ${labels.join(" + ")}`;
+};
+
 export class PlannerV3Runtime {
   readonly #clock: () => Date;
   readonly #googleLookup: GoogleLookupV3;
@@ -310,6 +340,70 @@ export class PlannerV3Runtime {
       error: error(
         "NO_VALID_PLAN",
         "No route remains after Google listed the reviewed meal candidates closed.",
+      ),
+    };
+  }
+
+  async recovery(
+    original: PlannerIntentV3,
+    signal?: AbortSignal,
+  ): Promise<PlannerV3OperationResult<PlannerRecoveryDataV3>> {
+    let intent = original;
+    const changes: PlannerRecoveryChangeV3[] = [];
+    const candidates: Array<{
+      changes: PlannerRecoveryChangeV3[];
+      intent: PlannerIntentV3;
+    }> = [];
+    const add = (change: PlannerRecoveryChangeV3, next: PlannerIntentV3) => {
+      intent = next;
+      changes.push(change);
+      candidates.push({ changes: [...changes], intent });
+    };
+
+    if (intent.interestPreset !== "SURPRISE") {
+      add("INTEREST_SURPRISE", { ...intent, interestPreset: "SURPRISE" });
+    }
+    if (intent.maxWalkMinutesPerLeg !== 30) {
+      add("WALK_30", { ...intent, maxWalkMinutesPerLeg: 30 });
+    }
+    const extendedEnd = endPlusOneHour(intent);
+    if (extendedEnd) {
+      add("END_PLUS_60", { ...intent, endAt: extendedEnd });
+    }
+    if (intent.includeMeal) {
+      add("MEAL_OFF", { ...intent, includeMeal: false });
+    }
+
+    for (const candidate of candidates) {
+      checkSignal(signal);
+      const result = await this.search(candidate.intent, signal);
+      if (!result.ok) continue;
+      const stopCount = result.data.plan.totals.stopCount;
+      if (stopCount !== 2 && stopCount !== 3) continue;
+      return {
+        ok: true,
+        area: result.area,
+        packVersion: result.packVersion,
+        data: {
+          buttonLabel: recoveryLabel(candidate.changes, candidate.intent),
+          changes: candidate.changes,
+          intent: candidate.intent,
+          verified: {
+            candidateSetId: result.data.candidateSetId,
+            planId: result.data.plan.planId,
+            stopCount,
+          },
+        },
+      };
+    }
+
+    return {
+      ok: false,
+      area: original.area,
+      packVersion: this.#registry.get(original.area)?.pack.packVersion ?? null,
+      error: error(
+        "NO_VALID_PLAN",
+        "No verified broader route fits the allowed recovery sequence.",
       ),
     };
   }
