@@ -29,6 +29,56 @@ Serendipity lets a person or AI assistant build one source-backed Tokyo evening
 across activities and an official-menu meal, then inspect evidence, replace one
 stop, and save the result through the same five typed WebMCP actions.
 
+## Additional Details answers
+
+Use these only when the corresponding custom field appears after login.
+
+**Submitter type**  
+Select `Individual` if submitting solo; otherwise select `Team` and add every
+actual contributor in Step 1.
+
+**Country of residence**  
+The user must select their actual legal country of residence.
+
+**Category**  
+Web / Machine Learning & AI
+
+**Is this a new or existing project?**  
+New project created during The WebMCP Challenge submission period.
+
+**How did you improve or extend it during the hackathon?**
+
+> During the submission period, Serendipity progressed from a Shibuya-only
+> reservation-network experiment into the shipped three-hub source-backed Tokyo
+> planner. The new work added the complete v3 contracts and deterministic engine,
+> 21 reviewed activity and official-menu records across Shibuya, Shinjuku, and
+> Ikebukuro, party and per-person budget support, full-width consumer UI, a
+> truthful multi-stage analysis experience, browser-local saved plans, and five
+> top-level WebMCP tools sharing the visible controller. The public commit history
+> records these changes and distinguishes the preserved legacy experiments.
+
+**Repository URL**  
+https://github.com/Kachii1020/serendipity-network
+
+**Open-source license**  
+MIT
+
+**Is the repository public?**  
+Yes
+
+**Testing credentials**  
+None required
+
+**Required developer-tool feedback, if asked**
+
+> WebMCP was strongest when we exposed five goal-level actions instead of
+> mirroring every button. Shared typed contracts improved both the agent and
+> human paths: stable IDs, explicit effects, cancellation, safe outputs, and
+> honest no-result behavior became product requirements. The hardest practical
+> issue was client availability; Chrome's testing flag provided deterministic
+> compatibility coverage while the current ChatGPT account did not expose the
+> built-in Site Tools surface.
+
 ## Project story
 
 ### Inspiration
