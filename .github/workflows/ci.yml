@@ -63,7 +63,7 @@ jobs:
         run: pnpm build
 
   browser:
-    name: V2 browser, accessibility, and security
+    name: V3 browser, accessibility, and security
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -93,8 +93,8 @@ jobs:
       - name: Install Chrome for Playwright
         run: pnpm exec playwright install --with-deps chrome
 
-      - name: Run source-backed planner browser gate
-        run: pnpm test:v2:browser
+      - name: Run Tokyo three-hub planner browser gate
+        run: pnpm test:v3:browser
 
       - name: Build public assets for security scan
         run: pnpm build
