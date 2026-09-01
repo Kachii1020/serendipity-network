@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Serendipity — a Shibuya plan you can verify";
+export const alt = "Serendipity — build a source-backed Tokyo night";
 export const size = { height: 630, width: 1200 };
 export const contentType = "image/png";
 
@@ -44,13 +44,13 @@ export default function OpenGraphImage() {
           textTransform: "uppercase",
         }}
       >
-        A Shibuya plan you can actually verify.
+        One Tokyo night. Three hubs. Official price evidence.
       </div>
       <div style={{ display: "flex", gap: 16 }}>
         {[
           ["Real places", "#55db9c"],
-          ["Published hours", "#ffd731"],
-          ["Official sources", "#fb8050"],
+          ["Official menu prices", "#ffd731"],
+          ["AI-ready planner", "#fb8050"],
         ].map(([name, color]) => (
           <div
             key={name}
