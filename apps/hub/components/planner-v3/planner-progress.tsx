@@ -6,15 +6,16 @@ import { useEffect, useState } from "react";
 import type { PlannerTransportV3 } from "./planner-machine";
 import { areaLabel } from "./planner-options";
 
-type ProgressStageV3 = "matching" | "routing" | "validating";
+type ProgressStageV3 = "matching" | "preparing" | "routing" | "validating";
 
 const stages: readonly { key: ProgressStageV3; label: string }[] = [
-  { key: "validating", label: "Validating your choices" },
+  { key: "validating", label: "Understanding your choices" },
   {
     key: "matching",
-    label: "Matching published hours & official menu prices",
+    label: "Checking published hours & official menu prices",
   },
-  { key: "routing", label: "Balancing stops & walking time" },
+  { key: "routing", label: "Comparing routes & walking time" },
+  { key: "preparing", label: "Preparing your best plan" },
 ];
 
 const stageIndex = (stage: ProgressStageV3): number =>
@@ -30,16 +31,36 @@ export function PlannerProgressV3({
   const [stage, setStage] = useState<ProgressStageV3>("validating");
 
   useEffect(() => {
-    const matching = globalThis.setTimeout(() => setStage("matching"), 220);
-    const routing = globalThis.setTimeout(() => setStage("routing"), 470);
+    const matching = globalThis.setTimeout(() => setStage("matching"), 500);
+    const routing = globalThis.setTimeout(() => setStage("routing"), 1_150);
+    const preparing = globalThis.setTimeout(() => setStage("preparing"), 1_750);
     return () => {
       globalThis.clearTimeout(matching);
       globalThis.clearTimeout(routing);
+      globalThis.clearTimeout(preparing);
     };
   }, []);
 
   const currentIndex = stageIndex(stage);
-  const progress = stage === "validating" ? 25 : stage === "matching" ? 60 : 85;
+  const progress =
+    stage === "validating"
+      ? 20
+      : stage === "matching"
+        ? 45
+        : stage === "routing"
+          ? 70
+          : 90;
+  const activeSlots =
+    stage === "validating"
+      ? 0
+      : stage === "matching"
+        ? 1
+        : stage === "routing"
+          ? 2
+          : 3;
+  const slotRoles = intent.includeMeal
+    ? (["Activity", "Meal", "Activity"] as const)
+    : (["Activity", "Activity", "Activity"] as const);
 
   return (
     <section
@@ -91,6 +112,23 @@ export function PlannerProgressV3({
               {index < currentIndex ? "✓" : index + 1}
             </span>
             {item.label}
+          </li>
+        ))}
+      </ol>
+      <ol aria-label="Target route structure" className="v3-progress__slots">
+        {slotRoles.map((role, index) => (
+          <li
+            data-state={
+              index < activeSlots
+                ? "complete"
+                : index === activeSlots
+                  ? "current"
+                  : "pending"
+            }
+            key={`${role}-${index}`}
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {role}
           </li>
         ))}
       </ol>

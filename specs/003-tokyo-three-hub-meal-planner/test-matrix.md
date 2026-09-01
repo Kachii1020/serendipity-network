@@ -127,30 +127,35 @@ the preset matrix.
 
 ## UI, copy, accessibility, and visual acceptance
 
-| ID          | Scenario                                                                    | Expected                                                                                       | Requirements                  |
-| ----------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------- |
-| V3-UX-001   | Landing at 1440x900 and 390x844                                             | Area, party, time, budget, visible moods, meal, CTA in first viewport                          | FR-302, FR-304, FR-320–FR-323 |
-| V3-UX-002   | Successful desktop search                                                   | Adjust collapsed; result >=70% width; no 50:50 dashboard                                       | FR-320                        |
-| V3-UX-003   | Successful 390x844 search                                                   | Title/chips and first stop name/time/price intersect first focused viewport                    | FR-320                        |
-| V3-UX-004   | Summary/card static word audit                                              | Summary <=35 words; collapsed stop copy <=45 words                                             | FR-321                        |
-| V3-UX-005   | Mood switches by area                                                       | Only manifest-backed presets visible; selection recovers if area removes it                    | FR-304                        |
-| V3-UX-006   | Party/budget/meal changes                                                   | Visible values, URL, result arithmetic, grammar remain synchronized                            | FR-301–FR-309                 |
-| V3-UX-007   | `Change this stop` dialog                                                   | One trigger; three labelled preferences; focus trap/restore                                    | FR-319, FR-323                |
-| V3-UX-008   | Sources/hours/menu and Google disclosure                                    | Official/Google blocks separated; official link direct and safe                                | FR-316, FR-321–FR-323         |
-| V3-UX-009   | Save drawer/delete dialog/no-result/error/recovery                          | One primary CTA; stable plan retained where required                                           | FR-323–FR-324, FR-328         |
-| V3-COPY-001 | Public DOM/tool/assets string scan                                          | Required published-info caveat present; forbidden live/booking/Provider claims 0               | FR-329                        |
-| V3-VIS-001  | Landing/result against three generated references                           | Ticket/sticker hierarchy and kind/area distinction retained without raster-copy implementation | FR-322                        |
-| V3-VIS-002  | 320, 390, 768, 1440, 200%, 400%, reduced motion, forced colours             | No document/internal overflow, clipping, overlap, unreadable rotation                          | FR-320–FR-323                 |
-| V3-A11Y-001 | axe in idle/search/result/swap/evidence/no-result/error/saved/delete states | Serious/critical 0                                                                             | SC-308                        |
-| V3-A11Y-002 | Keyboard-only full journey                                                  | Logical focus/order, dialog trap/restore, disclosures, external links                          | FR-320–FR-323, SC-308         |
-| V3-A11Y-003 | Search/swap/evidence/save announcements                                     | Exact target focus; save aria-live only; no decorative announcements                           | FR-320–FR-323                 |
-| V3-VIS-003  | Interest layout at 1440/768/390                                             | Exact 6×1, 3×2, 2×3 geometry; equal heights; no orphan row                                     | FR-331, SC-313                |
-| V3-VIS-004  | Two- and three-stop connector geometry                                      | Line and node centres within 1px vertical/2px endpoint tolerance                               | FR-332, SC-314                |
-| V3-VIS-005  | Focus and card-bound geometry                                               | Purple result/stop focus; no native blue; actions/separators contained; resting rotation none  | FR-332–FR-333, SC-317         |
-| V3-PROG-001 | Fast manual success and no-result                                           | Planner-labelled 3-stage presentation visible 650–900ms before projection                      | FR-334, SC-315                |
-| V3-PROG-002 | Delayed response beyond 700ms                                               | Routing stage remains pending; no completion claim until response                              | FR-334, SC-315                |
-| V3-PROG-003 | Validation, abort, timeout, and unsafe response                             | Immediate safe failure; no artificial minimum delay; stable-plan rules preserved               | FR-335, SC-315                |
-| V3-PROG-004 | Site Tool search and reduced-motion manual/tool paths                       | Exact transport label; no manual AI claim; no reduced-motion bar/pulse/fade                    | FR-334–FR-335, SC-316         |
+| ID            | Scenario                                                                    | Expected                                                                                       | Requirements                  |
+| ------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------- |
+| V3-UX-001     | Landing at 1440x900 and 390x844                                             | Area, party, time, budget, visible moods, meal, CTA in first viewport                          | FR-302, FR-304, FR-320–FR-323 |
+| V3-UX-002     | Successful desktop search                                                   | Adjust collapsed; result >=70% width; no 50:50 dashboard                                       | FR-320                        |
+| V3-UX-003     | Successful 390x844 search                                                   | Title/chips and first stop name/time/price intersect first focused viewport                    | FR-320                        |
+| V3-UX-004     | Summary/card static word audit                                              | Summary <=35 words; collapsed stop copy <=45 words                                             | FR-321                        |
+| V3-UX-005     | Mood switches by area                                                       | Only manifest-backed presets visible; selection recovers if area removes it                    | FR-304                        |
+| V3-UX-006     | Party/budget/meal changes                                                   | Visible values, URL, result arithmetic, grammar remain synchronized                            | FR-301–FR-309                 |
+| V3-UX-007     | `Change this stop` dialog                                                   | One trigger; three labelled preferences; focus trap/restore                                    | FR-319, FR-323                |
+| V3-UX-008     | Sources/hours/menu and Google disclosure                                    | Official/Google blocks separated; official link direct and safe                                | FR-316, FR-321–FR-323         |
+| V3-UX-009     | Save drawer/delete dialog/no-result/error/recovery                          | One primary CTA; stable plan retained where required                                           | FR-323–FR-324, FR-328         |
+| V3-COPY-001   | Public DOM/tool/assets string scan                                          | Required published-info caveat present; forbidden live/booking/Provider claims 0               | FR-329                        |
+| V3-VIS-001    | Landing/result against three generated references                           | Ticket/sticker hierarchy and kind/area distinction retained without raster-copy implementation | FR-322                        |
+| V3-VIS-002    | 320, 390, 768, 1440, 200%, 400%, reduced motion, forced colours             | No document/internal overflow, clipping, overlap, unreadable rotation                          | FR-320–FR-323                 |
+| V3-A11Y-001   | axe in idle/search/result/swap/evidence/no-result/error/saved/delete states | Serious/critical 0                                                                             | SC-308                        |
+| V3-A11Y-002   | Keyboard-only full journey                                                  | Logical focus/order, dialog trap/restore, disclosures, external links                          | FR-320–FR-323, SC-308         |
+| V3-A11Y-003   | Search/swap/evidence/save announcements                                     | Exact target focus; save aria-live only; no decorative announcements                           | FR-320–FR-323                 |
+| V3-VIS-003    | Interest layout at 1440/768/390                                             | Exact 6×1, 3×2, 2×3 geometry; equal heights; no orphan row                                     | FR-331, SC-313                |
+| V3-VIS-004    | Two- and three-stop connector geometry                                      | Line and node centres within 1px vertical/2px endpoint tolerance                               | FR-332, SC-314                |
+| V3-VIS-005    | Focus and card-bound geometry                                               | Purple result/stop focus; no native blue; actions/separators contained; resting rotation none  | FR-332–FR-333, SC-317         |
+| V3-PROG-001   | Fast manual success and no-result                                           | Planner-labelled 3-stage presentation visible 650–900ms before projection                      | FR-334, SC-315                |
+| V3-PROG-002   | Delayed response beyond 700ms                                               | Routing stage remains pending; no completion claim until response                              | FR-334, SC-315                |
+| V3-PROG-003   | Validation, abort, timeout, and unsafe response                             | Immediate safe failure; no artificial minimum delay; stable-plan rules preserved               | FR-335, SC-315                |
+| V3-PROG-004   | Site Tool search and reduced-motion manual/tool paths                       | Exact transport label; no manual AI claim; no reduced-motion bar/pulse/fade                    | FR-334–FR-335, SC-316         |
+| V3-RESCUE-001 | Hub and segmented selections across zoom matrix                             | Text/card centres <=1px; selected fill clipped inside parent                                   | FR-336, SC-319                |
+| V3-RESCUE-002 | Result structure at 1600/1280/1067/800/768/600/390                          | Stamp/rail/node 0; ordered walk labels; action/disclosure contained                            | FR-337, SC-320                |
+| V3-RESCUE-003 | Summary layout across the same matrix                                       | Only 4×1 or 2×2; no orphan row                                                                 | FR-338, SC-321                |
+| V3-PROG-005   | Fast/slow/no-result 2100ms analysis canvas                                  | Four truthful stages and role slots; 1950–2400ms fast projection; slow remains pending         | FR-339, SC-322                |
+| V3-ZOOM-001   | Desktop browser zoom proxy matrix                                           | 1600/1280/1067/800 screenshots and geometry assertions pass                                    | FR-340, SC-319–SC-321         |
 
 ## Security, regression, deployment, and rollback
 
@@ -184,3 +189,4 @@ the preset matrix.
 | FR-325–FR-328     | V3-API-001–003, V3-TOOL-001–006, V3-RACE-001–003            |
 | FR-329–FR-330     | V3-COPY-001, V3-REG-001–002, V3-DEP-001–005, V3-RBK-001–002 |
 | FR-331–FR-335     | V3-VIS-003–005, V3-PROG-001–004, V3-A11Y-001–003            |
+| FR-336–FR-340     | V3-RESCUE-001–003, V3-PROG-005, V3-ZOOM-001                 |

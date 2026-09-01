@@ -1,5 +1,10 @@
 # v3 UI completion evidence — 2026-08-31
 
+> Superseded on 2026-09-01: real desktop browser zoom exposed centred-control,
+> selected-fill, summary-orphan, redundant-stamp, and detached-route-decoration
+> failures that the prior font-size-based reflow gate did not cover. See
+> T339–T342; this document remains historical evidence only.
+
 ## Closed defects
 
 - Removed resting rotation from functional controls, stamps, summaries, and

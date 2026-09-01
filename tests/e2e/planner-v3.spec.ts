@@ -87,8 +87,8 @@ const expectNoMaterialAxeViolations = async (page: Page) => {
   ).toEqual([]);
 };
 
-const interestRows = async (page: Page) =>
-  page.locator(".v3-mood-grid label").evaluateAll((elements) => {
+const layoutRows = async (page: Page, selector: string) =>
+  page.locator(selector).evaluateAll((elements) => {
     const rows = new Map<number, number>();
     for (const element of elements) {
       const top = Math.round(element.getBoundingClientRect().top);
@@ -97,33 +97,7 @@ const interestRows = async (page: Page) =>
     return [...rows.values()];
   });
 
-const expectConnectedRoute = async (page: Page) => {
-  const geometry = await page.evaluate(() => {
-    const line = document.querySelector<HTMLElement>(".v3-route-line")!;
-    const nodes = [...document.querySelectorAll<HTMLElement>(".v3-route-node")];
-    const lineRect = line.getBoundingClientRect();
-    return {
-      line: {
-        left: lineRect.left,
-        right: lineRect.right,
-        y: lineRect.top + lineRect.height / 2,
-      },
-      nodes: nodes.map((node) => {
-        const rect = node.getBoundingClientRect();
-        return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-      }),
-    };
-  });
-  expect(
-    Math.abs(geometry.nodes[0]!.x - geometry.line.left),
-  ).toBeLessThanOrEqual(2);
-  expect(
-    Math.abs(geometry.nodes.at(-1)!.x - geometry.line.right),
-  ).toBeLessThanOrEqual(2);
-  expect(
-    geometry.nodes.every(({ y }) => Math.abs(y - geometry.line.y) <= 1),
-  ).toBe(true);
-};
+const interestRows = (page: Page) => layoutRows(page, ".v3-mood-grid label");
 
 const reflowContainers = [
   ".v3-shell",
@@ -257,7 +231,88 @@ test("V3-VIS-003 interest choices use deterministic responsive columns", async (
   }
 });
 
-test("V3-PROG-001 fast manual search presents three truthful stages for at least 700ms", async ({
+test("V3-RESCUE-001 zoom matrix centres hubs and clips segmented selections", async ({
+  page,
+}) => {
+  for (const width of [1600, 1280, 1067, 800, 768, 600, 390]) {
+    await page.setViewportSize({ height: 900, width });
+    await page.goto("/v3");
+    const centres = await page
+      .locator(".v3-region-grid label")
+      .evaluateAll((labels) =>
+        labels.map((label) => {
+          const outer = label.getBoundingClientRect();
+          const inner = label.querySelector("span")!.getBoundingClientRect();
+          return {
+            x: Math.abs(
+              outer.left + outer.width / 2 - (inner.left + inner.width / 2),
+            ),
+            y: Math.abs(
+              outer.top + outer.height / 2 - (inner.top + inner.height / 2),
+            ),
+          };
+        }),
+      );
+    expect(centres.every(({ x, y }) => x <= 1 && y <= 1)).toBe(true);
+    await page.getByText("3 adults", { exact: true }).click();
+    const selected = await page
+      .locator(".v3-ticket-options")
+      .first()
+      .evaluate((parent) => {
+        const outer = parent.getBoundingClientRect();
+        const inner = parent
+          .querySelector<HTMLInputElement>("input:checked")!
+          .nextElementSibling!.getBoundingClientRect();
+        return {
+          bottom: inner.bottom <= outer.bottom + 1,
+          left: inner.left >= outer.left - 1,
+          overflow: getComputedStyle(parent).overflow,
+          right: inner.right <= outer.right + 1,
+          top: inner.top >= outer.top - 1,
+        };
+      });
+    expect(selected).toMatchObject({
+      bottom: true,
+      left: true,
+      overflow: "hidden",
+      right: true,
+      top: true,
+    });
+  }
+});
+
+test("V3-RESCUE-002 result zoom matrix has only 4x1 or 2x2 summaries and no decorative route chrome", async ({
+  page,
+}) => {
+  const params = new URLSearchParams({
+    area: "ikebukuro",
+    auto: "1",
+    budget: "4000",
+    date: serviceDate(),
+    end: "22:30",
+    interest: "CALM_QUIET",
+    meal: "1",
+    party: "3",
+    start: "17:30",
+    walk: "20",
+  });
+  for (const width of [1600, 1280, 1067, 800, 768, 600, 390]) {
+    await page.setViewportSize({ height: 900, width });
+    await page.goto(`/v3/plan?${params}`);
+    await expect(page.locator(".v3-result-title")).toBeVisible();
+    expect(await layoutRows(page, ".v3-stat")).toEqual(
+      width >= 1000 ? [4] : [2, 2],
+    );
+    await expect(
+      page.locator(".v3-area-stamp,.v3-route-line,.v3-route-node"),
+    ).toHaveCount(0);
+    expect(await page.locator(".v3-stop__walk").count()).toBeGreaterThanOrEqual(
+      2,
+    );
+  }
+});
+
+test("V3-PROG-001 fast manual search presents four truthful stages for at least 2100ms", async ({
   page,
 }) => {
   await page.goto("/v3/plan");
@@ -268,32 +323,33 @@ test("V3-PROG-001 fast manual search presents three truthful stages for at least
   await expect(progress).toBeVisible();
   await expect(progress).toContainText("Planner");
   await expect(progress).not.toContainText("AI tool");
-  await expect(progress).toContainText("Validating your choices");
+  await expect(progress).toContainText("Understanding your choices");
   await expect(progress).toContainText(
-    "Matching published hours & official menu prices",
+    "Checking published hours & official menu prices",
   );
-  await expect(progress).toContainText("Balancing stops & walking time");
+  await expect(progress).toContainText("Comparing routes & walking time");
+  await expect(progress).toContainText("Preparing your best plan");
+  await expect(progress.locator(".v3-progress__slots li")).toHaveCount(3);
   await expect(page.locator(".v3-result-title")).toBeVisible();
-  await expectConnectedRoute(page);
   const elapsed = Date.now() - startedAt;
-  expect(elapsed).toBeGreaterThanOrEqual(650);
-  expect(elapsed).toBeLessThanOrEqual(1_500);
+  expect(elapsed).toBeGreaterThanOrEqual(1_950);
+  expect(elapsed).toBeLessThanOrEqual(2_600);
 });
 
 test("V3-PROG-002 slow search stays pending beyond the presentation minimum", async ({
   page,
 }) => {
   await page.route("**/api/v3/plans/search", async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 1_050));
+    await new Promise((resolve) => setTimeout(resolve, 2_600));
     await route.continue();
   });
   await page.goto("/v3/plan");
   await page.locator(".v3-adjust summary").first().click();
   await page.getByRole("button", { name: /Build my Tokyo plan/ }).click();
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(2_200);
   await expect(page.locator(".v3-progress")).toBeVisible();
   await expect(page.locator(".v3-progress")).toContainText(
-    "Balancing stops & walking time",
+    "Preparing your best plan",
   );
   await expectNoMaterialAxeViolations(page);
   await expect(page.locator(".v3-result-title")).toBeVisible();
@@ -330,7 +386,7 @@ test("V3-PROG-002B honest no-result keeps the minimum presentation", async ({
   await expect(
     page.getByRole("heading", { name: "Nothing honest fits yet." }),
   ).toBeVisible();
-  expect(Date.now() - startedAt).toBeGreaterThanOrEqual(650);
+  expect(Date.now() - startedAt).toBeGreaterThanOrEqual(1_950);
 });
 
 test("V3-PROG-003 transport failure bypasses the presentation minimum", async ({
@@ -346,7 +402,7 @@ test("V3-PROG-003 transport failure bypasses the presentation minimum", async ({
   await expect(
     page.getByRole("heading", { name: "The planner paused." }),
   ).toBeVisible();
-  expect(Date.now() - startedAt).toBeLessThan(650);
+  expect(Date.now() - startedAt).toBeLessThan(1_000);
 });
 
 test("V3-PROG-004 Site Tool search names the real tool and reduced motion disables animation", async ({
@@ -398,7 +454,7 @@ test("PV3-UI-002 manual route is full-width A-M-A with real menu pricing", async
   await page.getByText("Ikebukuro", { exact: true }).click();
   await page.locator("input[name='date']").fill(serviceDate());
   await page.getByRole("button", { name: /Build my Tokyo plan/ }).click();
-  await expect(page).toHaveURL(/\/v3\/plan\?.*auto=1/);
+  await expect(page).toHaveURL(/\/v3\/plan\?.*area=ikebukuro/);
   await expect(
     page.getByRole("heading", { name: "Your Ikebukuro night" }),
   ).toBeVisible();
@@ -417,7 +473,7 @@ test("PV3-UI-002 manual route is full-width A-M-A with real menu pricing", async
   expect(focusStyle.boxShadow).toContain("101, 75, 230");
   expect(focusStyle.outlineColor).not.toBe("rgb(0, 95, 204)");
   const resultRotations = await page
-    .locator(".v3-stat,.v3-stop,.v3-area-stamp")
+    .locator(".v3-stat,.v3-stop")
     .evaluateAll((elements) =>
       elements.map((element) => {
         const matrix = new DOMMatrixReadOnly(
@@ -431,6 +487,10 @@ test("PV3-UI-002 manual route is full-width A-M-A with real menu pricing", async
       ({ b, c }) => Math.abs(b) < 0.0001 && Math.abs(c) < 0.0001,
     ),
   ).toBe(true);
+  await expect(
+    page.locator(".v3-area-stamp,.v3-route-line,.v3-route-node"),
+  ).toHaveCount(0);
+  await expect(page.locator(".v3-stop__walk")).toHaveCount(3);
   await expect(page.locator(".v3-adjust").first()).not.toHaveAttribute(
     "open",
     "",
@@ -492,7 +552,9 @@ test("PV3-UI-003 honest two-stop fallback explains the reduction and fills the r
     route: route.getBoundingClientRect().width,
   }));
   expect(widths.cards.every((width) => width >= widths.route * 0.4)).toBe(true);
-  await expectConnectedRoute(page);
+  await expect(
+    page.locator(".v3-area-stamp,.v3-route-line,.v3-route-node"),
+  ).toHaveCount(0);
 });
 
 test("PV3-ST-001 exact five tools coordinate find, evidence, meal swap, save, delete", async ({

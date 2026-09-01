@@ -77,7 +77,7 @@ type ActivityV3 = Readonly<{
   transport: PlannerTransportV3;
 }>;
 
-const SEARCH_PRESENTATION_MS = 700;
+const SEARCH_PRESENTATION_MS = 2_100;
 
 const waitForSearchPresentation = (
   startedAt: number,

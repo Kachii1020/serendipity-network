@@ -264,6 +264,19 @@ v2. See `evidence/rc-status-2026-08-30.md` for the claim boundary.
       deploy a Google-OFF immutable preview, and preserve v2/current-v3 rollback
       IDs for user review — closes SC-313–SC-318 without production promotion.
 
+## Submission visual rescue
+
+- [x] **T339** Add failing 1600/1280/1067/800/768/600/390 geometry and visual
+      regressions for centred hubs, clipped segmented fills, 4-or-2×2 summary,
+      and zero stamp/rail/node DOM — verifies FR-336–FR-340.
+- [x] **T340** Remove result stamp/rail/node, add source-aware walk labels, clip
+      input segments, and simplify card actions/disclosures — pass T339.
+- [x] **T341** Replace the 700ms presentation with the 2100ms four-stage
+      analysis canvas and role slots while preserving fast errors and exact
+      manual/Site Tool provenance — verifies FR-339.
+- [ ] **T342** Run full gates, deploy a new Google-OFF immutable preview, and
+      require user review of 800px input/loading/result before production.
+
 ## Six-day critical path
 
 | Day | Required exit                                                               |

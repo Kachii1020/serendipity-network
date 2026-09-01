@@ -339,6 +339,19 @@ live availability. Check each official site before you go.` It MUST also say
 - **FR-335**: Search cancellation, validation failure, and transport errors
   MUST bypass the minimum presentation delay. Reduced-motion users MUST receive
   the same textual progress without movement, pulse, or fade.
+- **FR-336**: Hub labels MUST be centred on both axes and segmented selections
+  MUST be clipped by their shared rounded parent at every supported width.
+- **FR-337**: The result MUST contain no separate area stamp, route rail, or
+  route node decoration. Ordered card numbers and each stop's actual walk from
+  its origin/previous stop MUST communicate sequence.
+- **FR-338**: Result summaries MUST render as exactly 4×1 at 1000px and above
+  and 2×2 below 1000px. A 3+1 orphan arrangement is forbidden.
+- **FR-339**: Accepted success and honest no-result searches MUST receive a
+  minimum 2100ms analysis presentation with four truthful stages and dynamic
+  Activity/Meal target slots. It MUST not invent place names, counts, live
+  search, or completion before the real response.
+- **FR-340**: Browser-zoom-equivalent CSS viewports 1600, 1280, 1067, and 800px
+  MUST be first-class release fixtures in addition to responsive mobile sizes.
 
 ## Key entities
 
@@ -406,6 +419,15 @@ live availability. Check each official site before you go.` It MUST also say
   token instead of the native blue outline.
 - **SC-318**: The UI repair preserves `pnpm check`, all 8 builds, security and
   source gates, exact-five parity, and the v3 20/20 read-only reliability gate.
+- **SC-319**: Hub text/card centre error is at most 1px and selected segment
+  bounds remain inside their shared parent at every zoom fixture.
+- **SC-320**: Area stamp, route line, and route node DOM counts are zero; no
+  functional element protrudes from its container.
+- **SC-321**: Summary row counts are `[4]` or `[2,2]` only across the complete
+  zoom/responsive matrix.
+- **SC-322**: Fast analysis presentation lasts 1950–2400ms, shows the four
+  stages in order, and keeps a truthful waiting state beyond 2100ms when the
+  actual response is slower.
 
 ## Assumptions and dependencies
 

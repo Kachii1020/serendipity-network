@@ -69,6 +69,7 @@ const v3PlanPath =
 
 for (const viewport of [
   { height: 900, name: "desktop", width: 1440 },
+  { height: 1000, name: "zoom-200", width: 800 },
   { height: 844, name: "mobile", width: 390 },
 ]) {
   test(`V3-VIS-006 v3 landing ${viewport.name} baseline`, async ({ page }) => {
@@ -98,6 +99,7 @@ for (const viewport of [
 
 for (const viewport of [
   { height: 900, name: "desktop", width: 1440 },
+  { height: 1000, name: "zoom-200", width: 800 },
   { height: 844, name: "mobile", width: 390 },
 ]) {
   test(`V3-VIS-008 v3 progress ${viewport.name} baseline`, async ({ page }) => {
@@ -109,9 +111,9 @@ for (const viewport of [
     await stabilizeV3(page, "/v3/plan");
     await page.locator(".v3-adjust summary").first().click();
     await page.getByRole("button", { name: /Build my Tokyo plan/ }).click();
-    await page.waitForTimeout(520);
+    await page.waitForTimeout(1_800);
     await expect(page.locator(".v3-progress")).toContainText(
-      "Balancing stops & walking time",
+      "Preparing your best plan",
     );
     await expect(page).toHaveScreenshot(`v3-progress-${viewport.name}.png`, {
       animations: "disabled",

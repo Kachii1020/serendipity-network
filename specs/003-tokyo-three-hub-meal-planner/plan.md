@@ -226,6 +226,21 @@ do not change public REST or Site Tool schemas. The progress source is `Planner`
 for visible controls and `AI tool · find_evening_plan` only for actual Site Tool
 execution.
 
+### Submission visual rescue
+
+The 2026-09-01 user review supersedes the prior visual-completion claim. Remove
+the redundant area stamp and all route rail/node DOM. Preserve route semantics
+with the ordered list, `01/02/03`, and a source-aware walk label inside each
+card. Use deterministic summary grids of 4×1 or 2×2 and clip all segmented
+selection fills to a shared 16px parent radius.
+
+Raise the presentation minimum to 2100ms with stages at 0/500/1150/1750ms:
+understanding choices, checking published hours/menu prices, comparing routes/
+walking, and preparing the plan. Show role slots derived only from intent. A
+slow request remains pending after 2100ms; abort and failure remain immediate.
+Treat 1600/1280/1067/800px as real browser-zoom proxies rather than changing the
+root font size alone.
+
 ### Storage
 
 Create a v3 serializer independent of v2. The persisted type intentionally
@@ -288,6 +303,7 @@ Stop-loss:
 | FR-325–FR-328 | Shared controller, exact five tools, races, exact envelopes | V3-API, V3-TOOL, V3-RACE |
 | FR-329–FR-330 | Honest copy, parallel release, rollback                     | V3-COPY, V3-DEP, V3-RBK  |
 | FR-331–FR-335 | Deterministic geometry and truthful search presentation     | V3-VIS, V3-PROG, V3-A11Y |
+| FR-336–FR-340 | Submission-safe controls, simplified result, real zoom      | V3-RESCUE, V3-ZOOM       |
 
 ## Decisions and rejected alternatives
 
