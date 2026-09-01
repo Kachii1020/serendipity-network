@@ -240,8 +240,9 @@ v2. See `evidence/rc-status-2026-08-30.md` for the claim boundary.
       menu link audit, Lighthouse, public payload/storage scan, and 15-minute log
       observation; roll back on first non-favicon failure — closes SC-309–SC-312.
       Partial production evidence is complete: Google-OFF search 20/20, p95
-      77ms, 20 unique correlations, plus automated Chrome 14/14. Real supported-
-      client 3/3, Lighthouse, live-link audit, and the observation window remain.
+      77ms, 20 unique correlations, automated Chrome 14/14, and production
+      Lighthouse 99/100/100/100 on `/` plus 98/100/100/100 on `/plan`. Real
+      supported-client 3/3, live-link audit, and the observation window remain.
 
 - [ ] **T333** Reconcile shipped behavior with all 003 artifacts and record
       deployment ID, pack versions, Google mode, exact commands/results,
