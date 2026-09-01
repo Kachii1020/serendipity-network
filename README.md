@@ -18,7 +18,7 @@ v3 is an implementation candidate, not the production product yet.
 - **Current production planner (v2):**
   <https://serendipity-phase0-hub.vercel.app/plan>
 - **Current v3 review preview (protected, Google OFF):**
-  <https://serendipity-phase0-cg3ymnih0-circle-connect123.vercel.app/v3>
+  <https://serendipity-phase0-6ddhami6n-circle-connect123.vercel.app/v3>
 - **Public source:**
   <https://github.com/Kachii1020/serendipity-network>
 

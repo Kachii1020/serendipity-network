@@ -40,5 +40,15 @@ icons, gradients, and inter-card dashed decoration.
 - `APP_BASE_URL=http://localhost:3100 pnpm test:v3:release`: 20/20, p50 5ms,
   p95 9ms, max 170ms, 20 unique correlations.
 
-T342 remains open until the immutable Google-OFF preview is deployed and the
-800px input/loading/result path is replayed.
+## Preview verification
+
+Google-OFF deployment `dpl_Ek3TjAYh1FCa4jsCywCUyB1sFo85` is READY in `hnd1` at
+<https://serendipity-phase0-6ddhami6n-circle-connect123.vercel.app/v3> from
+application commit `eef07ac`.
+
+The protected 800px browser path displayed all four analysis stages and three
+role slots, then returned the source-backed Shibuya result in 2,644ms including
+navigation. Deployed geometry recorded hub centre error 0px, summary `[2,2]`,
+stamp/rail/node count 0, three walk labels, document overflow 0, and browser
+warning/error logs 0. T342 is closed; production remains unchanged pending user
+review.

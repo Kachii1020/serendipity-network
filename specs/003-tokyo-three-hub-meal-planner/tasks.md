@@ -274,7 +274,7 @@ v2. See `evidence/rc-status-2026-08-30.md` for the claim boundary.
 - [x] **T341** Replace the 700ms presentation with the 2100ms four-stage
       analysis canvas and role slots while preserving fast errors and exact
       manual/Site Tool provenance — verifies FR-339.
-- [ ] **T342** Run full gates, deploy a new Google-OFF immutable preview, and
+- [x] **T342** Run full gates, deploy a new Google-OFF immutable preview, and
       require user review of 800px input/loading/result before production.
 
 ## Six-day critical path
