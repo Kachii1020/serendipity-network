@@ -92,6 +92,7 @@ function ChangeStopDialog({
 export function PlannerPlanV3({
   evidenceByPlace,
   enrichmentByPlace,
+  interactionReady,
   onEvidence,
   onSave,
   onSwap,
@@ -104,6 +105,7 @@ export function PlannerPlanV3({
 }: {
   readonly evidenceByPlace: Readonly<Record<string, PlaceEvidenceV3>>;
   readonly enrichmentByPlace: Readonly<Record<string, GooglePlaceSignalV3>>;
+  readonly interactionReady: boolean;
   readonly onEvidence: (placeId: string, open: boolean) => void;
   readonly onSave: () => void;
   readonly onSwap: (placeId: string, preference: SwapPreferenceV3) => void;
@@ -205,7 +207,7 @@ export function PlannerPlanV3({
                 <p className="v3-stop__reason">{stop.whyThisStop}</p>
                 <div className="v3-stop__actions">
                   <button
-                    disabled={swapping}
+                    disabled={!interactionReady || swapping}
                     onClick={(event) => {
                       changeTriggerRef.current = event.currentTarget;
                       setChangePlaceId(stop.place.placeId);
@@ -320,7 +322,7 @@ export function PlannerPlanV3({
       <div className="v3-save">
         <button
           className="v3-primary"
-          disabled={saving}
+          disabled={!interactionReady || saving}
           onClick={onSave}
           type="button"
         >

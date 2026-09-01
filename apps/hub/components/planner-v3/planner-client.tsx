@@ -204,9 +204,12 @@ export function PlannerClientV3({
   const [activities, setActivities] = useState<readonly ActivityV3[]>([]);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [saveAnnouncement, setSaveAnnouncement] = useState("");
+  const [interactionReady, setInteractionReady] = useState(false);
   const [openEvidencePlaceId, setOpenEvidencePlaceId] = useState<string | null>(
     null,
   );
+
+  useEffect(() => setInteractionReady(true), []);
 
   useEffect(() => {
     const loaded = loadSavedPlansV3(localStorage);
@@ -1024,6 +1027,7 @@ export function PlannerClientV3({
               <PlannerPlanV3
                 enrichmentByPlace={enrichmentByPlace}
                 evidenceByPlace={state.evidenceByPlace}
+                interactionReady={interactionReady}
                 onEvidence={(placeId, open) => {
                   if (!open) {
                     setOpenEvidencePlaceId((current) =>

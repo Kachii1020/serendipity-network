@@ -524,6 +524,7 @@ test("PV3-UI-002 manual route is full-width A-M-A with real menu pricing", async
   const changeTrigger = page
     .getByRole("button", { name: "Change this stop" })
     .first();
+  await expect(changeTrigger).toBeEnabled();
   await changeTrigger.click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
