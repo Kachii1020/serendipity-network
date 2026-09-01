@@ -190,7 +190,8 @@ The app makes no booking or external mutation.
 | Try it out          | `https://serendipity-phase0-hub.vercel.app`                         |
 | Source code         | `https://github.com/Kachii1020/serendipity-network`                 |
 | Video               | `submission/serendipity-demo.mp4`, then public YouTube URL          |
-| Cover image         | `submission/serendipity-cover.png`                                  |
+| Project thumbnail   | `submission/serendipity-thumbnail-3x2.png`                          |
+| YouTube thumbnail   | `submission/serendipity-cover.png`                                  |
 | Gallery 1           | `submission/gallery-01-inputs.png`                                  |
 | Gallery 2           | `submission/gallery-02-route.png`                                   |
 | Gallery 3           | `submission/gallery-03-evidence.png`                                |
