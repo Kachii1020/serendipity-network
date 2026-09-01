@@ -48,10 +48,6 @@ function ChangeStopDialog({
     const dialog = dialogRef.current;
     if (dialog && !dialog.open) dialog.showModal();
     cancelRef.current?.focus();
-
-    return () => {
-      if (dialog?.open) dialog.close();
-    };
   }, []);
 
   return (
