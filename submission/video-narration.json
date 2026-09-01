@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "title": "Serendipity — one Tokyo evening, planned with evidence",
+  "voice": "Samantha",
+  "rate": 175,
+  "scenes": [
+    {
+      "id": "hook",
+      "minimumSeconds": 12,
+      "title": "One free evening. Too many tabs.",
+      "narration": "A free evening in Tokyo should feel spontaneous. Instead, choosing an activity, a meal, and another stop means comparing hours, prices, distance, and closing times across several sites."
+    },
+    {
+      "id": "choices",
+      "minimumSeconds": 16,
+      "title": "Three hubs. Real constraints.",
+      "narration": "Serendipity starts with decisions people actually make: Shibuya, Shinjuku, or Ikebukuro; one to three adults; a per-person budget; a time window; an interest; and whether the night should include a meal."
+    },
+    {
+      "id": "analysis",
+      "minimumSeconds": 14,
+      "title": "Published hours and menu prices",
+      "narration": "The planner validates those choices, matches published opening hours and official menu prices, then balances stop duration and coordinate-estimated walking. It never claims live availability."
+    },
+    {
+      "id": "route",
+      "minimumSeconds": 20,
+      "title": "One feasible route",
+      "narration": "The result is one actionable route, not another comparison dashboard. It shows each stop, the visit time, the per-person price range, the group estimate, the address, and the walking burden. If only two stops fit, it explains the fallback instead of inventing a third."
+    },
+    {
+      "id": "evidence",
+      "minimumSeconds": 18,
+      "title": "Every important claim opens to evidence",
+      "narration": "Every stop opens to its evidence. The user can inspect the publisher, checked date, official hours, official menu, price basis, and source link before acting on the plan. No review score, photo, or copied marketplace price is used."
+    },
+    {
+      "id": "webmcp",
+      "minimumSeconds": 28,
+      "title": "Five typed WebMCP tools",
+      "narration": "In WebMCP-enabled Chrome, the same page exposes exactly five typed tools. This compatibility client finds a plan, opens evidence for a specific place, and swaps one stop while the visible page updates. The tools call the same validated controller as the human interface; they do not scrape buttons or guess page structure."
+    },
+    {
+      "id": "storage",
+      "minimumSeconds": 16,
+      "title": "Bounded, visible mutations",
+      "narration": "Saving and deleting are explicit mutations. The saved plan stays in this browser, excludes transient Google content and private session data, and remains visible to the person sharing the page with the agent."
+    },
+    {
+      "id": "close",
+      "minimumSeconds": 12,
+      "title": "A plan you can verify before you go",
+      "narration": "Serendipity turns fragmented published information into one plan that people and agents can inspect together. Three Tokyo hubs today, no booking claim, and every important next step remains under the user's control."
+    }
+  ]
+}

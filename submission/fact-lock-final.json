@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "lockedAt": "2026-09-01T13:06:00+09:00",
+  "project": {
+    "name": "Serendipity",
+    "liveUrl": "https://serendipity-phase0-hub.vercel.app",
+    "plannerUrl": "https://serendipity-phase0-hub.vercel.app/plan",
+    "repositoryUrl": "https://github.com/Kachii1020/serendipity-network",
+    "license": "MIT"
+  },
+  "production": {
+    "deploymentId": "dpl_97KgepTTGC78xp14v6cQw97NeAfi",
+    "region": "hnd1",
+    "googlePlacesEnabled": false,
+    "rollbackDeploymentId": "dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6"
+  },
+  "data": {
+    "areas": ["shibuya", "shinjuku", "ikebukuro"],
+    "packVersions": {
+      "shibuya": "1.0.0",
+      "shinjuku": "1.0.0",
+      "ikebukuro": "1.0.0"
+    },
+    "placesPerArea": {
+      "activities": 4,
+      "meals": 3
+    },
+    "totalPlaces": 21
+  },
+  "webmcp": {
+    "toolCount": 5,
+    "tools": [
+      "find_evening_plan",
+      "show_place_evidence",
+      "swap_plan_stop",
+      "save_plan",
+      "delete_saved_plan"
+    ],
+    "chromeProductionSuite": "14/14",
+    "realChatGptClient": "blocked-account-or-client-did-not-expose-modelContext",
+    "videoDisclosure": "WebMCP-enabled Chrome compatibility client; not a ChatGPT model capture"
+  },
+  "verification": {
+    "repository": {
+      "tests": "388/388",
+      "typechecks": "8/8",
+      "builds": "8/8",
+      "sourceAudit": "20/20",
+      "securityBrowser": "5/5",
+      "publicAssetSecretScan": "62 files"
+    },
+    "productionSearch": {
+      "runs": 20,
+      "passed": 20,
+      "p50Ms": 47,
+      "p95Ms": 77,
+      "maxMs": 288,
+      "uniqueCorrelations": 20
+    },
+    "lighthouse": {
+      "version": "13.4.1",
+      "home": {
+        "performance": 99,
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100,
+        "lcpMs": 2123,
+        "cls": 0
+      },
+      "planner": {
+        "performance": 98,
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100,
+        "lcpMs": 2281,
+        "cls": 0.00016
+      }
+    }
+  },
+  "video": {
+    "file": "submission/serendipity-demo.mp4",
+    "durationSeconds": 153.566667,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "audioSampleRate": 48000,
+    "audioChannels": 2,
+    "meanVolumeDb": -19.8,
+    "maxVolumeDb": -3.8,
+    "narration": "macOS Samantha English voice",
+    "captions": "burned-in English captions derived from the approved narration"
+  },
+  "claimBoundaries": [
+    "Published information, not live availability",
+    "No booking, payment, or external mutation",
+    "Walking time is a coordinate estimate",
+    "Official menu price is the budget basis",
+    "Google Places enrichment is disabled",
+    "Chrome compatibility evidence is not presented as real Sol or Terra evidence"
+  ]
+}

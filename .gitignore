@@ -17,6 +17,11 @@ coverage/
 
 # Test and generated evidence output
 artifacts/
+submission/generated/
+submission/*.mp4
+submission/*.zip
+__pycache__/
+*.pyc
 playwright-report/
 test-results/
 specs/001-serendipity-network/evidence/artifacts/
