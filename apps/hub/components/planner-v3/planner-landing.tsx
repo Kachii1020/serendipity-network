@@ -6,13 +6,17 @@ import type { PlannerFormDefaultsV3 } from "./planner-options";
 export function PlannerLandingV3({
   defaults,
   earliestStartToday,
+  homePath = "/v3",
   maxDate,
   minDate,
+  plannerPath = "/v3/plan",
 }: {
   readonly defaults: PlannerFormDefaultsV3;
   readonly earliestStartToday: string | null;
+  readonly homePath?: string;
   readonly maxDate: string;
   readonly minDate: string;
+  readonly plannerPath?: string;
 }) {
   return (
     <div className="v3-shell">
@@ -20,7 +24,7 @@ export function PlannerLandingV3({
         Skip to planner
       </a>
       <header className="v3-header">
-        <Link className="v3-wordmark" href="/v3" translate="no">
+        <Link className="v3-wordmark" href={homePath} translate="no">
           SERENDIPITY<span aria-hidden="true">✦</span>
         </Link>
         <span className="v3-mode">Tokyo&apos;s 3 major hubs</span>
@@ -39,6 +43,7 @@ export function PlannerLandingV3({
           </p>
         </div>
         <PlannerFormV3
+          action={plannerPath}
           defaults={defaults}
           earliestStartToday={earliestStartToday}
           maxDate={maxDate}

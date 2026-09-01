@@ -235,7 +235,7 @@ test("PV2-SEC-001 source-backed planner exposes only safe IDs, evidence, and HTT
     totalBudgetYen: 5000,
   };
 
-  await page.goto("/plan");
+  await page.goto("/legacy/source-planner");
   await expect(page.locator("iframe")).toHaveCount(0);
   await expect
     .poll(() =>

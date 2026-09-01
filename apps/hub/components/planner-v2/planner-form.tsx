@@ -31,6 +31,7 @@ const tagLabel = (value: string): string => {
 };
 
 export function PlannerForm({
+  action = "/plan",
   defaults,
   earliestStartToday,
   error,
@@ -38,6 +39,7 @@ export function PlannerForm({
   minDate,
   onSubmit,
 }: {
+  readonly action?: string;
   readonly defaults: PlannerFormDefaults;
   readonly earliestStartToday: string | null;
   readonly error?: string | null;
@@ -78,7 +80,7 @@ export function PlannerForm({
 
   return (
     <form
-      action="/plan"
+      action={action}
       className="v2-planner-form"
       method="get"
       onSubmit={onSubmit}

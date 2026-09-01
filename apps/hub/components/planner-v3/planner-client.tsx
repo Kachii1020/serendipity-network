@@ -174,18 +174,22 @@ export function PlannerClientV3({
   autoSearch,
   defaults,
   earliestStartToday,
+  homePath = "/v3",
   hubOrigin,
   initialIntent,
   maxDate,
   minDate,
+  plannerPath = "/v3/plan",
 }: {
   readonly autoSearch: boolean;
   readonly defaults: PlannerFormDefaultsV3;
   readonly earliestStartToday: string | null;
+  readonly homePath?: string;
   readonly hubOrigin: string;
   readonly initialIntent: PlannerIntentV3;
   readonly maxDate: string;
   readonly minDate: string;
+  readonly plannerPath?: string;
 }) {
   const [state, dispatch] = useReducer(plannerReducerV3, initialPlannerStateV3);
   const stateRef = useRef<PlannerStateV3>(state);
@@ -283,15 +287,18 @@ export function PlannerClientV3({
     [],
   );
 
-  const projectIntent = useCallback((intent: PlannerIntentV3) => {
-    const next = plannerFormDefaultsFromIntentV3(intent);
-    setFormDefaults(next);
-    const params = plannerSearchParamsFromDefaultsV3(next);
-    const target = `/v3/plan?${params}`;
-    if (`${location.pathname}${location.search}` !== target) {
-      history.pushState(null, "", target);
-    }
-  }, []);
+  const projectIntent = useCallback(
+    (intent: PlannerIntentV3) => {
+      const next = plannerFormDefaultsFromIntentV3(intent);
+      setFormDefaults(next);
+      const params = plannerSearchParamsFromDefaultsV3(next);
+      const target = `${plannerPath}?${params}`;
+      if (`${location.pathname}${location.search}` !== target) {
+        history.pushState(null, "", target);
+      }
+    },
+    [plannerPath],
+  );
 
   const find = useCallback(
     async (
@@ -974,7 +981,7 @@ export function PlannerClientV3({
         Skip to plan
       </a>
       <header className="v3-header">
-        <Link className="v3-wordmark" href="/v3" translate="no">
+        <Link className="v3-wordmark" href={homePath} translate="no">
           SERENDIPITY<span aria-hidden="true">✦</span>
         </Link>
         <span className="v3-mode">
@@ -998,6 +1005,7 @@ export function PlannerClientV3({
             <details className="v3-adjust">
               <summary>Adjust plan</summary>
               <PlannerFormV3
+                action={plannerPath}
                 defaults={formDefaults}
                 earliestStartToday={earliestStartToday}
                 error={formError}

@@ -88,7 +88,7 @@ test("PV2-UI-001 landing makes the product and output concrete", async ({
     }
   });
   await page.setViewportSize({ height: 844, width: 390 });
-  await page.goto("/");
+  await page.goto("/legacy/source-planner/home");
   await expect(
     page.getByRole("heading", { name: "A plan you can actually verify." }),
   ).toBeVisible();
@@ -123,9 +123,9 @@ test("PV2-UI-001 landing makes the product and output concrete", async ({
 test("PV2-UI-002 human path returns evidence and an idempotent local save", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/legacy/source-planner/home");
   await page.getByRole("button", { name: /Build my evening/ }).click();
-  await expect(page).toHaveURL(/\/plan\?.*auto=1/);
+  await expect(page).toHaveURL(/\/legacy\/source-planner\?.*auto=1/);
   await expect(
     page.getByRole("heading", { name: /sourced stops/i }),
   ).toBeVisible();
@@ -140,7 +140,7 @@ test("PV2-UI-002 human path returns evidence and an idempotent local save", asyn
   await expect(stops.first().getByText("Price", { exact: true })).toBeVisible();
   await stops.nth(1).locator(".v2-source-details summary").click();
   await expect(
-    stops.nth(1).getByText("Schedule calendar", { exact: true }),
+    stops.nth(1).getByText("Schedule calendar", { exact: true }).first(),
   ).toBeVisible();
   await page.getByRole("button", { name: "Save this plan" }).click();
   await expect(page.getByRole("button", { name: "Plan saved" })).toBeVisible();
@@ -168,7 +168,7 @@ test("PV2-LOCK-001 save blocks a concurrent manual swap", async ({ page }) => {
     await route.continue();
   });
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=art&interests=quiet&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=art&interests=quiet&auto=1`,
   );
   await expect(
     page.getByRole("heading", { name: /sourced stops/i }),
@@ -193,7 +193,7 @@ test("PV2-RACE-001 late evidence cannot poison a swapped plan or saved snapshot"
     await route.continue();
   });
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=13%3A00&end=22%3A00&budget=8000&walk=20&interests=art&interests=hands-on&interests=lively&interests=quiet&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=13%3A00&end=22%3A00&budget=8000&walk=20&interests=art&interests=hands-on&interests=lively&interests=quiet&auto=1`,
   );
   await expect(
     page.getByRole("heading", { name: /sourced stops/i }),
@@ -244,7 +244,7 @@ test("PV2-RACE-002 a failed swap settles and closes an in-flight evidence view",
     });
   });
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=13%3A00&end=22%3A00&budget=8000&walk=20&interests=art&interests=hands-on&interests=lively&interests=quiet&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=13%3A00&end=22%3A00&budget=8000&walk=20&interests=art&interests=hands-on&interests=lively&interests=quiet&auto=1`,
   );
   await expect(
     page.getByRole("heading", { name: /sourced stops/i }),
@@ -269,7 +269,7 @@ test("PV2-RACE-002 a failed swap settles and closes an in-flight evidence view",
 test("PV2-ST-001 exact five tools share find, evidence, swap, save, and delete state", async ({
   page,
 }) => {
-  await page.goto("/plan");
+  await page.goto("/legacy/source-planner");
   await expect.poll(() => availableTools(page)).toEqual([...toolNames].sort());
   await expect(page.locator(".v2-mode-details > summary")).toHaveText(
     "Agent tools connected",
@@ -366,9 +366,9 @@ test("PV2-ST-001 exact five tools share find, evidence, swap, save, and delete s
   await expect(activity).toContainText("save_plan · AI tool · success");
   await expect(activity).toContainText("delete_saved_plan · AI tool · success");
 
-  await page.goto("/");
+  await page.goto("/legacy/source-planner/home");
   await expect.poll(() => availableTools(page)).toEqual([]);
-  await page.goto("/plan");
+  await page.goto("/legacy/source-planner");
   await expect.poll(() => availableTools(page)).toEqual([...toolNames].sort());
 });
 
@@ -391,7 +391,7 @@ test("PV2-SAFE-001 a safe-shaped response with markup neither projects nor cross
     }
     await route.fulfill({ json: payload, response });
   });
-  await page.goto("/plan");
+  await page.goto("/legacy/source-planner");
   await expect.poll(() => availableTools(page)).toEqual([...toolNames].sort());
 
   const result = await execute(page, "find_evening_plan", intent());
@@ -411,7 +411,7 @@ test("PV2-A11Y-001 planned state reflows at 320px and 400%", async ({
 }) => {
   await page.setViewportSize({ height: 568, width: 320 });
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=art&interests=quiet&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=art&interests=quiet&auto=1`,
   );
   await expect(
     page.getByRole("heading", { name: /sourced stops/i }),
@@ -424,7 +424,7 @@ test("PV2-A11Y-001 planned state reflows at 320px and 400%", async ({
   await expectNoMaterialAxeViolations(page);
 
   await page.setViewportSize({ height: 900, width: 1280 });
-  await page.goto("/");
+  await page.goto("/legacy/source-planner/home");
   await page.locator("html").evaluate((element) => {
     element.style.fontSize = "400%";
   });
@@ -439,7 +439,7 @@ test("PV2-A11Y-002 honest no-result and runtime error remain accessible", async 
   page,
 }) => {
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=music&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=music&auto=1`,
   );
   await expect(
     page.getByRole("heading", { name: "Nothing verifiable fits yet." }),
@@ -471,7 +471,7 @@ test("PV2-A11Y-002 honest no-result and runtime error remain accessible", async 
     }),
   );
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=art&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=5000&walk=20&interests=art&auto=1`,
   );
   await expect(
     page.getByRole("heading", { name: "We could not build the plan." }),
@@ -483,7 +483,7 @@ test("PV2-UI-003 no-result recovery replaces an unsupported deep-link interest",
   page,
 }) => {
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=3000&walk=10&interests=books&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=17%3A00&end=22%3A00&budget=3000&walk=10&interests=books&auto=1`,
   );
   await expect(
     page.getByRole("heading", { name: "Nothing verifiable fits yet." }),
@@ -506,7 +506,7 @@ test("PV2-UI-003 no-result recovery replaces an unsupported deep-link interest",
 test("PV2-UI-004 explicit no-preference search does not restore defaults", async ({
   page,
 }) => {
-  await page.goto("/plan");
+  await page.goto("/legacy/source-planner");
   await page.getByRole("checkbox", { name: "Art & culture" }).uncheck();
   await page.getByRole("checkbox", { name: "Quiet" }).uncheck();
   await page.getByRole("button", { name: /Build my evening/ }).click();
@@ -526,7 +526,7 @@ test("PV2-REC-001 a no-result re-search preserves the last verified plan", async
 }) => {
   await page.setViewportSize({ height: 568, width: 320 });
   await page.goto(
-    `/plan?date=${tokyoDate()}&start=13%3A00&end=22%3A00&budget=8000&walk=20&interests=art&interests=hands-on&interests=lively&interests=quiet&auto=1`,
+    `/legacy/source-planner?date=${tokyoDate()}&start=13%3A00&end=22%3A00&budget=8000&walk=20&interests=art&interests=hands-on&interests=lively&interests=quiet&auto=1`,
   );
   const planSummary = page.locator(".v2-plan-summary");
   await expect(planSummary).toBeVisible();

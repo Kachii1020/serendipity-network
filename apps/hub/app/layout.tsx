@@ -28,23 +28,23 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_HUB_ORIGIN ?? "http://localhost:3100",
   ),
   description:
-    "Build a feasible Shibuya route from real places with published hours, visible price bases, walking estimates, and sources.",
+    "Build a source-backed Tokyo evening across Shibuya, Shinjuku, or Ikebukuro with official menu prices.",
   openGraph: {
     description:
-      "Two or three real Shibuya places, one feasible plan, and the source behind every important fact.",
+      "Two or three real Tokyo stops, official price evidence, and one feasible evening plan.",
     siteName: "Serendipity",
-    title: "Serendipity · A Shibuya plan you can verify",
+    title: "Serendipity · Build a source-backed Tokyo night",
     type: "website",
   },
   title: {
-    default: "Serendipity · A Shibuya plan you can verify",
+    default: "Serendipity · Build a source-backed Tokyo night",
     template: "%s · Serendipity",
   },
   twitter: {
     card: "summary_large_image",
     description:
-      "Two or three real Shibuya places, one feasible plan, and the source behind every important fact.",
-    title: "Serendipity · A Shibuya plan you can verify",
+      "Two or three real Tokyo stops, official price evidence, and one feasible evening plan.",
+    title: "Serendipity · Build a source-backed Tokyo night",
   },
 };
 

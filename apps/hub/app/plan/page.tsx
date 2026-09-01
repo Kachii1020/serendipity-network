@@ -1,83 +1,77 @@
-import {
-  PLANNER_SCHEMA_VERSION,
-  type PlannerIntentV2,
-  type PlannerTag,
-} from "@serendipity/contracts/planner-v2";
+import { PLANNER_V3_AREAS } from "@serendipity/contracts/planner-v3";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 
-import { PlannerClient } from "../../components/planner-v2/planner-client";
-import { PlannerMaintenance } from "../../components/planner-v2/planner-maintenance";
+import { PlannerClientV3 } from "../../components/planner-v3/planner-client";
 import {
-  defaultPlannerForm,
-  earliestPlannerStart,
-  normalizePlannerQuery,
-  tokyoDate,
-  toTokyoTimestamp,
-  type PlannerQuery,
-} from "../../components/planner-v2/planner-query";
-import { SHIBUYA_ACTIVE_PACK_V2 } from "../../data/shibuya-v2";
+  defaultPlannerFormV3,
+  earliestPlannerStartV3,
+  normalizePlannerQueryV3,
+  plannerIntentFromDefaultsV3,
+  tokyoDateV3,
+  type PlannerQueryV3,
+} from "../../components/planner-v3/planner-query";
+import { getAreaDataPackV3, TOKYO_AREA_PACKS_V3 } from "../../data/planner-v3";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/plan" },
   description:
-    "Plan 2–3 real Shibuya stops with published evidence and official links.",
+    "Build a source-backed Tokyo route with an optional meal across Shibuya, Shinjuku, and Ikebukuro.",
   robots: { follow: true, index: true },
-  title: "Build a source-backed Shibuya plan",
+  title: "Tokyo evening planner",
 };
+
+const scalar = (
+  value: string | readonly string[] | undefined,
+): string | undefined => (typeof value === "string" ? value : undefined);
 
 export default async function PlanPage({
   searchParams,
 }: {
-  readonly searchParams: Promise<PlannerQuery>;
+  readonly searchParams: Promise<PlannerQueryV3>;
 }) {
   await connection();
   const query = await searchParams;
   const now = new Date();
-  const sourcePackValidThrough = SHIBUYA_ACTIVE_PACK_V2.validThrough.slice(
-    0,
-    10,
-  );
-  const today = tokyoDate(0, now);
-  const minimumPlanningDate = defaultPlannerForm(now).date;
-  if (
-    today > sourcePackValidThrough ||
-    minimumPlanningDate > sourcePackValidThrough
-  ) {
-    return <PlannerMaintenance validThrough={sourcePackValidThrough} />;
+  const requestedArea = scalar(query.area);
+  const area =
+    PLANNER_V3_AREAS.find((candidate) => candidate === requestedArea) ??
+    defaultPlannerFormV3(now).area;
+  const pack = getAreaDataPackV3(area);
+  const globalValidThrough = TOKYO_AREA_PACKS_V3.map(({ validThrough }) =>
+    validThrough.slice(0, 10),
+  ).sort()[0]!;
+  const validThrough = [
+    pack.validThrough.slice(0, 10),
+    globalValidThrough,
+  ].sort()[0]!;
+  if (tokyoDateV3(0, now) > validThrough) {
+    return (
+      <div className="v3-shell">
+        <main className="v3-result-main v3-empty">
+          <h1>Source refresh in progress.</h1>
+          <p>The reviewed Tokyo hub packs were valid through {validThrough}.</p>
+        </main>
+      </div>
+    );
   }
-  const normalized = normalizePlannerQuery(query, now, sourcePackValidThrough);
+  const normalized = normalizePlannerQueryV3(query, now, validThrough);
   if (normalized.invalid) {
     const target = normalized.normalized.toString();
     redirect(target ? `/plan?${target}` : "/plan");
   }
-
-  const intent: PlannerIntentV2 = {
-    area: "shibuya",
-    endAt: toTokyoTimestamp(normalized.defaults.date, normalized.defaults.end),
-    excludedTags: normalized.defaults.excludedTags as PlannerTag[],
-    maxWalkMinutesPerLeg: normalized.defaults.walk,
-    partySize: 1,
-    preferredTags: normalized.defaults.interests as PlannerTag[],
-    schemaVersion: PLANNER_SCHEMA_VERSION,
-    startAt: toTokyoTimestamp(
-      normalized.defaults.date,
-      normalized.defaults.start,
-    ),
-    stopCount: "AUTO",
-    totalBudgetYen: normalized.defaults.budget,
-  };
   return (
-    <PlannerClient
+    <PlannerClientV3
       autoSearch={normalized.autoSearch}
       defaults={normalized.defaults}
-      earliestStartToday={earliestPlannerStart(normalized.minDate, now)}
+      earliestStartToday={earliestPlannerStartV3(normalized.defaults.date, now)}
+      homePath="/"
       hubOrigin={process.env.NEXT_PUBLIC_HUB_ORIGIN ?? "http://localhost:3100"}
-      initialIntent={intent}
+      initialIntent={plannerIntentFromDefaultsV3(normalized.defaults)}
       maxDate={normalized.maxDate}
       minDate={normalized.minDate}
-      packVersion={SHIBUYA_ACTIVE_PACK_V2.packVersion}
+      plannerPath="/plan"
     />
   );
 }

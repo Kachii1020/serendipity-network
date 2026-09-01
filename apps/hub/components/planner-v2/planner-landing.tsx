@@ -15,16 +15,20 @@ export function PlannerLanding({
   defaults,
   available = true,
   earliestStartToday,
+  homePath = "/",
   maxDate,
   minDate,
+  plannerPath = "/plan",
   sampleStops,
   sourcePackValidThrough,
 }: {
   readonly available?: boolean;
   readonly defaults: PlannerFormDefaults;
   readonly earliestStartToday: string | null;
+  readonly homePath?: string;
   readonly maxDate: string;
   readonly minDate: string;
+  readonly plannerPath?: string;
   readonly sampleStops: readonly LandingSampleStop[];
   readonly sourcePackValidThrough: string;
 }) {
@@ -34,7 +38,7 @@ export function PlannerLanding({
         Skip to planner
       </a>
       <header className="v2-header">
-        <Link className="wordmark" href="/" translate="no">
+        <Link className="wordmark" href={homePath} translate="no">
           SERENDIPITY<span aria-hidden="true">✦</span>
         </Link>
         <p>Source-backed Shibuya plans</p>
@@ -64,6 +68,7 @@ export function PlannerLanding({
             </div>
             {available ? (
               <PlannerForm
+                action={plannerPath}
                 defaults={defaults}
                 earliestStartToday={earliestStartToday}
                 maxDate={maxDate}
@@ -134,7 +139,7 @@ export function PlannerLanding({
       <footer className="v2-footer">
         <span translate="no">SERENDIPITY</span>
         <p>Published information · no live availability or booking claim</p>
-        <Link href="/plan">Open planner</Link>
+        <Link href={plannerPath}>Open planner</Link>
       </footer>
     </div>
   );

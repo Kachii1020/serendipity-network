@@ -8,74 +8,44 @@ const runtime = vi.hoisted(() => ({
 
 vi.mock("next/server", () => ({ connection: runtime.connection }));
 vi.mock("next/navigation", () => ({ redirect: runtime.redirect }));
-vi.mock("../../data/shibuya-v2", () => ({
-  SHIBUYA_ACTIVE_PACK_V2: {
-    packVersion: "1.3.0",
-    validThrough: "2026-10-28T23:59:59+09:00",
-  },
-}));
 
 import PlanPage from "./page";
-import { PlannerMaintenance } from "../../components/planner-v2/planner-maintenance";
 
-const query = {
-  auto: "1",
-  budget: "5000",
-  date: "2026-08-30",
-  end: "22:00",
-  interests: ["art", "quiet"],
-  start: "17:00",
-  walk: "20",
-} as const;
-
-describe("planner v2 SSR boundary", () => {
+describe("canonical v3 planner SSR boundary", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-08-30T01:00:00+09:00"));
+    vi.setSystemTime(new Date("2026-09-01T01:00:00+09:00"));
     runtime.connection.mockClear();
     runtime.redirect.mockClear();
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  afterEach(() => vi.useRealTimers());
 
-  it("delegates auto-search to the shared client controller", async () => {
+  it("projects the canonical /plan route into the v3 shared client", async () => {
     const element = (await PlanPage({
-      searchParams: Promise.resolve(query),
+      searchParams: Promise.resolve({
+        area: "ikebukuro",
+        auto: "1",
+        budget: "4000",
+        date: "2026-09-01",
+        end: "22:30",
+        interest: "CALM_QUIET",
+        meal: "1",
+        party: "3",
+        start: "17:30",
+        walk: "20",
+      }),
     })) as ReactElement<{
-      autoSearch: boolean;
-      initialIntent: { area: string; totalBudgetYen: number };
-      packVersion: string;
+      homePath: string;
+      initialIntent: { area: string; partySize: number };
+      plannerPath: string;
     }>;
 
-    expect(element.props.autoSearch).toBe(true);
+    expect(element.props.homePath).toBe("/");
+    expect(element.props.plannerPath).toBe("/plan");
     expect(element.props.initialIntent).toMatchObject({
-      area: "shibuya",
-      totalBudgetYen: 5000,
+      area: "ikebukuro",
+      partySize: 3,
     });
-    expect(element.props.packVersion).toBe("1.3.0");
-  });
-
-  it("renders an honest maintenance state after the audited pack expires", async () => {
-    vi.setSystemTime(new Date("2026-10-29T01:00:00+09:00"));
-
-    const element = (await PlanPage({
-      searchParams: Promise.resolve({}),
-    })) as ReactElement<{ validThrough: string }>;
-
-    expect(element.type).toBe(PlannerMaintenance);
-    expect(element.props.validThrough).toBe("2026-10-28");
-  });
-
-  it("pauses late on the final day when no two-hour window remains", async () => {
-    vi.setSystemTime(new Date("2026-10-28T22:00:00+09:00"));
-
-    const element = (await PlanPage({
-      searchParams: Promise.resolve({}),
-    })) as ReactElement<{ validThrough: string }>;
-
-    expect(element.type).toBe(PlannerMaintenance);
-    expect(element.props.validThrough).toBe("2026-10-28");
   });
 });

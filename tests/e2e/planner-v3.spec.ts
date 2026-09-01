@@ -199,6 +199,29 @@ test("PV3-UI-001 landing exposes useful choices without a dashboard wall", async
   await expectNoMaterialAxeViolations(page);
 });
 
+test("V3-DEP-006 canonical routes expose v3 and preserve the legacy v2 planner", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "A whole Tokyo night." }),
+  ).toBeVisible();
+  expect(await availableTools(page)).toEqual([]);
+
+  await page.goto("/plan");
+  await expect.poll(() => availableTools(page)).toEqual([...toolNames].sort());
+  await expect(
+    page.getByText(/AI tools connected|Planner ready/),
+  ).toBeVisible();
+
+  await page.goto("/legacy/source-planner");
+  await expect(page.getByText("Start at Shibuya Station")).toBeVisible();
+  await expect(page.locator(".v2-planner-form")).toHaveAttribute(
+    "action",
+    "/legacy/source-planner",
+  );
+});
+
 test("V3-VIS-003 interest choices use deterministic responsive columns", async ({
   page,
 }) => {

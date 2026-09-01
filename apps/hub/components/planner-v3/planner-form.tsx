@@ -30,6 +30,7 @@ const timeOptions = (firstHour: number, lastHour: number) =>
   });
 
 export function PlannerFormV3({
+  action = "/v3/plan",
   defaults,
   earliestStartToday,
   error,
@@ -37,6 +38,7 @@ export function PlannerFormV3({
   minDate,
   onSubmit,
 }: {
+  readonly action?: string;
   readonly defaults: PlannerFormDefaultsV3;
   readonly earliestStartToday: string | null;
   readonly error?: string | null;
@@ -68,12 +70,7 @@ export function PlannerFormV3({
     .sort((left, right) => left - right);
 
   return (
-    <form
-      action="/v3/plan"
-      className="v3-form"
-      method="get"
-      onSubmit={onSubmit}
-    >
+    <form action={action} className="v3-form" method="get" onSubmit={onSubmit}>
       <input name="auto" type="hidden" value="1" />
       <input name="meal" type="hidden" value={includeMeal ? "1" : "0"} />
       <fieldset className="v3-fieldset">

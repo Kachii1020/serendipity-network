@@ -135,6 +135,7 @@ export function PlannerClient({
   maxDate,
   minDate,
   packVersion,
+  plannerPath = "/plan",
 }: {
   readonly autoSearch: boolean;
   readonly defaults: PlannerFormDefaults;
@@ -144,6 +145,7 @@ export function PlannerClient({
   readonly maxDate: string;
   readonly minDate: string;
   readonly packVersion: string;
+  readonly plannerPath?: string;
 }) {
   const [state, dispatch] = useReducer(plannerReducer, initialPlannerState);
   const stateRef = useRef<PlannerState>(state);
@@ -240,17 +242,21 @@ export function PlannerClient({
     [failureEnvelope, recordActivity],
   );
 
-  const projectIntent = useCallback((intent: PlannerIntentV2) => {
-    const nextDefaults = plannerFormDefaultsFromIntent(intent);
-    setFormDefaults(nextDefaults);
-    setFormError(null);
-    const nextUrl = `/plan?${plannerSearchParamsFromDefaults(nextDefaults)}`;
-    if (
-      `${globalThis.location.pathname}${globalThis.location.search}` !== nextUrl
-    ) {
-      globalThis.history.pushState(null, "", nextUrl);
-    }
-  }, []);
+  const projectIntent = useCallback(
+    (intent: PlannerIntentV2) => {
+      const nextDefaults = plannerFormDefaultsFromIntent(intent);
+      setFormDefaults(nextDefaults);
+      setFormError(null);
+      const nextUrl = `${plannerPath}?${plannerSearchParamsFromDefaults(nextDefaults)}`;
+      if (
+        `${globalThis.location.pathname}${globalThis.location.search}` !==
+        nextUrl
+      ) {
+        globalThis.history.pushState(null, "", nextUrl);
+      }
+    },
+    [plannerPath],
+  );
 
   const find = useCallback(
     async (
@@ -925,6 +931,7 @@ export function PlannerClient({
                 <strong>Adjust the plan</strong>
               </div>
               <PlannerForm
+                action={plannerPath}
                 defaults={formDefaults}
                 earliestStartToday={earliestStartToday}
                 error={formError}
