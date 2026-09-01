@@ -51,7 +51,11 @@ import {
   type PlannerStateV3,
   type PlannerTransportV3,
 } from "./planner-machine";
-import type { PlannerFormDefaultsV3 } from "./planner-options";
+import {
+  areaLabel,
+  INTEREST_OPTIONS,
+  type PlannerFormDefaultsV3,
+} from "./planner-options";
 import { PlannerPlanV3 } from "./planner-plan";
 import { PlannerProgressV3 } from "./planner-progress";
 import {
@@ -78,6 +82,11 @@ type ActivityV3 = Readonly<{
 }>;
 
 const SEARCH_PRESENTATION_MS = 2_100;
+const yen = new Intl.NumberFormat("en-US", {
+  currency: "JPY",
+  maximumFractionDigits: 0,
+  style: "currency",
+});
 
 const waitForSearchPresentation = (
   startedAt: number,
@@ -205,11 +214,39 @@ export function PlannerClientV3({
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [saveAnnouncement, setSaveAnnouncement] = useState("");
   const [interactionReady, setInteractionReady] = useState(false);
+  const [adjustOpen, setAdjustOpen] = useState(false);
   const [openEvidencePlaceId, setOpenEvidencePlaceId] = useState<string | null>(
     null,
   );
 
   useEffect(() => setInteractionReady(true), []);
+
+  useEffect(() => {
+    if (
+      state.phase === "planned" ||
+      state.phase === "no_results" ||
+      state.phase === "error"
+    ) {
+      setAdjustOpen(false);
+    }
+  }, [state.phase]);
+
+  useEffect(() => {
+    if (
+      adjustOpen ||
+      state.plan ||
+      (state.phase !== "no_results" && state.phase !== "error")
+    ) {
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      const target =
+        globalThis.document.querySelector<HTMLElement>(".v3-empty");
+      target?.focus({ preventScroll: true });
+      target?.scrollIntoView({ block: "start", behavior: "auto" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [adjustOpen, state.phase, state.plan]);
 
   useEffect(() => {
     const loaded = loadSavedPlansV3(localStorage);
@@ -977,6 +1014,26 @@ export function PlannerClientV3({
   const enrichmentByPlace = Object.fromEntries(
     state.googleSignals.map((signal) => [signal.placeId, signal]),
   );
+  const recoveryIntent =
+    state.phase === "no_results" && state.intent
+      ? {
+          ...state.intent,
+          excludedTags: [],
+          interestPreset: "SURPRISE" as const,
+          maxWalkMinutesPerLeg: 30,
+        }
+      : null;
+  const canBroaden = Boolean(
+    recoveryIntent &&
+    (state.intent?.interestPreset !== "SURPRISE" ||
+      state.intent.maxWalkMinutesPerLeg !== 30 ||
+      state.intent.excludedTags.length > 0),
+  );
+  const interestLabel = state.intent
+    ? (INTEREST_OPTIONS.find(
+        ({ value }) => value === state.intent?.interestPreset,
+      )?.label ?? state.intent.interestPreset)
+    : null;
 
   return (
     <div className="v3-shell">
@@ -1005,7 +1062,11 @@ export function PlannerClientV3({
           />
         ) : (
           <>
-            <details className="v3-adjust">
+            <details
+              className="v3-adjust"
+              onToggle={(event) => setAdjustOpen(event.currentTarget.open)}
+              open={adjustOpen}
+            >
               <summary>Adjust plan</summary>
               <PlannerFormV3
                 action={plannerPath}
@@ -1058,20 +1119,89 @@ export function PlannerClientV3({
                 warnings={state.warnings}
               />
             ) : (
-              <section className="v3-empty" tabIndex={-1}>
-                <h1>
-                  {state.phase === "searching"
-                    ? "Building your Tokyo night…"
-                    : state.phase === "no_results"
-                      ? "Nothing honest fits yet."
-                      : state.phase === "error"
-                        ? "The planner paused."
-                        : "Choose a hub. Build the night."}
-                </h1>
-                <p>
-                  {state.error?.message ??
-                    "Adjust the plan above. Meal routes use published official menu prices."}
-                </p>
+              <section
+                className={`v3-empty${state.phase === "no_results" ? " v3-empty--recovery" : ""}`}
+                tabIndex={-1}
+              >
+                {state.phase === "no_results" ? (
+                  <>
+                    <p className="v3-empty__kicker">No exact route</p>
+                    <h1>No exact route for these choices.</h1>
+                    {state.intent ? (
+                      <ul
+                        aria-label="Requested plan"
+                        className="v3-empty__facts"
+                      >
+                        <li>{areaLabel(state.intent.area)}</li>
+                        <li>
+                          {state.intent.partySize}{" "}
+                          {state.intent.partySize === 1 ? "adult" : "adults"}
+                        </li>
+                        <li>
+                          {yen.format(state.intent.budgetPerPersonYen)} / person
+                        </li>
+                        <li>
+                          {state.intent.startAt.slice(11, 16)}–
+                          {state.intent.endAt.slice(11, 16)}
+                        </li>
+                        <li>
+                          {state.intent.includeMeal
+                            ? "Meal included"
+                            : "Activities only"}
+                        </li>
+                        <li>{interestLabel}</li>
+                      </ul>
+                    ) : null}
+                    <p>
+                      Published hours and official menu prices did not produce a
+                      route that satisfies every selected constraint.
+                    </p>
+                    <div className="v3-empty__actions">
+                      {canBroaden && recoveryIntent ? (
+                        <button
+                          className="v3-empty__primary"
+                          onClick={() => void find(recoveryIntent, "manual")}
+                          type="button"
+                        >
+                          Try Surprise me + 30-minute walks
+                        </button>
+                      ) : null}
+                      <button
+                        onClick={() => {
+                          setAdjustOpen(true);
+                          requestAnimationFrame(() => {
+                            const target =
+                              globalThis.document.querySelector<HTMLElement>(
+                                ".v3-adjust summary",
+                              );
+                            target?.focus({ preventScroll: true });
+                            target?.scrollIntoView({
+                              block: "start",
+                              behavior: "auto",
+                            });
+                          });
+                        }}
+                        type="button"
+                      >
+                        Edit these choices
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h1>
+                      {state.phase === "searching"
+                        ? "Building your Tokyo night…"
+                        : state.phase === "error"
+                          ? "The planner paused."
+                          : "Choose a hub. Build the night."}
+                    </h1>
+                    <p>
+                      {state.error?.message ??
+                        "Adjust the plan above. Meal routes use published official menu prices."}
+                    </p>
+                  </>
+                )}
               </section>
             )}
             <details className="v3-adjust v3-secondary">

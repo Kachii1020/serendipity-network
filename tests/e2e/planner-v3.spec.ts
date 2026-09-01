@@ -381,8 +381,11 @@ test("V3-PROG-002 slow search stays pending beyond the presentation minimum", as
 test("V3-PROG-002B honest no-result keeps the minimum presentation", async ({
   page,
 }) => {
-  await page.route("**/api/v3/plans/search", (route) =>
-    route.fulfill({
+  let requests = 0;
+  await page.route("**/api/v3/plans/search", (route) => {
+    requests += 1;
+    if (requests > 1) return route.continue();
+    return route.fulfill({
       contentType: "application/json",
       json: {
         error: {
@@ -400,16 +403,45 @@ test("V3-PROG-002B honest no-result keeps the minimum presentation", async ({
         ok: false,
         schemaVersion: "3",
       },
-    }),
-  );
+    });
+  });
   await page.goto("/v3/plan");
   await page.locator(".v3-adjust summary").first().click();
   const startedAt = Date.now();
   await page.getByRole("button", { name: /Build my Tokyo plan/ }).click();
   await expect(
-    page.getByRole("heading", { name: "Nothing honest fits yet." }),
+    page.getByRole("heading", { name: "No exact route for these choices." }),
   ).toBeVisible();
   expect(Date.now() - startedAt).toBeGreaterThanOrEqual(1_950);
+  await expect(page.locator(".v3-adjust").first()).not.toHaveAttribute(
+    "open",
+    "",
+  );
+  const recoveryViewport = await page
+    .locator(".v3-empty")
+    .evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return { bottom: bounds.bottom, height: innerHeight, top: bounds.top };
+    });
+  expect(recoveryViewport.top).toBeGreaterThanOrEqual(-1);
+  expect(recoveryViewport.top).toBeLessThan(80);
+  expect(recoveryViewport.bottom).toBeGreaterThan(0);
+  expect(recoveryViewport.top).toBeLessThan(recoveryViewport.height);
+  await expect(page.locator(".v3-empty")).toContainText(
+    "Shibuya1 adult¥4,000 / person17:30–22:30Meal includedSurprise me",
+  );
+  const focusStyle = await page.locator(".v3-empty").evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { boxShadow: style.boxShadow, outline: style.outlineStyle };
+  });
+  expect(focusStyle.boxShadow).toContain("101, 75, 230");
+  expect(focusStyle.outline).toBe("none");
+  await page
+    .getByRole("button", { name: "Try Surprise me + 30-minute walks" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Your Shibuya night" }),
+  ).toBeVisible();
 });
 
 test("V3-PROG-003 transport failure bypasses the presentation minimum", async ({
