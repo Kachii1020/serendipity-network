@@ -226,16 +226,22 @@ v2. See `evidence/rc-status-2026-08-30.md` for the claim boundary.
       and record route/API/tool checks without touching Provider or Supabase —
       verifies FR-330 and V3-RBK-001–002.
 
-- [ ] **T331** Promote routes in the verified Hub candidate: move v2 consumer
+- [x] **T331** Promote routes in the verified Hub candidate: move v2 consumer
       routes to `/legacy/source-planner`, retain `/legacy/network-demo`, point
       `/` and `/plan` to v3, rerun local route/tool inventory, build one immutable
       deployment, and promote that same deployment alias only after all gates
       stay green — verifies FR-325–FR-330.
+      Production promotion bound the fixed alias to
+      `dpl_97KgepTTGC78xp14v6cQw97NeAfi`; `/`, `/plan`, both legacy routes, the
+      20-run read-only harness, and the 14-case public browser suite passed.
 
 - [ ] **T332** Run production 3/3 human/Site Tool smoke, 20/20 search reliability
       with p95 <=3s, Google-on and flag-off fallback (when configured), source/
       menu link audit, Lighthouse, public payload/storage scan, and 15-minute log
       observation; roll back on first non-favicon failure — closes SC-309–SC-312.
+      Partial production evidence is complete: Google-OFF search 20/20, p95
+      77ms, 20 unique correlations, plus automated Chrome 14/14. Real supported-
+      client 3/3, Lighthouse, live-link audit, and the observation window remain.
 
 - [ ] **T333** Reconcile shipped behavior with all 003 artifacts and record
       deployment ID, pack versions, Google mode, exact commands/results,

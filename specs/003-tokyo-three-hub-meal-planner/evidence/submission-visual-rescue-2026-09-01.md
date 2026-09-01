@@ -50,5 +50,27 @@ The protected 800px browser path displayed all four analysis stages and three
 role slots, then returned the source-backed Shibuya result in 2,644ms including
 navigation. Deployed geometry recorded hub centre error 0px, summary `[2,2]`,
 stamp/rail/node count 0, three walk labels, document overflow 0, and browser
-warning/error logs 0. T342 is closed; production remains unchanged pending user
-review.
+warning/error logs 0. T342 is closed.
+
+## Production promotion
+
+After user review, canonical-route commit `40ee0e2` and metadata commit
+`7021c2f` were built into Google-OFF deployment
+`dpl_97KgepTTGC78xp14v6cQw97NeAfi` in `hnd1`. Vercel reported it READY, and the
+exact deployment was promoted to <https://serendipity-phase0-hub.vercel.app>.
+The fixed alias resolved back to the same deployment after promotion.
+
+- `/` renders the v3 three-hub input surface and submits to `/plan`.
+- `/plan` renders the v3 planner and registers the exact five tools in the
+  automated Chrome WebMCP environment.
+- `/legacy/source-planner` preserves v2; `/legacy/network-demo` remains intact.
+- Production read-only search: 20/20 across Shibuya 7, Shinjuku 7, Ikebukuro 6;
+  p50 47ms, p95 77ms, max 288ms, 20 unique correlations.
+- Production browser regression: 14/14 covering canonical/legacy routing,
+  responsive geometry, 2100ms truthful progress, no-result/error behavior,
+  manual/tool provenance, exact-five lifecycle, storage, accessibility, and
+  200%/400% reflow.
+
+No Provider, Supabase, booking mutation, or Google Places request was made.
+Real supported-client Sol/Terra 3/3 remains unclaimed. The immediate rollback
+anchor remains v2 deployment `dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6`.

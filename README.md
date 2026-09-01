@@ -11,21 +11,23 @@ contact a venue. Users must check each official site before they go.
 
 ## Release status
 
-v3 is an implementation candidate, not the production product yet.
+v3 is the current production product, running with Google enrichment off and
+official-menu evidence as the budget basis.
 
-- **Current production (v2):**
+- **Current production:**
   <https://serendipity-phase0-hub.vercel.app>
-- **Current production planner (v2):**
+- **Current production planner:**
   <https://serendipity-phase0-hub.vercel.app/plan>
-- **Current v3 review preview (protected, Google OFF):**
-  <https://serendipity-phase0-6ddhami6n-circle-connect123.vercel.app/v3>
+- **Preserved v2 source planner:**
+  <https://serendipity-phase0-hub.vercel.app/legacy/source-planner>
 - **Public source:**
   <https://github.com/Kachii1020/serendipity-network>
 
-The fixed production URL remains on v2 until one immutable v3 candidate passes
-the complete browser/reflow/security/source gate, real supported-client Site
-Tools verification, rollback rehearsal, and production reliability run. The
-recorded v2 rollback deployment is `dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6`.
+The fixed production URL is bound to immutable deployment
+`dpl_97KgepTTGC78xp14v6cQw97NeAfi`. The recorded v2 rollback deployment is
+`dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6`. Real supported-client Site Tools evidence
+remains a separate submission gate; automated Chrome inventory is not presented
+as Sol/Terra evidence.
 
 ## What is implemented in v3
 
