@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lockedAt": "2026-09-01T13:06:00+09:00",
+  "lockedAt": "2026-09-01T14:14:59+09:00",
   "project": {
     "name": "Serendipity",
     "liveUrl": "https://serendipity-phase0-hub.vercel.app",
@@ -9,10 +9,10 @@
     "license": "MIT"
   },
   "production": {
-    "deploymentId": "dpl_97KgepTTGC78xp14v6cQw97NeAfi",
+    "deploymentId": "dpl_D78wsbtVJqCnCxy1HxSXkKR3JLzH",
     "region": "hnd1",
     "googlePlacesEnabled": false,
-    "rollbackDeploymentId": "dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6"
+    "rollbackDeploymentId": "dpl_97KgepTTGC78xp14v6cQw97NeAfi"
   },
   "data": {
     "areas": ["shibuya", "shinjuku", "ikebukuro"],
@@ -47,15 +47,24 @@
       "builds": "8/8",
       "sourceAudit": "20/20",
       "securityBrowser": "5/5",
-      "publicAssetSecretScan": "62 files"
+      "publicAssetSecretScan": "65 files"
     },
     "productionSearch": {
       "runs": 20,
       "passed": 20,
-      "p50Ms": 47,
-      "p95Ms": 77,
-      "maxMs": 288,
+      "p50Ms": 54,
+      "p95Ms": 90,
+      "maxMs": 590,
       "uniqueCorrelations": 20
+    },
+    "noResultRecovery": {
+      "fixture": "Shibuya, 3 adults, 17:30–19:30, ¥2,000/person, meal, Lively, 5-minute walks",
+      "initialOutcome": "NO_VALID_PLAN",
+      "visibleRecovery": "Surprise me + 30-minute walks",
+      "recoveredOutcome": "2-stop Shibuya route",
+      "desktopOverflow": 0,
+      "mobileOverflow": 0,
+      "browserWarningsOrErrors": 0
     },
     "lighthouse": {
       "version": "13.4.1",
