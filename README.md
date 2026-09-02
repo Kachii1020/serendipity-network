@@ -24,7 +24,8 @@ official-menu evidence as the budget basis.
   <https://github.com/Kachii1020/serendipity-network>
 
 The fixed production URL is bound to immutable deployment
-`dpl_97KgepTTGC78xp14v6cQw97NeAfi`. The recorded v2 rollback deployment is
+`dpl_F66xuSv6HMpdthhMqHrs3NDgJn8W`. The immediate v3 rollback deployment is
+`dpl_D78wsbtVJqCnCxy1HxSXkKR3JLzH`; the historical v2 rollback remains
 `dpl_CLfLvnMvXbSVtK1ciH4kc4DvnbS6`. Real supported-client Site Tools evidence
 remains a separate submission gate; automated Chrome inventory is not presented
 as Sol/Terra evidence.
@@ -39,6 +40,8 @@ as Sol/Terra evidence.
   routes contain activities only.
 - Full-width route output with per-person and group price estimates, walking,
   reasons, official links, evidence, same-role stop replacement, and local save.
+- Server-verified no-result recovery that checks cumulative relaxations and
+  waits for explicit user approval before projecting a broader route.
 - Parallel v3 contracts, deterministic composition, stateless search/swap/
   evidence APIs, and exactly five Site Tools sharing the visible controller.
 

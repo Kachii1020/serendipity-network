@@ -2,7 +2,7 @@
 
 ## Current production evidence
 
-Immutable production deployment `dpl_97KgepTTGC78xp14v6cQw97NeAfi` remains
+Immutable production deployment `dpl_F66xuSv6HMpdthhMqHrs3NDgJn8W` remains
 bound to <https://serendipity-phase0-hub.vercel.app>. Google Places enrichment
 is off; the official-menu path is the production path.
 

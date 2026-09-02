@@ -187,7 +187,10 @@ disclosures, and one primary save action. Responsive tests cover 320 through
   fallback.
 - Source and rights audits that fail closed on unreviewed claims or stale packs.
 - Production read-only reliability: 20/20 searches, 20 unique correlations,
-  p95 77ms.
+  p95 432ms.
+- Server-verified no-result recovery: the strict test case returns no plan, the
+  first feasible cumulative relaxation is displayed exactly, and no broader
+  route appears before the user approves it.
 - Public browser regression: 14/14 across routing, WebMCP lifecycle, responsive
   geometry, storage, accessibility, and 200%/400% reflow.
 - Lighthouse: 99/100/100/100 on the home page and 98/100/100/100 on the planner.
