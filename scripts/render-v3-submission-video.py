@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SUBMISSION = ROOT / "submission"
 GENERATED = SUBMISSION / "generated"
-NARRATION = SUBMISSION / "video-narration.json"
+DEFAULT_NARRATION = SUBMISSION / "video-narration.json"
 
 
 def run(*args: str) -> None:
@@ -59,9 +59,9 @@ def chunks(text: str, maximum_words: int = 10) -> list[str]:
     return result
 
 
-def prepare_audio() -> None:
+def prepare_audio(narration_path: Path) -> None:
     GENERATED.mkdir(parents=True, exist_ok=True)
-    data = json.loads(NARRATION.read_text())
+    data = json.loads(narration_path.read_text())
     manifest = {"scenes": []}
     for scene in data["scenes"]:
         aiff = GENERATED / f"{scene['id']}.aiff"
@@ -103,7 +103,32 @@ def prepare_audio() -> None:
     )
 
 
-def assemble() -> None:
+def prepare_neural_audio(narration_path: Path, audio_dir: Path) -> None:
+    GENERATED.mkdir(parents=True, exist_ok=True)
+    data = json.loads(narration_path.read_text())
+    voice = data.get("voice", "cedar")
+    manifest = {"scenes": []}
+    for scene in data["scenes"]:
+        wav = audio_dir / f"{voice}-{scene['id']}.wav"
+        if not wav.is_file():
+            raise FileNotFoundError(f"Missing generated narration: {wav}")
+        audio_seconds = duration(wav)
+        manifest["scenes"].append(
+            {
+                **scene,
+                "audioPath": str(wav.resolve()),
+                "audioSeconds": audio_seconds,
+                "renderSeconds": max(
+                    float(scene["minimumSeconds"]), math.ceil(audio_seconds + 1.0)
+                ),
+            }
+        )
+    (GENERATED / "audio-manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n"
+    )
+
+
+def assemble(output: Path) -> None:
     from PIL import Image, ImageDraw, ImageFont
 
     data = json.loads((GENERATED / "audio-manifest.json").read_text())
@@ -164,6 +189,7 @@ def assemble() -> None:
 
     font_path = Path("/System/Library/Fonts/Supplemental/Arial Bold.ttf")
     font = ImageFont.truetype(str(font_path), 44)
+    disclosure_font = ImageFont.truetype(str(font_path), 22)
     for index, caption in enumerate(captions):
         canvas = Image.new("RGBA", (1920, 200), (0, 0, 0, 0))
         draw = ImageDraw.Draw(canvas)
@@ -198,6 +224,23 @@ def assemble() -> None:
                 ((1920 - width) / 2, top + 13 + line_index * line_height),
                 line,
                 font=font,
+                fill=(255, 255, 255, 255),
+            )
+        if float(caption["start"]) < 8:
+            disclosure = "AI-generated narration"
+            disclosure_box = draw.textbbox(
+                (0, 0), disclosure, font=disclosure_font
+            )
+            disclosure_width = disclosure_box[2] - disclosure_box[0]
+            draw.rounded_rectangle(
+                (56, 158, 84 + disclosure_width, 194),
+                radius=10,
+                fill=(17, 17, 17, 220),
+            )
+            draw.text(
+                (70, 163),
+                disclosure,
+                font=disclosure_font,
                 fill=(255, 255, 255, 255),
             )
         image_path = GENERATED / f"caption-{index + 1:03}.png"
@@ -245,7 +288,7 @@ def assemble() -> None:
     caption_input_index = 1 + len(data["scenes"])
     filters.append(f"[0:v][{caption_input_index}:v]overlay=0:760[vout]")
 
-    output = SUBMISSION / "serendipity-demo.mp4"
+    output.parent.mkdir(parents=True, exist_ok=True)
     run(
         "ffmpeg",
         "-y",
@@ -283,12 +326,23 @@ def assemble() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["prepare-audio", "assemble"])
+    parser.add_argument(
+        "command", choices=["prepare-audio", "prepare-neural-audio", "assemble"]
+    )
+    parser.add_argument("--narration", type=Path, default=DEFAULT_NARRATION)
+    parser.add_argument("--audio-dir", type=Path)
+    parser.add_argument(
+        "--output", type=Path, default=SUBMISSION / "serendipity-demo.mp4"
+    )
     args = parser.parse_args()
     if args.command == "prepare-audio":
-        prepare_audio()
+        prepare_audio(args.narration)
+    elif args.command == "prepare-neural-audio":
+        if args.audio_dir is None:
+            parser.error("--audio-dir is required for prepare-neural-audio")
+        prepare_neural_audio(args.narration, args.audio_dir)
     else:
-        assemble()
+        assemble(args.output)
 
 
 if __name__ == "__main__":
