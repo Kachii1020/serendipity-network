@@ -1,0 +1,57 @@
+name: TTS samples
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Audio set to generate
+        required: true
+        default: samples
+        type: choice
+        options:
+          - samples
+          - full
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate voice samples
+        if: inputs.mode == 'samples'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: >-
+          python scripts/generate-v3-tts.py
+          --output submission/generated/tts-v2
+          --voices cedar marin
+          --scenes hook webmcp
+
+      - name: Generate full narration
+        if: inputs.mode == 'full'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: >-
+          python scripts/generate-v3-tts.py
+          --output submission/generated/tts-v2
+          --voices cedar
+
+      - name: Upload generated audio
+        uses: actions/upload-artifact@v4
+        with:
+          name: serendipity-tts-${{ inputs.mode }}
+          path: submission/generated/tts-v2/
+          if-no-files-found: error
+          retention-days: 3

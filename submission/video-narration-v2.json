@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "title": "Serendipity — one Tokyo evening, planned with evidence",
+  "model": "gpt-4o-mini-tts",
+  "voice": "cedar",
+  "voiceInstructions": "Speak like a thoughtful solo developer showing a friend something they built. Use natural American English. Sound calm, warm, and slightly informal. Keep a steady conversational pace with small pauses after short sentences. Avoid announcer energy, sales-pitch cadence, exaggerated enthusiasm, and polished corporate delivery. Pronounce WebMCP as Web M C P.",
+  "disclosure": "AI-generated narration",
+  "scenes": [
+    {
+      "id": "hook",
+      "minimumSeconds": 12,
+      "title": "One free evening. Too many tabs.",
+      "narration": "This started with a pretty ordinary problem. I’d have a free evening in Tokyo, open a place, check dinner nearby, then look at walking time—and somehow end up with ten tabs and no plan."
+    },
+    {
+      "id": "choices",
+      "minimumSeconds": 16,
+      "title": "Three hubs. Real constraints.",
+      "narration": "Serendipity is the version I wanted for myself. I choose a neighborhood, how many people are going, what we want to spend, and what kind of night sounds good. I can include dinner, or leave it out."
+    },
+    {
+      "id": "analysis",
+      "minimumSeconds": 14,
+      "title": "Published hours and menu prices",
+      "narration": "When I build the plan, it checks published opening hours, official menu prices, and the walking time between stops. The point is to get one route that actually fits the evening."
+    },
+    {
+      "id": "route",
+      "minimumSeconds": 20,
+      "title": "One feasible route",
+      "narration": "For this run, it found Animate Ikebukuro, dinner at Ootoya, and Sunshine 60. That’s three stops, about twenty-five minutes of walking, with a price estimate for the whole group. If a third stop doesn’t fit, it just shows two and tells me why."
+    },
+    {
+      "id": "evidence",
+      "minimumSeconds": 18,
+      "title": "Every important claim opens to evidence",
+      "narration": "I didn’t want the plan to sound more certain than its sources. So every stop shows where its hours and price came from, plus the official page to check before going. It doesn’t pretend a seat is available, and it doesn’t make a booking."
+    },
+    {
+      "id": "webmcp",
+      "minimumSeconds": 28,
+      "title": "Five typed WebMCP tools",
+      "narration": "The WebMCP part is what makes this more than a form. Instead of trying to click around the page, an AI assistant gets five clear actions: find a plan, show the evidence, change one stop, save it, or delete it. And I can see those changes on the same screen while it works."
+    },
+    {
+      "id": "storage",
+      "minimumSeconds": 16,
+      "title": "Bounded, visible mutations",
+      "narration": "Only save and delete change anything, and the saved plan stays in this browser. There’s no account, no payment, and nothing gets sent to a venue."
+    },
+    {
+      "id": "close",
+      "minimumSeconds": 12,
+      "title": "A plan you can verify before you go",
+      "narration": "That’s the idea behind Serendipity. Give me one Tokyo evening, and help me turn it into a plan I can actually check and use."
+    }
+  ]
+}
